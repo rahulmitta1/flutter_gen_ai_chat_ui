@@ -16,7 +16,7 @@ This document provides a comprehensive guide to using the Flutter Gen AI Chat UI
 
 ```yaml
 dependencies:
-  flutter_gen_ai_chat_ui: ^2.1.0
+  flutter_gen_ai_chat_ui: ^2.1.2
 ```
 
 ### Step 2: Import the Package
