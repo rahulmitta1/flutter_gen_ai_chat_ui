@@ -39,9 +39,18 @@ extension ColorExtensions on Color {
     );
   }
 
-  /// Sets the opacity without using the deprecated withOpacity.
+  /// Sets the opacity of a color in a way that's compatible with all Flutter/Dart versions.
+  ///
+  /// This avoids using the withValues method internally, ensuring compatibility
+  /// regardless of SDK version.
   Color withOpacityCompat(double opacity) {
     final clamped = opacity.clamp(0.0, 1.0);
-    return withValues(alpha: clamped);
+    // Use Color directly instead of withValues
+    return Color.fromARGB(
+      (clamped * 255).round(),
+      r.toInt(),
+      g.toInt(),
+      b.toInt(),
+    );
   }
 }

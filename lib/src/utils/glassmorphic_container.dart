@@ -41,19 +41,19 @@ class GlassmorphicDecoration {
         begin: begin,
         end: end,
         colors:
-            colors.map((color) => color.withOpacityCompat( opacity)).toList(),
+            colors.map((color) => color.withOpacityCompat(opacity)).toList(),
       ),
       borderRadius: borderRadius,
       border: border
           ? Border.all(
-              color: borderColor.withOpacityCompat( opacity),
+              color: borderColor.withOpacityCompat(opacity),
               width: borderWidth,
             )
           : null,
       boxShadow: shadow
           ? [
               BoxShadow(
-                color: shadowColor.withOpacityCompat( opacity),
+                color: shadowColor.withOpacityCompat(opacity),
                 blurRadius: shadowBlur,
                 spreadRadius: shadowSpread,
               ),

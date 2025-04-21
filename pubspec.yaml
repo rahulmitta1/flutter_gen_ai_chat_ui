@@ -1,6 +1,6 @@
 name: flutter_gen_ai_chat_ui
 description: "High-performance Flutter UI kit for AI chat: streaming markdown, code highlighting, theming, and customizable integration hooks for major LLMs."
-version: 2.0.8
+version: 2.1.2
 homepage: https://github.com/hooshyar/flutter_gen_ai_chat_ui
 repository: https://github.com/hooshyar/flutter_gen_ai_chat_ui
 issue_tracker: https://github.com/hooshyar/flutter_gen_ai_chat_ui/issues
@@ -22,15 +22,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_markdown: ^0.7.6+2
-  intl: ^0.20.2
-  flutter_animate: ^4.5.2
+  flutter_markdown: ^0.7.7
   google_fonts: ^6.1.0
-  provider: ^6.1.2
-  scrollable_positioned_list: ^0.3.8
   shimmer: ^3.0.0
-  url_launcher: ^6.3.1
-  permission_handler: ^12.0.0+1
   flutter_streaming_text_markdown: ^1.1.0
 
 dev_dependencies:
@@ -42,6 +36,7 @@ dev_dependencies:
   golden_toolkit: ^0.15.0
   integration_test:
     sdk: flutter
+  provider: ^6.1.2
 
 flutter:
   uses-material-design: true

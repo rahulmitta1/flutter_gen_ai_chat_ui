@@ -71,7 +71,7 @@
   - materialColor - Controls background color of input container
   - materialPadding - Controls padding around input container
 
-## [2.1.0] - YYYY-MM-DD
+## [2.1.2] - 2024-07-10
 ### Added
 - Added `ChatAction` model and `ChatActionsBar` widget for dynamic bottom action bar support
 - Exposed `actionsBarConfig` in `ChatInput`

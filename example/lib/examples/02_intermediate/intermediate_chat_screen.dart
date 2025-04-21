@@ -230,14 +230,14 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
             gradient: LinearGradient(
               colors: [
                 colorScheme.primaryContainer,
-                colorScheme.primary.withOpacityCompat( 0.1 * 255),
+                colorScheme.primary.withOpacityCompat(0.1 * 255),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: colorScheme.primary.withOpacityCompat( 0.3 * 255),
+              color: colorScheme.primary.withOpacityCompat(0.3 * 255),
               width: 1.5,
             ),
           ),
@@ -262,7 +262,7 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
             ),
             filled: true,
             fillColor: colorScheme.surfaceContainerHighest
-                .withOpacityCompat( 0.8 * 255),
+                .withOpacityCompat(0.8 * 255),
 
             // suffixIcon: const Icon(Icons.send_rounded),
           ),

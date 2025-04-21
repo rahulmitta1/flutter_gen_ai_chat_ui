@@ -1,3 +1,23 @@
+# SDK and Compatibility Changes (Version 2.1.1)
+
+## SDK Version Compatibility
+
+Starting with version 2.1.1, Flutter Gen AI Chat UI now supports Dart SDK >= 2.19.0 (previously required Dart SDK >= 3.5.0). This change ensures the package works with a broader range of Flutter applications and reduces upgrade pressure.
+
+## Color Extension Compatibility
+
+The `withOpacityCompat` method has been updated to fix compatibility issues with older Dart SDKs. If you were experiencing errors like:
+
+```
+The method 'withValues' isn't defined for the class 'Color'.
+```
+
+Upgrading to version 2.1.1 will resolve these issues while maintaining the same API.
+
+### Migration for Custom Extensions
+
+If you've created your own extensions to the `ColorExtensions` class, be sure to update any implementations that rely on the `withValues` method to use the standard Flutter color manipulation methods instead.
+
 # Migration Guide: From AiChatConfig to Direct Parameters
 
 This guide helps you migrate from the older `AiChatConfig`-based API to the new, more intuitive direct parameter API in Flutter Gen AI Chat UI.

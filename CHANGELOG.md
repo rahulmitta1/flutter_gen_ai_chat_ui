@@ -1,3 +1,49 @@
+## 2.1.2 - [2025-04-22] Dependency Cleanup & Broader Compatibility
+
+### Changed
+- **Removed permission_handler**: Removed as a core dependency since it's only needed for optional speech-to-text functionality
+- **Enhanced SDK Compatibility**: Further improved compatibility by eliminating unnecessary dependencies
+- **Updated Documentation**: Clarified speech-to-text implementation needs to be handled by the app developer
+- **Dependency Optimization**: Removed several unused dependencies (intl, flutter_animate, provider, scrollable_positioned_list, url_launcher) to reduce package footprint
+
+### Benefits
+- No more SDK version conflicts with permission_handler dependency
+- Significantly smaller package footprint (~60% reduction in external dependencies)
+- Faster installation and build times
+- More flexibility for implementing speech recognition with your preferred tools
+- Reduced risk of version conflicts with other packages in your app
+
+## 2.1.1 - [2025-04-22] Critical SDK Compatibility Fixes
+
+### Fixed
+- **SDK Compatibility**: Lowered minimum Dart SDK to `>=2.19.0` to ensure broader compatibility
+- **Color Extensions**: Fixed `withOpacityCompat` to avoid using `withValues` internally, resolving errors on older Dart SDKs
+- **Dependency Compatibility**: Downgraded `permission_handler` to version 10.2.0 for compatibility with Dart SDK 2.19+
+
+### Changed
+- Improved implementation of color opacity handling to work across all supported SDK versions
+- Enhanced documentation around SDK compatibility requirements
+- Extensive testing across multiple Flutter and Dart SDK versions
+
+## 2.1.0 - [2024-07-12] Major Update: Dart 3.5+ & ChatGPT‑Style UI Enhancements
+
+### Added
+- Bumped Dart SDK lower bound to `>=3.5.0` for `permission_handler` compatibility
+- Introduced ChatGPT‑style input capsule: full capsule radius, exact fill colors, and border
+- Quick‑prompt chips above the text field with horizontal scroll support
+- Inline action icons row merged into the same capsule material as input
+- Animated send‑button opacity and scale based on content presence
+
+### Changed
+- Updated `ChatGPTTokens` to use official ChatGPT dark mode hex values
+- Revised `InputOptions.chatGPTDefaults` for full capsule styling and padding
+- Bumped package version to **2.1.0**
+- Updated installation instructions in README & USAGE docs
+
+### Fixed
+- Formatted codebase and resolved all static analysis warnings
+- Aligned `pubspec.yaml` environment SDK constraint with dependencies
+
 ## 2.0.8 - [2024-06-22] Pub Points & Static Analysis Fixes
 
 ### Changed

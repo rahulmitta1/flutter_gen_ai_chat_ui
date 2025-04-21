@@ -31,7 +31,7 @@ build/
 
 # Logs and documentation
 *.log
-!docs/changes.log
+!doc/changes.log
 logger.txt
 context.md
 files_list.md
@@ -45,3 +45,4 @@ files_list.md
 # Test coverage
 coverage/
 .test_coverage.dart
+doc/ui
