@@ -1,3 +1,18 @@
+## 2.2.0 - [2025-05-05] Scroll Behavior Controls & UX Improvements
+
+### Added
+- **New Scroll Behavior Controls**: Fix for Issue #13 - Prevent auto-scrolling that hides the top of long responses
+- **ScrollBehaviorConfig**: Configure when and how the chat should auto-scroll
+  - Control auto-scroll behavior with options: always, onNewMessage, onUserMessageOnly, or never
+  - Optional feature to scroll to the first message of a response rather than the last
+  - Customizable animation duration and curve for scrolling
+- **Enhanced User Experience**: Better control over scrolling behavior for long AI responses
+- **Comprehensive Example**: Added a dedicated example demonstrating all scrolling options
+
+### Fixed
+- **Fixed Issue #13**: Resolved the problem where long AI responses would auto-scroll, pushing the beginning of the response out of view
+- **Improved Accessibility**: Users can now read the beginning of long responses without manual scrolling
+
 ## 2.1.2 - [2025-04-22] Dependency Cleanup & Broader Compatibility
 
 ### Changed

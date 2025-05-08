@@ -213,6 +213,14 @@ AiChatWidget(
   // Layout
   maxWidth: 800,             // Maximum width
   padding: EdgeInsets.all(16),  // Overall padding
+  
+  // Scroll behavior
+  scrollBehaviorConfig: ScrollBehaviorConfig(
+    // Control auto-scrolling behavior
+    autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+    // Scroll to first message of a response instead of the last (for long responses)
+    scrollToFirstResponseMessage: true,
+  ),
 )
 ```
 
@@ -284,6 +292,41 @@ InputOptions(
   
   // Use newline for Enter key to prevent keyboard focus issues
   textInputAction: TextInputAction.newline,
+)
+```
+
+### Scroll Behavior Configuration
+
+Control how the chat widget scrolls when new messages are added:
+
+```dart
+ScrollBehaviorConfig(
+  // When to auto-scroll (one of: always, onNewMessage, onUserMessageOnly, never)
+  autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+  
+  // Fix for long responses: scroll to first message of response instead of the last message
+  // This prevents the top part of long AI responses from being pushed out of view
+  scrollToFirstResponseMessage: true,
+  
+  // Customize animation
+  scrollAnimationDuration: Duration(milliseconds: 300),
+  scrollAnimationCurve: Curves.easeOut,
+)
+```
+
+#### Use Case: Preventing Long Responses from Auto-Scrolling
+
+When an AI returns a long response, you may want to prevent the widget from auto-scrolling to the bottom, which can hide the beginning of the response. This configuration solves that issue:
+
+```dart
+AiChatWidget(
+  // ... other parameters
+  scrollBehaviorConfig: ScrollBehaviorConfig(
+    // Only auto-scroll when user sends a message (not for AI responses)
+    autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+    // When an AI response starts, scroll to show its first message
+    scrollToFirstResponseMessage: true,
+  ),
 )
 ```
 

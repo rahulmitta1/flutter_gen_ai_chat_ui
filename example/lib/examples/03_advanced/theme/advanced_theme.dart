@@ -92,15 +92,21 @@ class AdvancedTheme extends InheritedWidget {
 /// Theme provider widget for the advanced example
 class AdvancedThemeProvider extends StatelessWidget {
   final Widget child;
+  final ThemeMode? themeMode;
 
   const AdvancedThemeProvider({
     super.key,
     required this.child,
+    this.themeMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
+    final brightness = themeMode == ThemeMode.dark
+        ? Brightness.dark
+        : (themeMode == ThemeMode.light
+            ? Brightness.light
+            : Theme.of(context).brightness);
 
     return brightness == Brightness.dark
         ? AdvancedTheme.dark(child: child)

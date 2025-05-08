@@ -152,6 +152,108 @@ class PaginationConfig {
       );
 }
 
+/// Configuration for scroll behavior in the chat.
+///
+/// This class allows control over how and when the chat widget automatically scrolls,
+/// which can be important for accessibility and user experience, especially with long responses.
+///
+/// Example:
+/// ```dart
+/// AiChatWidget(
+///   // ... other parameters
+///   scrollBehaviorConfig: ScrollBehaviorConfig(
+///     // Only scroll for user messages, allowing manual scrolling for AI responses
+///     autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+///     // When scrolling happens for AI responses, scroll to the first message
+///     // instead of the last (preventing the top of the response from being hidden)
+///     scrollToFirstResponseMessage: true,
+///   ),
+/// )
+/// ```
+///
+/// Example for very long messages:
+/// ```dart
+/// // For handling very long AI responses (e.g., code explanations, technical documentation)
+/// AiChatWidget(
+///   scrollBehaviorConfig: ScrollBehaviorConfig(
+///     // Prevent auto-scrolling for AI responses, giving user control
+///     autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+///     // Important: Ensure first message of AI response is visible
+///     scrollToFirstResponseMessage: true,
+///     // Slower animation for better user orientation with large content
+///     scrollAnimationDuration: const Duration(milliseconds: 500),
+///     // Ease in-out curve for smoother scrolling experience
+///     scrollAnimationCurve: Curves.easeInOutCubic,
+///   ),
+///   config: AiChatConfig(
+///     // Enable markdown for formatted long content
+///     defaultMessageOptions: MessageOptions(
+///       isMarkdown: true,
+///     ),
+///     // Optional: Custom styling for code blocks in long responses
+///     markdownConfig: MarkdownConfig(
+///       styleSheet: MarkdownStyleSheet(
+///         code: TextStyle(
+///           backgroundColor: Colors.grey[850],
+///           color: Colors.lightGreenAccent,
+///           fontFamily: 'monospace',
+///           fontSize: 14,
+///         ),
+///         codeblockDecoration: BoxDecoration(
+///           color: Colors.grey[850],
+///           borderRadius: BorderRadius.circular(8),
+///         ),
+///       ),
+///     ),
+///   ),
+/// )
+/// ```
+class ScrollBehaviorConfig {
+  /// Controls when to automatically scroll to the bottom
+  final AutoScrollBehavior autoScrollBehavior;
+
+  /// Whether to scroll to the first message of a response instead of the last message.
+  ///
+  /// When set to true, after an AI response completes, the widget will scroll to show
+  /// the first message of the response rather than scrolling all the way to the bottom.
+  /// This is useful for long responses where users might want to read from the beginning.
+  final bool scrollToFirstResponseMessage;
+
+  /// Duration for the scroll animation
+  final Duration scrollAnimationDuration;
+
+  /// Curve for the scroll animation
+  final Curve scrollAnimationCurve;
+
+  const ScrollBehaviorConfig({
+    this.autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    this.scrollToFirstResponseMessage = false,
+    this.scrollAnimationDuration = const Duration(milliseconds: 300),
+    this.scrollAnimationCurve = Curves.easeOut,
+  });
+}
+
+/// Defines when the chat should automatically scroll to the bottom
+enum AutoScrollBehavior {
+  /// Always scroll to the bottom when messages are added or updated.
+  /// This is the most aggressive scrolling behavior but ensures all new content is visible.
+  always,
+
+  /// Only scroll to the bottom when a new message is added (not during updates).
+  /// This gives more control to the user during streaming messages, but ensures
+  /// the user sees new messages when they are completed.
+  onNewMessage,
+
+  /// Only scroll when the user sends a message (not for AI responses).
+  /// This gives users full control over scrolling when viewing AI responses,
+  /// which is useful for long responses that they want to read from the beginning.
+  onUserMessageOnly,
+
+  /// Never automatically scroll.
+  /// The user is fully responsible for scrolling the chat view.
+  never
+}
+
 /// Configuration class for customizing the AI chat interface.
 ///
 /// @Deprecated: This class is being phased out in favor of direct parameters in AiChatWidget.
@@ -193,6 +295,9 @@ class AiChatConfig {
 
     // Other options
     this.typingUsers,
+
+    /// Configuration for scroll behavior
+    this.scrollBehaviorConfig,
   });
 
   /// The name of the user in the chat interface.
@@ -261,6 +366,9 @@ class AiChatConfig {
   /// List of users currently typing.
   final List<ChatUser>? typingUsers;
 
+  /// Configuration for scroll behavior
+  final ScrollBehaviorConfig? scrollBehaviorConfig;
+
   /// Creates a copy of this config with the given fields replaced with new values
   ///
   /// @Deprecated: Use direct parameters in AiChatWidget instead.
@@ -287,6 +395,7 @@ class AiChatConfig {
     PaginationConfig? paginationConfig,
     LoadingConfig? loadingConfig,
     List<ChatUser>? typingUsers,
+    ScrollBehaviorConfig? scrollBehaviorConfig,
   }) =>
       AiChatConfig(
         userName: userName ?? this.userName,
@@ -314,5 +423,6 @@ class AiChatConfig {
         paginationConfig: paginationConfig ?? this.paginationConfig,
         loadingConfig: loadingConfig ?? this.loadingConfig,
         typingUsers: typingUsers ?? this.typingUsers,
+        scrollBehaviorConfig: scrollBehaviorConfig ?? this.scrollBehaviorConfig,
       );
 }

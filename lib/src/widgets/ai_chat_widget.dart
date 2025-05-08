@@ -48,6 +48,9 @@ class AiChatWidget extends StatefulWidget {
     this.streamingDuration = const Duration(milliseconds: 30),
     this.markdownStyleSheet,
     this.aiName = 'AI',
+
+    // Scroll behavior configuration
+    this.scrollBehaviorConfig,
   });
 
   /// The current user in the conversation
@@ -129,6 +132,9 @@ class AiChatWidget extends StatefulWidget {
   /// Style sheet for markdown rendering
   final MarkdownStyleSheet? markdownStyleSheet;
 
+  /// Configuration for scroll behavior
+  final ScrollBehaviorConfig? scrollBehaviorConfig;
+
   @override
   State<AiChatWidget> createState() => _AiChatWidgetState();
 }
@@ -166,6 +172,14 @@ class _AiChatWidgetState extends State<AiChatWidget>
       }
     });
 
+    // Set the scroll behavior configuration
+    if (widget.scrollBehaviorConfig != null) {
+      widget.controller.scrollBehaviorConfig = widget.scrollBehaviorConfig;
+      debugPrint('AiChatWidget: Initially set scroll behavior to: '
+          '${widget.scrollBehaviorConfig!.autoScrollBehavior}, '
+          'scrollToFirstMessage: ${widget.scrollBehaviorConfig!.scrollToFirstResponseMessage}');
+    }
+
     // Set welcome message visibility based on configurations
     final hasWelcomeConfig = widget.welcomeMessageConfig != null;
     final hasExampleQuestions = widget.exampleQuestions.isNotEmpty;
@@ -190,6 +204,21 @@ class _AiChatWidgetState extends State<AiChatWidget>
     } else {
       debugPrint(
           'AiChatWidget: Not showing welcome message. Conditions not met.');
+    }
+  }
+
+  @override
+  void didUpdateWidget(AiChatWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Check if the scroll behavior config has changed
+    if (widget.scrollBehaviorConfig != oldWidget.scrollBehaviorConfig) {
+      if (widget.scrollBehaviorConfig != null) {
+        widget.controller.scrollBehaviorConfig = widget.scrollBehaviorConfig;
+        debugPrint('AiChatWidget: Updated scroll behavior config to: '
+            '${widget.scrollBehaviorConfig!.autoScrollBehavior}, '
+            'scrollToFirstMessage: ${widget.scrollBehaviorConfig!.scrollToFirstResponseMessage}');
+      }
     }
   }
 

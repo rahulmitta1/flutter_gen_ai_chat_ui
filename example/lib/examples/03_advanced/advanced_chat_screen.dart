@@ -247,6 +247,7 @@ Try asking questions or exploring the settings panel to see these features in ac
 
   @override
   Widget build(BuildContext context) {
+    // Get current app state
     final appState = Provider.of<AppState>(context);
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -254,9 +255,11 @@ Try asking questions or exploring the settings panel to see these features in ac
     return Scaffold(
       // Gradient background
       body: AdvancedThemeProvider(
+        themeMode: appState.themeMode,
         child: Builder(
           builder: (context) {
             final advancedTheme = AdvancedTheme.of(context);
+
             return Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -271,31 +274,31 @@ Try asking questions or exploring the settings panel to see these features in ac
               child: SafeArea(
                 child: Column(
                   children: [
-                    // App bar
+                    // Custom app bar with settings
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 12.0,
-                      ),
+                          horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
+                          Text(
+                            'AI Assistant',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onBackground,
+                            ),
+                          ),
+                          const Spacer(),
+                          // Add a button to navigate to the scroll behavior example
                           IconButton(
                             icon: Icon(
-                              Icons.arrow_back_ios_rounded,
+                              Icons.swipe_vertical,
                               color: colorScheme.primary,
                             ),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Advanced AI Chat',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.black87,
-                              ),
-                            ),
+                            tooltip: 'Scroll Behavior Example',
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/scroll-behavior');
+                            },
                           ),
                           IconButton(
                             icon: Icon(
@@ -308,12 +311,11 @@ Try asking questions or exploring the settings panel to see these features in ac
                           ),
                           IconButton(
                             icon: Icon(
-                              Icons.settings_rounded,
+                              Icons.settings,
                               color: colorScheme.primary,
                             ),
-                            onPressed: () {
-                              Scaffold.of(context).openEndDrawer();
-                            },
+                            onPressed: () =>
+                                Scaffold.of(context).openEndDrawer(),
                           ),
                         ],
                       ),
@@ -331,18 +333,35 @@ Try asking questions or exploring the settings panel to see these features in ac
                         // Message styling
                         messageOptions: MessageOptions(
                           bubbleStyle: BubbleStyle(
-                            userBubbleColor: advancedTheme.userBubbleColor,
-                            aiBubbleColor: advancedTheme.aiBubbleColor,
-                            userNameColor: advancedTheme.userTextColor,
-                            aiNameColor: advancedTheme.aiTextColor,
-                            userBubbleTopLeftRadius:
-                                appState.messageBorderRadius,
-                            userBubbleTopRightRadius: 4,
-                            aiBubbleTopLeftRadius: 4,
-                            aiBubbleTopRightRadius:
-                                appState.messageBorderRadius,
-                            bottomLeftRadius: appState.messageBorderRadius,
-                            bottomRightRadius: appState.messageBorderRadius,
+                            // User bubble styling (light rounded rectangles with gradient)
+                            userBubbleColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.indigo.withOpacityCompat(0.2)
+                                    : Colors.indigo.withOpacityCompat(0.07),
+                            userBubbleTopRightRadius: 20,
+                            userBubbleTopLeftRadius: 2,
+                            userBubbleMinWidth: 0,
+                            userBubbleMaxWidth:
+                                MediaQuery.of(context).size.width * 0.75,
+                            userNameColor: Colors.indigo.shade300,
+
+                            // AI bubble styling (white or dark cards)
+                            aiBubbleColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? const Color(0xFF1E1E1E)
+                                    : Colors.white,
+                            aiBubbleTopRightRadius: 2,
+                            aiBubbleTopLeftRadius: 20,
+                            aiBubbleMaxWidth:
+                                MediaQuery.of(context).size.width * 0.85,
+                            aiBubbleMinWidth:
+                                MediaQuery.of(context).size.width * 0.5,
+                            aiNameColor: Colors.teal,
+
+                            // Common styling
+                            bottomLeftRadius: 20,
+                            bottomRightRadius: 20,
+                            enableShadow: true,
                           ),
                           showUserName: true,
                           showTime: true,
