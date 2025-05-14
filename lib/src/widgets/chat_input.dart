@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/input_options.dart';
+import '../models/file_upload_options.dart';
 
 /// A custom chat input widget that supports extensive customization options.
 class ChatInput extends StatelessWidget {
@@ -12,6 +14,7 @@ class ChatInput extends StatelessWidget {
     required this.onSend,
     required this.options,
     this.focusNode,
+    this.fileUploadOptions,
   });
 
   /// The text editing controller.
@@ -25,6 +28,9 @@ class ChatInput extends StatelessWidget {
 
   /// Optional focus node for the text field.
   final FocusNode? focusNode;
+
+  /// Optional file upload options.
+  final FileUploadOptions? fileUploadOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +102,9 @@ class ChatInput extends StatelessWidget {
       // Use app direction consistently
       textDirection: appDirection,
       children: [
+        // Add file upload button if enabled
+        if (fileUploadOptions?.enabled == true) _buildFileUploadButton(context),
+
         Flexible(
           child: textField,
         ),
@@ -229,17 +238,59 @@ class ChatInput extends StatelessWidget {
     );
   }
 
-  // Helper to get appropriate container width based on settings
+  // Helper method to get container width based on options
   double? _getContainerWidth(InputOptions options, BuildContext context) {
-    switch (options.inputContainerWidth) {
-      case InputContainerWidth.fullWidth:
-        return double.infinity;
-      case InputContainerWidth.wrapContent:
-        return null;
-      case InputContainerWidth.custom:
-        return options.inputContainerConstraints?.maxWidth;
-      default:
-        return double.infinity;
+    if (options.inputContainerWidth == InputContainerWidth.fullWidth) {
+      return double.infinity;
+    } else if (options.inputContainerWidth == InputContainerWidth.custom &&
+        options.inputContainerConstraints != null) {
+      return options.inputContainerConstraints!.maxWidth;
+    }
+    return null;
+  }
+
+  // Build the file upload button
+  Widget _buildFileUploadButton(BuildContext context) {
+    final options = fileUploadOptions!;
+
+    // Use custom builder if provided
+    if (options.customUploadButtonBuilder != null) {
+      return options.customUploadButtonBuilder!(context, () {
+        _handleFileSelection(context);
+      });
+    }
+
+    // Default upload button
+    return Container(
+      margin: const EdgeInsets.only(left: 4.0, right: 4.0),
+      child: IconButton(
+        icon: Icon(
+          options.uploadIcon,
+          color:
+              options.uploadIconColor ?? Theme.of(context).colorScheme.primary,
+          size: options.uploadIconSize,
+        ),
+        tooltip: options.uploadTooltip,
+        onPressed: () => _handleFileSelection(context),
+      ),
+    );
+  }
+
+  // Handle file selection
+  void _handleFileSelection(BuildContext context) {
+    // This function will be a placeholder - the actual file selection
+    // will be implemented by the developer using the package
+    if (fileUploadOptions?.onFilesSelected != null) {
+      // Call the developer's file selection handler
+      fileUploadOptions!.onFilesSelected!([]);
+    } else {
+      // Show a placeholder message if no handler is provided
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File upload handler not implemented.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 }

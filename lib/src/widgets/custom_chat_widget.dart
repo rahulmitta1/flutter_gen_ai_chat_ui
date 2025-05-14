@@ -10,6 +10,7 @@ import '../models/input_options.dart';
 import '../utils/color_extensions.dart';
 import '../utils/font_helper.dart';
 import 'message_content_text.dart';
+import 'message_attachment.dart';
 
 class CustomChatWidget extends StatefulWidget {
   final ChatUser currentUser;
@@ -477,14 +478,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                         ),
 
                       // Handle markdown or plain text with premium styling
-                      _buildMessageContent(
-                          message,
-                          widget.messageOptions.textStyle ??
-                              TextStyle(
-                                  fontSize: 15,
-                                  height: 1.5,
-                                  color: textColor,
-                                  letterSpacing: 0.2)),
+                      _buildMessageContent(message, context),
 
                       // Premium footer with timestamp and action buttons
                       Padding(
@@ -590,12 +584,33 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     );
   }
 
-  Widget _buildMessageContent(ChatMessage message, TextStyle textStyle) {
-    final isRtlText = FontHelper.isRTL(message.text);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final textDirection = isRtlText ? TextDirection.rtl : TextDirection.ltr;
+  Widget _buildMessageContent(ChatMessage message, BuildContext context) {
+    // Use the custom builder if provided
+    if (message.customBuilder != null) {
+      return message.customBuilder!(context, message);
+    }
 
+    // Get the theme's brightness
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isCurrentUser = message.user.id == widget.currentUser.id;
+
+    // Get appropriate text color from message options
+    final textStyle = TextStyle(
+      color: isCurrentUser
+          ? widget.messageOptions.userTextColor ??
+              (isDark ? Colors.white : Colors.black)
+          : widget.messageOptions.aiTextColor ??
+              (isDark ? Colors.white : Colors.black),
+      fontSize: widget.messageOptions.textStyle?.fontSize,
+      fontWeight: widget.messageOptions.textStyle?.fontWeight,
+      fontFamily: widget.messageOptions.textStyle?.fontFamily,
+      letterSpacing: widget.messageOptions.textStyle?.letterSpacing,
+      height: widget.messageOptions.textStyle?.height,
+    );
+
+    Widget textWidget;
+
+    // Handle markdown and non-markdown text
     if (message.isMarkdown) {
       // For Markdown content, we need a different approach
       // Create a properly styled markdown widget
@@ -605,142 +620,66 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         selectable: true,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
+        // Add a custom image builder when enableImageTaps is false
+        imageBuilder: widget.messageOptions.enableImageTaps
+            ? null // Use default behavior which allows taps
+            : (Uri uri, String? title, String? alt) {
+                // Custom image builder that does not respond to taps
+                return Image.network(
+                  uri.toString(),
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image);
+                  },
+                );
+              },
         styleSheet: widget.messageOptions.markdownStyleSheet ??
             MarkdownStyleSheet(
-              p: TextStyle(
-                fontSize: 15,
-                height: 1.5,
-                letterSpacing: 0.2,
-                color: textColor,
-              ),
-              h1: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-                letterSpacing: -0.5,
-                height: 1.3,
-              ),
-              h2: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-                letterSpacing: -0.4,
-                height: 1.3,
-              ),
-              h3: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-                letterSpacing: -0.3,
-                height: 1.3,
-              ),
+              p: textStyle,
               code: TextStyle(
-                fontSize: 14,
-                color:
-                    isDark ? const Color(0xFF79C0FF) : const Color(0xFF0550AE),
-                backgroundColor: isDark
-                    ? const Color(0xFF0D1117).withOpacityCompat(0.6)
-                    : const Color(0xFFF6F8FA).withOpacityCompat(0.8),
                 fontFamily: 'monospace',
-                letterSpacing: 0,
-                height: 1.5,
+                backgroundColor: (isDark ? Colors.black : Colors.grey[200])
+                    ?.withOpacityCompat(0.3),
               ),
               codeblockDecoration: BoxDecoration(
-                color:
-                    isDark ? const Color(0xFF0D1117) : const Color(0xFFF6F8FA),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isDark
-                      ? const Color(0xFF30363D)
-                      : const Color(0xFFE1E4E8),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacityCompat(isDark ? 0.2 : 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              blockquote: TextStyle(
-                fontSize: 15,
-                height: 1.5,
-                letterSpacing: 0.2,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
-                fontStyle: FontStyle.italic,
-              ),
-              blockquotePadding:
-                  const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-              blockquoteDecoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color: isDark
-                        ? const Color(0xFF79C0FF)
-                        : const Color(0xFF0969DA),
-                    width: 4,
-                  ),
-                ),
-              ),
-              tableBorder: TableBorder.all(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-                width: 1,
-              ),
-              tableBody: TextStyle(
-                fontSize: 14,
-                height: 1.5,
-                color: isDark ? Colors.grey[300] : Colors.black87,
-              ),
-              tableCellsPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              a: TextStyle(
-                color:
-                    isDark ? const Color(0xFF79C0FF) : const Color(0xFF0969DA),
-                decoration: TextDecoration.underline,
-              ),
-              em: TextStyle(
-                fontStyle: FontStyle.italic,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
-              ),
-              strong: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-              img: const TextStyle(
-                fontSize: 0, // Hide image alt text
-              ),
-              listBullet: TextStyle(
-                fontSize: 16,
-                color:
-                    isDark ? const Color(0xFF79C0FF) : const Color(0xFF0969DA),
+                color: (isDark ? Colors.black : Colors.grey[200])
+                    ?.withOpacityCompat(0.3),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
       );
 
-      // Wrap in Directionality to provide the correct text direction
-      // Then wrap it in a container with the appropriate alignment
-      return Container(
-        width: double.infinity,
-        alignment: isRtlText ? Alignment.centerRight : Alignment.centerLeft,
-        child: Directionality(
-          textDirection: textDirection,
-          child: markdownWidget,
-        ),
-      );
-    } else if (message.customProperties?['isStreaming'] == true) {
-      // Use MessageContentText for streaming text
-      return MessageContentText(
-        text: message.text,
-        style: textStyle,
-        isStreaming: true,
-      );
+      textWidget = markdownWidget;
     } else {
-      // Use MessageContentText for regular text
-      return MessageContentText(
-        text: message.text,
+      // For regular text messages
+      textWidget = Text(
+        message.text,
         style: textStyle,
       );
     }
+
+    // Display media attachments if present
+    if (message.media != null && message.media!.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          textWidget,
+          const SizedBox(height: 8),
+          ...message.media!.map((media) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: MessageAttachment(
+                media: media,
+                onTap: widget.messageOptions.onMediaTap,
+                enableImageTaps: widget.messageOptions.enableImageTaps,
+              ),
+            );
+          }).toList(),
+        ],
+      );
+    }
+
+    return textWidget;
   }
 
   String _defaultTimestampFormat(DateTime dateTime) {

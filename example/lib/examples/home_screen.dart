@@ -56,6 +56,14 @@ class ExamplesHomeScreen extends StatelessWidget {
                   ),
                   _buildExampleCard(
                     context,
+                    title: 'File Attachments',
+                    description: 'Chat with various file attachment types',
+                    icon: Icons.attach_file,
+                    color: Colors.teal,
+                    routeName: '/file-attachments',
+                  ),
+                  _buildExampleCard(
+                    context,
                     title: 'Scroll Behavior',
                     description: 'Control auto-scrolling for long responses',
                     icon: Icons.swipe_vertical,

@@ -77,6 +77,10 @@ class ChatMessagesController extends ChangeNotifier {
   bool _isManuallyScrolling = false;
   DateTime _lastManualScrollTime = DateTime.now();
 
+  /// Add this property at the top of the class with other properties
+  DateTime _lastScrollTime = DateTime.now();
+  int _scrollDebounceMs = 500; // Default debounce time
+
   /// Sets the scroll controller for auto-scrolling
   void setScrollController(ScrollController controller) {
     _scrollController = controller;
@@ -137,6 +141,11 @@ class ChatMessagesController extends ChangeNotifier {
         '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}_${message.text.hashCode}';
   }
 
+  /// Public method to get a message ID (for testing/debugging)
+  String getMessageId(ChatMessage message) {
+    return _getMessageId(message);
+  }
+
   /// Adds a new message to the chat.
   void addMessage(ChatMessage message) {
     final messageId = _getMessageId(message);
@@ -151,8 +160,13 @@ class ChatMessagesController extends ChangeNotifier {
       // Get the user ID for response tracking
       final userId = message.user.id;
 
+      // Get responseId if available - for linking multiple messages as one response
+      final responseId = message.customProperties?['responseId'] as String?;
+
       // Track if this is the start of a response (user changed and it's not a user message)
-      final isStartOfResponse = _lastMessageUserId != userId && !isFromUser;
+      final isStartOfResponse = (_lastMessageUserId != userId && !isFromUser) ||
+          message.customProperties?['isStartOfResponse'] == true;
+
       _lastMessageUserId = userId;
 
       // Create a property map to track messaging state
@@ -161,10 +175,12 @@ class ChatMessagesController extends ChangeNotifier {
       // Track the first message of an AI response
       if (isStartOfResponse) {
         _currentResponseFirstMessageId = messageId;
-        // Use a property to mark this as the first message of a response
+        // Use properties to mark this as the first message of a response
         updatedProperties['isFirstResponseMessage'] = true;
+        updatedProperties['isStartOfResponse'] = true;
+
         debugPrint(
-            'NEW RESPONSE: First message ID: $messageId from user: $userId');
+            'NEW RESPONSE: First message ID: $messageId from user: $userId responseId: $responseId');
       }
 
       // When a user message appears, we need to reset the first response tracking
@@ -173,6 +189,30 @@ class ChatMessagesController extends ChangeNotifier {
         // This way, the next AI message will become the first of a new response
         _currentResponseFirstMessageId = null;
         debugPrint('USER MESSAGE: Reset response tracking for user: $userId');
+      }
+
+      // For related messages with the same responseId, we want to keep the first message
+      // of the chain as the scroll target
+      if (responseId != null && !isStartOfResponse && !isFromUser) {
+        // Check if we already have a message with this responseId flagged as start of response
+        final existingFirstMessage = _messages.firstWhere(
+          (msg) =>
+              msg.customProperties?['responseId'] == responseId &&
+              (msg.customProperties?['isStartOfResponse'] == true ||
+                  msg.customProperties?['isFirstResponseMessage'] == true),
+          orElse: () => message,
+        );
+
+        // If we found a message that's marked as first in this response chain,
+        // use its ID for scrolling to ensure consistent behavior
+        if (existingFirstMessage != message &&
+            existingFirstMessage.customProperties?['responseId'] ==
+                responseId) {
+          final existingFirstId = _getMessageId(existingFirstMessage);
+          _currentResponseFirstMessageId = existingFirstId;
+          debugPrint(
+              'CHAIN MESSAGE: Using existing first message ID: $existingFirstId for responseId: $responseId');
+        }
       }
 
       // Mark user messages for identification
@@ -202,20 +242,24 @@ class ChatMessagesController extends ChangeNotifier {
       // Determine if we should scroll based on the configuration
       final config = scrollBehaviorConfig;
 
-      // Check if this is a user message using our enhanced detection
+      // Detect if this is a user message
       final isUserMessage = updatedProperties['isUserMessage'] as bool? ??
           updatedProperties['source'] == 'user';
 
-      bool shouldScroll = false;
+      // Identify the first message in a response chain
+      final isFirstResponse =
+          updatedProperties['isFirstResponseMessage'] as bool? ?? false;
 
+      bool shouldScroll = false;
       switch (config.autoScrollBehavior) {
         case AutoScrollBehavior.always:
           shouldScroll = true;
-          debugPrint('SCROLL DECISION: Always scroll mode - will scroll');
+          debugPrint('SCROLL DECISION: Always mode - will scroll');
           break;
         case AutoScrollBehavior.onNewMessage:
-          shouldScroll = true; // Always scroll for new messages
-          debugPrint('SCROLL DECISION: onNewMessage mode - will scroll');
+          shouldScroll = isUserMessage || isFirstResponse;
+          debugPrint(
+              'SCROLL DECISION: onNewMessage mode - ${shouldScroll ? "will scroll" : "will NOT scroll"}');
           break;
         case AutoScrollBehavior.onUserMessageOnly:
           shouldScroll = isUserMessage;
@@ -240,63 +284,117 @@ class ChatMessagesController extends ChangeNotifier {
   /// Scroll after the message is rendered
   void _scrollAfterRender(
       bool isUserMessage, bool isStartOfResponse, ScrollBehaviorConfig config) {
+    // Apply debounce for scrolling to prevent jitter
+    final now = DateTime.now();
+    if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
+      debugPrint('SCROLL AFTER RENDER DEBOUNCED: Too soon after last scroll');
+      return;
+    }
+
     // Store the current response ID to prevent re-scrolling if it changes during the delay
     final currentResponseId = _currentResponseFirstMessageId;
+
+    // Check if there's an active response chain in progress by looking at the latest message
+    bool isPartOfResponseChain = false;
+    String? latestResponseId;
+
+    if (_messages.isNotEmpty) {
+      // Look for responseId in the most recent message
+      if (paginationConfig.reverseOrder) {
+        latestResponseId =
+            _messages.first.customProperties?['responseId'] as String?;
+      } else {
+        latestResponseId =
+            _messages.last.customProperties?['responseId'] as String?;
+      }
+      isPartOfResponseChain = latestResponseId != null;
+    }
+
+    // Customize delay based on scroll behavior
+    final scrollDelay =
+        config.autoScrollBehavior == AutoScrollBehavior.onNewMessage
+            ? const Duration(milliseconds: 300) // Longer delay for onNewMessage
+            : const Duration(milliseconds: 200); // Default delay
 
     // Add a tracking variable to prevent multiple scroll actions
     bool hasScrolled = false;
 
-    // Use a microtask to ensure the message is rendered first
-    // Then add a short delay to ensure layout is complete
-    Future.microtask(() {
-      // Increased delay to ensure rendering is complete
-      Future.delayed(const Duration(milliseconds: 200), () {
-        // Make sure the widget is still mounted and the response ID hasn't changed
-        if (_scrollController?.hasClients != true) {
-          debugPrint('SCROLL ABORTED: Scroll controller no longer has clients');
-          return;
+    // Longer delay to ensure messages have time to render
+    Future.delayed(scrollDelay, () {
+      // Make sure the widget is still mounted and the response ID hasn't changed
+      if (_scrollController?.hasClients != true) {
+        debugPrint('SCROLL ABORTED: Scroll controller no longer has clients');
+        return;
+      }
+
+      // Update last scroll time for debouncing
+      _lastScrollTime = DateTime.now();
+
+      debugPrint('SCROLL EXECUTION: isUserMessage=$isUserMessage, '
+          'scrollToFirstResponseMessage=${config.scrollToFirstResponseMessage}, '
+          'isStartOfResponse=$isStartOfResponse, '
+          'currentResponseFirstMessageId=$currentResponseId, '
+          'isPartOfResponseChain=$isPartOfResponseChain, '
+          'latestResponseId=$latestResponseId, '
+          'autoScrollBehavior=${config.autoScrollBehavior.name}');
+
+      // Handle scrolling to first message in a more direct way
+      if (!isUserMessage &&
+          config.scrollToFirstResponseMessage &&
+          isPartOfResponseChain &&
+          latestResponseId != null) {
+        // Use our direct approach for more reliable scrolling
+        debugPrint(
+            'USING DIRECT FORCE SCROLL to responseId: $latestResponseId');
+
+        // If in onNewMessage mode, use a smoother animation
+        if (config.autoScrollBehavior == AutoScrollBehavior.onNewMessage) {
+          _scrollDebounceMs = 800; // Increase debounce for onNewMessage
+        } else {
+          _scrollDebounceMs = 500; // Default debounce
         }
 
-        debugPrint('SCROLL EXECUTION: isUserMessage=$isUserMessage, '
-            'scrollToFirstResponseMessage=${config.scrollToFirstResponseMessage}, '
-            'isStartOfResponse=$isStartOfResponse, '
-            'currentResponseFirstMessageId=$currentResponseId');
+        forceScrollToFirstMessageInChain(latestResponseId);
+        hasScrolled = true;
+      }
+      // Handle scrolling to first message by ID (backward compatibility)
+      else if (!isUserMessage &&
+          config.scrollToFirstResponseMessage &&
+          currentResponseId != null &&
+          _messageCache.containsKey(currentResponseId)) {
+        // Use direct scrolling for this case too
+        final currentMsg = _messageCache[currentResponseId]!;
+        final responseId =
+            currentMsg.customProperties?['responseId'] as String?;
 
-        // If scrollToFirstResponseMessage is true AND this is not a user message AND
-        // either this is the start of a response OR we're in always mode
-        if (!isUserMessage &&
-            config.scrollToFirstResponseMessage &&
-            currentResponseId != null &&
-            (isStartOfResponse ||
-                config.autoScrollBehavior == AutoScrollBehavior.always)) {
-          // Double-check that this message ID is still valid before scrolling
-          if (_messageCache.containsKey(currentResponseId)) {
-            debugPrint('SCROLLING TO FIRST RESPONSE: $currentResponseId');
-            scrollToMessage(currentResponseId);
-            hasScrolled = true;
-          } else {
-            debugPrint(
-                'INVALID FIRST RESPONSE ID: $currentResponseId - scrolling to bottom instead');
-            scrollToBottom(
-                config.scrollAnimationDuration, config.scrollAnimationCurve);
-            hasScrolled = true;
-          }
+        if (responseId != null) {
+          debugPrint(
+              'USING DIRECT FORCE SCROLL to first message responseId: $responseId');
+          forceScrollToFirstMessageInChain(responseId);
+        } else {
+          // Legacy support for older message format
+          debugPrint('SCROLLING TO FIRST RESPONSE BY ID: $currentResponseId');
+          scrollToMessage(currentResponseId);
         }
-        // Only scroll to bottom if we haven't already performed a scroll action
-        else if (!hasScrolled) {
-          // Standard behavior - scroll to bottom
-          if (isUserMessage) {
-            debugPrint('SCROLLING TO BOTTOM: User message');
-          } else if (config.autoScrollBehavior == AutoScrollBehavior.always) {
-            debugPrint('SCROLLING TO BOTTOM: Always mode');
-          } else {
-            debugPrint('SCROLLING TO BOTTOM: Default behavior');
-          }
+        hasScrolled = true;
+      }
+      // Only scroll to bottom if we haven't already performed a scroll action
+      // AND we don't have any custom scrolling behavior active
+      else if (!hasScrolled && !config.scrollToFirstResponseMessage) {
+        // Standard behavior - scroll to bottom
+        if (isUserMessage) {
+          debugPrint('SCROLLING TO BOTTOM: User message');
+        } else if (config.autoScrollBehavior == AutoScrollBehavior.always) {
+          debugPrint('SCROLLING TO BOTTOM: Always mode');
+        } else {
+          debugPrint('SCROLLING TO BOTTOM: Default behavior');
+        }
 
-          scrollToBottom(
-              config.scrollAnimationDuration, config.scrollAnimationCurve);
-        }
-      });
+        scrollToBottom(
+            config.scrollAnimationDuration, config.scrollAnimationCurve);
+      } else if (!hasScrolled) {
+        debugPrint('SKIPPING DEFAULT SCROLL: Custom scroll behavior is active');
+      }
     });
   }
 
@@ -381,10 +479,15 @@ class ChatMessagesController extends ChangeNotifier {
     }
   }
 
+  /// Scrolls to a specific message directly
+  void scrollToMessageObject(ChatMessage message) {
+    scrollToMessage(getMessageId(message));
+  }
+
   /// Scrolls to the bottom of the message list
   void scrollToBottom([
     Duration? duration,
-    Curve curve = Curves.easeOut,
+    Curve? curve,
   ]) {
     if (_scrollController?.hasClients != true) return;
 
@@ -394,25 +497,45 @@ class ChatMessagesController extends ChangeNotifier {
       return;
     }
 
+    // Apply debounce for scrollToBottom to prevent jitter
+    // (less strict than for force scroll)
+    final now = DateTime.now();
+    final minInterval = 200; // ms
+    if (now.difference(_lastScrollTime).inMilliseconds < minInterval) {
+      debugPrint('SCROLL TO BOTTOM DEBOUNCED: Too soon after last scroll');
+      return;
+    }
+    _lastScrollTime = now;
+
+    // Use slightly longer animation for onNewMessage to reduce jitter
+    Duration effectiveDuration =
+        duration ?? scrollBehaviorConfig.scrollAnimationDuration;
+    Curve effectiveCurve = curve ?? scrollBehaviorConfig.scrollAnimationCurve;
+
+    // Log the animation being used
+    debugPrint(
+        'SCROLL TO BOTTOM: Using duration=${effectiveDuration.inMilliseconds}ms, curve=${effectiveCurve.runtimeType}');
+
     try {
       if (paginationConfig.reverseOrder) {
         // In reverse mode, "bottom" is actually the top (0.0)
         _scrollController!.animateTo(
           0.0,
-          duration: duration ?? const Duration(milliseconds: 300),
-          curve: curve,
+          duration: effectiveDuration,
+          curve: effectiveCurve,
         );
       } else {
         // In chronological mode, bottom is maxScrollExtent
         _scrollController!.animateTo(
           _scrollController!.position.maxScrollExtent,
-          duration: duration ?? const Duration(milliseconds: 300),
-          curve: curve,
+          duration: effectiveDuration,
+          curve: effectiveCurve,
         );
       }
     } catch (e) {
       // If we get an error (eg. because widget is disposing), just ignore it
       // This prevents errors when scrolling during state changes
+      debugPrint('SCROLL TO BOTTOM ERROR: $e');
     }
   }
 
@@ -472,43 +595,98 @@ class ChatMessagesController extends ChangeNotifier {
         final existingIsStreaming =
             _messages[index].customProperties?['isStreaming'] as bool? ?? false;
 
+        // Fix: Preserve the isFirstResponseMessage and isStartOfResponse flags during updates
+        final existingIsFirstResponse = _messages[index]
+                .customProperties?['isFirstResponseMessage'] as bool? ??
+            false;
+        final existingIsStartOfResponse =
+            _messages[index].customProperties?['isStartOfResponse'] as bool? ??
+                false;
+
+        // Create updated properties with preserved flags
+        final updatedProperties = {...?message.customProperties};
+
+        // Preserve the response flags during streaming updates
+        if (existingIsFirstResponse) {
+          updatedProperties['isFirstResponseMessage'] = true;
+        }
+
+        if (existingIsStartOfResponse) {
+          updatedProperties['isStartOfResponse'] = true;
+        }
+
         // Only override the streaming state if explicitly set to false (indicating end of stream)
         if (existingIsStreaming && isStreaming) {
           // Keep streaming active - preserve existing ID and streaming flag
-          _messages[index] = message;
-          _messageCache[messageId] = message;
+          _messages[index] =
+              message.copyWith(customProperties: updatedProperties);
+          _messageCache[messageId] = _messages[index];
         } else {
           // End of streaming or non-streaming update - regular update
-          _messages[index] = message;
-          _messageCache[messageId] = message;
+          _messages[index] =
+              message.copyWith(customProperties: updatedProperties);
+          _messageCache[messageId] = _messages[index];
         }
       } else if (index != -1) {
         // Regular non-streaming message update
-        _messages[index] = message;
-        _messageCache[messageId] = message;
+        // Fix: Also preserve response flags for non-streaming updates
+        final existingIsFirstResponse = _messages[index]
+                .customProperties?['isFirstResponseMessage'] as bool? ??
+            false;
+        final existingIsStartOfResponse =
+            _messages[index].customProperties?['isStartOfResponse'] as bool? ??
+                false;
+
+        // Create updated properties with preserved flags
+        final updatedProperties = {...?message.customProperties};
+
+        if (existingIsFirstResponse) {
+          updatedProperties['isFirstResponseMessage'] = true;
+        }
+
+        if (existingIsStartOfResponse) {
+          updatedProperties['isStartOfResponse'] = true;
+        }
+
+        _messages[index] =
+            message.copyWith(customProperties: updatedProperties);
+        _messageCache[messageId] = _messages[index];
       } else {
         // Add new message if not found - respecting list order
-        if (paginationConfig.reverseOrder) {
-          _messages.insert(0, message);
-        } else {
-          _messages.add(message);
+        // For new messages being created directly through updateMessage (rare case),
+        // preserve any isStartOfResponse flag that might be set
+        final newMsgProperties = {...?message.customProperties};
+
+        // If this is explicitly marked as start of response, make it consistent
+        if (newMsgProperties['isStartOfResponse'] == true) {
+          newMsgProperties['isFirstResponseMessage'] = true;
+          _currentResponseFirstMessageId = messageId;
         }
-        _messageCache[messageId] = message;
+
+        final updatedMessage =
+            message.copyWith(customProperties: newMsgProperties);
+
+        if (paginationConfig.reverseOrder) {
+          _messages.insert(0, updatedMessage);
+        } else {
+          _messages.add(updatedMessage);
+        }
+        _messageCache[messageId] = updatedMessage;
       }
 
       // Notify listeners about the change
       notifyListeners();
 
-      // Only scroll if configured to do so for updates
+      // Only scroll if configured to do so based on behavior and message type
       final config = scrollBehaviorConfig;
       bool shouldScroll = false;
-
       switch (config.autoScrollBehavior) {
         case AutoScrollBehavior.always:
           shouldScroll = true;
           break;
         case AutoScrollBehavior.onNewMessage:
-          shouldScroll = index == -1; // Only scroll if it's a new message
+          // Only scroll on truly new messages (index == -1)
+          shouldScroll = index == -1;
           break;
         case AutoScrollBehavior.onUserMessageOnly:
           shouldScroll = isUserMessage;
@@ -517,7 +695,6 @@ class ChatMessagesController extends ChangeNotifier {
           shouldScroll = false;
           break;
       }
-
       if (shouldScroll) {
         _scrollAfterRender(isUserMessage, false, config);
       }
@@ -545,18 +722,25 @@ class ChatMessagesController extends ChangeNotifier {
 
         // Only scroll if configured to do so for new messages
         final config = scrollBehaviorConfig;
-        bool shouldScroll = false;
 
+        // Detect if this is a user message
+        final isUserMessage =
+            message.customProperties?['isUserMessage'] as bool? ??
+                message.customProperties?['source'] == 'user';
+
+        // Identify the first message in a response chain
+        final isFirstResponse =
+            message.customProperties?['isFirstResponseMessage'] as bool? ??
+                false;
+
+        bool shouldScroll = false;
         switch (config.autoScrollBehavior) {
           case AutoScrollBehavior.always:
           case AutoScrollBehavior.onNewMessage:
-            shouldScroll = true;
+            shouldScroll = !isUserMessage && !isFirstResponse;
             break;
           case AutoScrollBehavior.onUserMessageOnly:
-            final isUserMessage =
-                message.customProperties?['isUserMessage'] as bool? ??
-                    message.customProperties?['source'] == 'user';
-            shouldScroll = isUserMessage;
+            shouldScroll = isUserMessage && !isFirstResponse;
             break;
           case AutoScrollBehavior.never:
             shouldScroll = false;
@@ -565,6 +749,8 @@ class ChatMessagesController extends ChangeNotifier {
 
         if (shouldScroll) {
           _scrollAfterRender(false, false, config);
+        } else if (isUserMessage && isFirstResponse) {
+          debugPrint('SKIPPING SCROLL: Custom scroll behavior is active');
         }
       } catch (fallbackError) {
         debugPrint('Failed to add message as fallback: $fallbackError');
@@ -681,6 +867,125 @@ class ChatMessagesController extends ChangeNotifier {
   void hideWelcomeMessage() {
     _showWelcomeMessage = false;
     notifyListeners();
+  }
+
+  /// Scrolls to a specific message directly with maximum reliability
+  /// This is a more direct approach for ensuring the first message is visible
+  void forceScrollToTop() {
+    if (_scrollController?.hasClients != true) return;
+
+    try {
+      // Force scroll to the very top first (0.0)
+      _scrollController!.jumpTo(0.0);
+      debugPrint('FORCE SCROLL: Jumped to absolute top position');
+    } catch (e) {
+      debugPrint('ERROR FORCE SCROLLING: $e');
+    }
+  }
+
+  /// Find first message in a response chain and force scroll to it with extra reliability
+  void forceScrollToFirstMessageInChain(String responseId) {
+    if (_scrollController?.hasClients != true) return;
+
+    // Implement debounce for scrolling to prevent jitter
+    final now = DateTime.now();
+    if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
+      debugPrint('SCROLL DEBOUNCED: Too soon after last scroll');
+      return;
+    }
+    _lastScrollTime = now;
+
+    // Log information about the animation being used for debugging
+    final animationInfo =
+        'Animation: duration=${scrollBehaviorConfig.scrollAnimationDuration.inMilliseconds}ms, '
+        'curve=${scrollBehaviorConfig.scrollAnimationCurve.runtimeType}';
+    debugPrint('SCROLL ANIMATION INFO: $animationInfo');
+
+    try {
+      // Directly animate to the target position without abrupt jumps
+
+      // Then find the first message with this responseId after a brief delay
+      // Use longer delay for onNewMessage mode to allow UI to settle
+      final delay = scrollBehaviorConfig.autoScrollBehavior ==
+              AutoScrollBehavior.onNewMessage
+          ? const Duration(milliseconds: 150)
+          : const Duration(milliseconds: 50);
+
+      Future.delayed(delay, () {
+        try {
+          // Find the first message with this responseId
+          final firstMessageInChain = _messages.firstWhere(
+            (msg) =>
+                msg.customProperties?['responseId'] == responseId &&
+                (msg.customProperties?['isStartOfResponse'] == true ||
+                    msg.customProperties?['isFirstResponseMessage'] == true),
+            orElse: () => _messages.firstWhere(
+              (msg) => msg.customProperties?['responseId'] == responseId,
+              orElse: () => throw Exception(
+                  'No message found with responseId: $responseId'),
+            ),
+          );
+
+          // Find the index of this message
+          final index = _messages.indexOf(firstMessageInChain);
+          if (index < 0) return;
+
+          debugPrint(
+              'FORCE SCROLL: Found first message in chain at index $index with responseId: $responseId');
+
+          // Always use animation when testing different animation curves
+          final useAnimation = true;
+          final scrollDuration = scrollBehaviorConfig.scrollAnimationDuration;
+          final scrollCurve = scrollBehaviorConfig.scrollAnimationCurve;
+
+          debugPrint(
+              'APPLYING ANIMATION: duration=${scrollDuration.inMilliseconds}ms, curve=$scrollCurve');
+
+          // Force a scroll to ensure we're at the right position
+          if (paginationConfig.reverseOrder) {
+            // Calculate a position for reverse order (newest at bottom)
+            final maxExtent = _scrollController!.position.maxScrollExtent;
+            final itemCount = _messages.length;
+
+            if (index == 0) {
+              // If it's the newest message, scroll to top
+              _scrollController!.animateTo(
+                0.0,
+                duration: scrollDuration,
+                curve: scrollCurve,
+              );
+            } else {
+              // Approximate position (newer messages are closer to top)
+              final position = maxExtent * (index / itemCount);
+              _scrollController!.animateTo(
+                position.clamp(0.0, maxExtent),
+                duration: scrollDuration,
+                curve: scrollCurve,
+              );
+            }
+          } else {
+            // This is chronological mode (oldest at top)
+            final maxExtent = _scrollController!.position.maxScrollExtent;
+            final itemCount = _messages.length;
+
+            // Approximate position based on index
+            final position = maxExtent * (index / itemCount);
+            _scrollController!.animateTo(
+              position.clamp(0.0, maxExtent),
+              duration: scrollDuration,
+              curve: scrollCurve,
+            );
+          }
+
+          debugPrint(
+              'FORCE SCROLL: Animated to position for first message in chain using ${scrollCurve.runtimeType}');
+        } catch (e) {
+          debugPrint('ERROR FORCE SCROLLING TO CHAIN: $e');
+        }
+      });
+    } catch (e) {
+      debugPrint('ERROR FORCE SCROLLING: $e');
+    }
   }
 
   @override

@@ -79,6 +79,16 @@ class _AnimatedTextMessageState extends State<AnimatedTextMessage>
           (widget.isMarkdown
               ? MarkdownBody(
                   data: widget.text,
+                  // Disable image taps by default
+                  imageBuilder: (Uri uri, String? title, String? alt) {
+                    return Image.network(
+                      uri.toString(),
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image);
+                      },
+                    );
+                  },
                   styleSheet: MarkdownStyleSheet(
                     p: widget.style,
                     code: widget.style.copyWith(

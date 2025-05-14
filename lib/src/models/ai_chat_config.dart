@@ -231,6 +231,80 @@ class ScrollBehaviorConfig {
     this.scrollAnimationDuration = const Duration(milliseconds: 300),
     this.scrollAnimationCurve = Curves.easeOut,
   });
+
+  /// Creates a smooth scrolling configuration with easeInOut curve
+  /// Great for a natural, smooth scrolling experience
+  static ScrollBehaviorConfig smooth({
+    AutoScrollBehavior autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    bool scrollToFirstResponseMessage = false,
+    Duration duration = const Duration(milliseconds: 400),
+  }) {
+    return ScrollBehaviorConfig(
+      autoScrollBehavior: autoScrollBehavior,
+      scrollToFirstResponseMessage: scrollToFirstResponseMessage,
+      scrollAnimationDuration: duration,
+      scrollAnimationCurve: Curves.easeInOutCubic,
+    );
+  }
+
+  /// Creates a bouncy scrolling configuration
+  /// Adds a slight bounce effect at the end of the scroll
+  static ScrollBehaviorConfig bouncy({
+    AutoScrollBehavior autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    bool scrollToFirstResponseMessage = false,
+    Duration duration = const Duration(milliseconds: 500),
+  }) {
+    return ScrollBehaviorConfig(
+      autoScrollBehavior: autoScrollBehavior,
+      scrollToFirstResponseMessage: scrollToFirstResponseMessage,
+      scrollAnimationDuration: duration,
+      scrollAnimationCurve: Curves.elasticOut,
+    );
+  }
+
+  /// Creates a deceleration scrolling configuration
+  /// Starts fast and slows down toward the end
+  static ScrollBehaviorConfig decelerate({
+    AutoScrollBehavior autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    bool scrollToFirstResponseMessage = false,
+    Duration duration = const Duration(milliseconds: 350),
+  }) {
+    return ScrollBehaviorConfig(
+      autoScrollBehavior: autoScrollBehavior,
+      scrollToFirstResponseMessage: scrollToFirstResponseMessage,
+      scrollAnimationDuration: duration,
+      scrollAnimationCurve: Curves.decelerate,
+    );
+  }
+
+  /// Creates a gentle acceleration scrolling configuration
+  /// Starts slow and speeds up toward the end
+  static ScrollBehaviorConfig accelerate({
+    AutoScrollBehavior autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    bool scrollToFirstResponseMessage = false,
+    Duration duration = const Duration(milliseconds: 350),
+  }) {
+    return ScrollBehaviorConfig(
+      autoScrollBehavior: autoScrollBehavior,
+      scrollToFirstResponseMessage: scrollToFirstResponseMessage,
+      scrollAnimationDuration: duration,
+      scrollAnimationCurve: Curves.easeIn,
+    );
+  }
+
+  /// Creates a fast scrolling configuration with minimal animation
+  /// For situations where you want quick, direct scrolling
+  static ScrollBehaviorConfig fast({
+    AutoScrollBehavior autoScrollBehavior = AutoScrollBehavior.onNewMessage,
+    bool scrollToFirstResponseMessage = false,
+  }) {
+    return ScrollBehaviorConfig(
+      autoScrollBehavior: autoScrollBehavior,
+      scrollToFirstResponseMessage: scrollToFirstResponseMessage,
+      scrollAnimationDuration: const Duration(milliseconds: 150),
+      scrollAnimationCurve: Curves.easeOutQuart,
+    );
+  }
 }
 
 /// Defines when the chat should automatically scroll to the bottom

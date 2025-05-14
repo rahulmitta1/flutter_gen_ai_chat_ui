@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_gen_ai_chat_ui/src/models/example_question.dart';
 import 'package:flutter_gen_ai_chat_ui/src/utils/color_extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../models/app_state.dart';
 import '../../services/ai_service.dart';
@@ -280,6 +281,14 @@ Try asking questions or exploring the settings panel to see these features in ac
                           horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
+                          // Add back button
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: colorScheme.onBackground,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
                           Text(
                             'AI Assistant',
                             style: TextStyle(
@@ -289,17 +298,6 @@ Try asking questions or exploring the settings panel to see these features in ac
                             ),
                           ),
                           const Spacer(),
-                          // Add a button to navigate to the scroll behavior example
-                          IconButton(
-                            icon: Icon(
-                              Icons.swipe_vertical,
-                              color: colorScheme.primary,
-                            ),
-                            tooltip: 'Scroll Behavior Example',
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/scroll-behavior');
-                            },
-                          ),
                           IconButton(
                             icon: Icon(
                               appState.themeMode == ThemeMode.dark
@@ -336,19 +334,22 @@ Try asking questions or exploring the settings panel to see these features in ac
                             // User bubble styling (light rounded rectangles with gradient)
                             userBubbleColor:
                                 Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.indigo.withOpacityCompat(0.2)
+                                    ? Colors.indigo.withOpacityCompat(0.4)
                                     : Colors.indigo.withOpacityCompat(0.07),
                             userBubbleTopRightRadius: 20,
                             userBubbleTopLeftRadius: 2,
                             userBubbleMinWidth: 0,
                             userBubbleMaxWidth:
                                 MediaQuery.of(context).size.width * 0.75,
-                            userNameColor: Colors.indigo.shade300,
+                            userNameColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.lightBlue[300]
+                                    : Colors.indigo.shade300,
 
                             // AI bubble styling (white or dark cards)
                             aiBubbleColor:
                                 Theme.of(context).brightness == Brightness.dark
-                                    ? const Color(0xFF1E1E1E)
+                                    ? const Color(0xFF2A2A2A)
                                     : Colors.white,
                             aiBubbleTopRightRadius: 2,
                             aiBubbleTopLeftRadius: 20,
@@ -405,8 +406,13 @@ Try asking questions or exploring the settings panel to see these features in ac
                           decoration: InputDecoration(
                             hintText: 'Ask me anything...',
                             border: InputBorder.none,
-                            filled: true,
-                            fillColor: advancedTheme.inputBackground,
+                            filled: false,
+                            hintStyle: TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            ),
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 12,

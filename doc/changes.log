@@ -76,3 +76,31 @@
 - Added `ChatAction` model and `ChatActionsBar` widget for dynamic bottom action bar support
 - Exposed `actionsBarConfig` in `ChatInput`
 - Scaffoled integration hook in `AiChatWidget` 
+
+## [2.1.3] - 2024-07-12
+### Added
+- Added tests for `scrollToFirstResponseMessage` feature to ensure proper functionality
+- Updated documentation to explain scroll behavior control and best practices
+- Fixed a bug where scroll controller wasn't properly attached in test environment 
+
+## [2.1.4] - 2024-07-17
+### Fixed
+- Completely rewired the scroll behavior system for much higher reliability
+- Added direct force scrolling methods for precise positioning in response chains
+- Fixed scroll behavior in the example app with clearer visual indicators
+- Added response chain recognition through 'responseId' custom property
+- Improved testing features with more reliable scroll position maintenance
+- Extended documentation with clearer instructions for implementing scrollToFirstResponseMessage
+- Added debounce mechanism to prevent scroll jitter and flickering in onNewMessage mode
+- Implemented smoother animations with longer durations for onNewMessage scroll behavior
+- Fixed race conditions in scroll timing for multi-part response chains 
+- Added convenient animation curve presets: smooth, bouncy, fast, decelerate, accelerate
+- Enhanced example app to demonstrate different animation curve styles
+
+## [2.1.5] - 2024-07-18
+### Fixed
+- Enhanced scrollToFirstResponseMessage feature to work with multi-part response chains
+- Added response chain recognition through 'responseId' custom property
+- Fixed scroll behavior in examples to properly show the beginning of AI responses
+- Updated documentation to explain required properties for proper scrolling behavior
+- Fixed property preservation during streaming updates 

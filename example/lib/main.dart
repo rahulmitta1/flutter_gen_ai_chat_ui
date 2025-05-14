@@ -7,6 +7,7 @@ import 'examples/01_basic/basic_chat_screen.dart';
 import 'examples/02_intermediate/intermediate_chat_screen.dart';
 import 'examples/03_advanced/advanced_chat_screen.dart';
 import 'examples/03_advanced/scroll_behavior_example.dart';
+import 'examples/04_file_attachments/file_attachments_example.dart';
 
 // For state management
 import 'models/app_state.dart';
@@ -52,6 +53,7 @@ class ExampleApp extends StatelessWidget {
               '/intermediate': (context) => const IntermediateChatScreen(),
               '/advanced': (context) => const AdvancedChatScreen(),
               '/scroll-behavior': (context) => const ScrollBehaviorExample(),
+              '/file-attachments': (context) => const FileAttachmentsExample(),
             },
           );
         },

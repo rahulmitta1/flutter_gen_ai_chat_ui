@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'media.dart';
 
 import '../ai_chat_config.dart';
 
@@ -217,6 +218,18 @@ class MessageOptions {
   /// Callback when message is copied
   final void Function(String)? onCopy;
 
+  /// Color for user message text
+  final Color? userTextColor;
+
+  /// Color for AI message text
+  final Color? aiTextColor;
+
+  /// Callback when media is tapped in a message
+  final Function(ChatMedia)? onMediaTap;
+
+  /// Whether to enable taps on images in markdown content
+  final bool enableImageTaps;
+
   /// Creates an instance of [MessageOptions].
   ///
   /// Note about decorations:
@@ -248,6 +261,10 @@ class MessageOptions {
     this.markdownStyleSheet,
     this.showCopyButton = false,
     this.onCopy,
+    this.userTextColor,
+    this.aiTextColor,
+    this.onMediaTap,
+    this.enableImageTaps = false,
   });
 
   MessageOptions copyWith({
@@ -270,6 +287,10 @@ class MessageOptions {
     MarkdownStyleSheet? markdownStyleSheet,
     bool? showCopyButton,
     void Function(String)? onCopy,
+    Color? userTextColor,
+    Color? aiTextColor,
+    Function(ChatMedia)? onMediaTap,
+    bool? enableImageTaps,
   }) =>
       MessageOptions(
         textStyle: textStyle ?? this.textStyle,
@@ -291,6 +312,10 @@ class MessageOptions {
         markdownStyleSheet: markdownStyleSheet ?? this.markdownStyleSheet,
         showCopyButton: showCopyButton ?? this.showCopyButton,
         onCopy: onCopy ?? this.onCopy,
+        userTextColor: userTextColor ?? this.userTextColor,
+        aiTextColor: aiTextColor ?? this.aiTextColor,
+        onMediaTap: onMediaTap ?? this.onMediaTap,
+        enableImageTaps: enableImageTaps ?? this.enableImageTaps,
       );
 
   /// Get effective decoration with fallback to containerColor

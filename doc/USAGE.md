@@ -571,6 +571,153 @@ void _handleSendMessage(ChatMessage message) async {
 }
 ```
 
+### Scroll Behavior Control
+
+Control how the chat automatically scrolls when new messages arrive, especially for long AI responses:
+
+```dart
+AiChatWidget(
+  // Required parameters...
+  scrollBehaviorConfig: ScrollBehaviorConfig(
+    // Scroll to the beginning of AI responses instead of the end
+    scrollToFirstResponseMessage: true,
+    
+    // Control when automatic scrolling happens
+    autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+    
+    // Customize animation
+    scrollAnimationDuration: Duration(milliseconds: 400),
+    scrollAnimationCurve: Curves.easeOutCubic,
+  ),
+)
+```
+
+#### Understanding Scroll Behavior Options
+
+1. **scrollToFirstResponseMessage** (default: false)
+   
+   When set to `true`, the chat will scroll to show the beginning of a new AI response, not the end. This is especially valuable for long responses where users want to read from the beginning without missing critical information.
+   
+   - With `false` (default): The chat scrolls to the bottom, showing the most recent part of a long response.
+   - With `true`: The chat scrolls to show the first message of a response, ensuring users can read from the beginning.
+   
+   **Important UI Considerations:**
+   
+   Make sure your chat UI has sufficient visible space to clearly see the scrolling behavior. If the top of your UI has too many controls or headers, they might push the first message out of the optimal viewing area. Consider:
+   
+   - Keeping header UI elements minimal
+   - Moving controls to the app bar or side panels
+   - Ensuring the chat area has maximum vertical space
+   
+   **Implementation Requirements:**
+   
+   For this feature to work properly, AI messages must include:
+   
+   1. The `'isStartOfResponse': true` property in the first message's `customProperties`.
+   2. A shared `'responseId'` property in all messages of the same response chain.
+   
+   Example implementation for multi-part responses:
+   
+   ```dart
+   // Generate a unique ID for this response chain
+   final responseId = 'response_${DateTime.now().millisecondsSinceEpoch}';
+   
+   // First message in the chain
+   controller.addMessage(ChatMessage(
+     text: "First part of the response...",
+     user: aiUser,
+     customProperties: {
+       'isStartOfResponse': true,  // Mark as first message
+       'responseId': responseId,   // Link to response chain
+     },
+   ));
+   
+   // Later messages in the same chain
+   controller.addMessage(ChatMessage(
+     text: "Second part of the response...",
+     user: aiUser,
+     customProperties: {
+       'responseId': responseId,   // Same responseId links it to the chain
+     },
+   ));
+   ```
+   
+   **Testing the Behavior:**
+   
+   When testing this feature, ensure you:
+   1. Have sufficient vertical space for proper message visibility
+   2. Don't have too many fixed controls/headers that consume screen real estate
+   3. Test with multi-part messages that have clear visual indicators of which is first/last
+   
+   **Animation Curve Presets:**
+   
+   The `ScrollBehaviorConfig` provides several built-in animation curve presets to customize the scrolling experience:
+   
+   ```dart
+   // Default configuration with manual parameters
+   ScrollBehaviorConfig(
+     autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+     scrollToFirstResponseMessage: true,
+     scrollAnimationDuration: Duration(milliseconds: 300),
+     scrollAnimationCurve: Curves.easeOut,
+   )
+   
+   // Smooth scrolling preset (easeInOutCubic curve)
+   ScrollBehaviorConfig.smooth(
+     autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+     scrollToFirstResponseMessage: true,
+   )
+   
+   // Bouncy scrolling preset with elasticOut curve
+   ScrollBehaviorConfig.bouncy(
+     autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+     scrollToFirstResponseMessage: true,
+   )
+   
+   // Fast scrolling with minimal animation
+   ScrollBehaviorConfig.fast(
+     autoScrollBehavior: AutoScrollBehavior.always,
+   )
+   
+   // Deceleration effect (starts fast, slows down)
+   ScrollBehaviorConfig.decelerate()
+   
+   // Acceleration effect (starts slow, speeds up)
+   ScrollBehaviorConfig.accelerate()
+   ```
+
+2. **autoScrollBehavior** (default: `AutoScrollBehavior.always`)
+   
+   This property controls when automatic scrolling happens:
+   
+   - `AutoScrollBehavior.always`: Always scroll when any message is added or updated
+   - `AutoScrollBehavior.onNewMessage`: Only scroll when new messages are added (default)
+   - `AutoScrollBehavior.onUserMessageOnly`: Only scroll for user messages, giving users control over AI responses
+   - `AutoScrollBehavior.never`: Never automatically scroll
+
+#### Example Use Case
+
+For AI assistants that generate detailed, multi-paragraph responses:
+
+```dart
+AiChatWidget(
+  // Required parameters...
+  scrollBehaviorConfig: ScrollBehaviorConfig(
+    // Always scroll to the first part of AI responses
+    scrollToFirstResponseMessage: true,
+    
+    // Only auto-scroll when the user sends a message
+    // This gives users control over how they read AI responses
+    autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
+  ),
+)
+```
+
+This combination is particularly user-friendly as it:
+1. Shows the beginning of AI responses (where the most relevant information often appears)
+2. Gives users control over scrolling through AI messages
+3. Still automatically scrolls to the bottom when the user sends a message
+
 ### Markdown Support
 
 The package provides rich markdown support with code highlighting:
@@ -595,6 +742,23 @@ void main() {
   isMarkdown: true,
 )
 ```
+
+#### Controlling Image Interactions in Markdown
+
+By default, images in markdown content aren't tappable. You can control this behavior using the `enableImageTaps` parameter:
+
+```dart
+// Configure message options to control image interaction
+AiChatWidget(
+  // Required parameters...
+  messageOptions: MessageOptions(
+    enableImageTaps: true, // Set to true to make images tappable
+    // Other message options...
+  ),
+)
+```
+
+When `enableImageTaps` is false (default), images in markdown content won't respond to tap events, which can prevent accidental navigation or interaction with embedded images.
 
 ### Pagination for Large Message Histories
 

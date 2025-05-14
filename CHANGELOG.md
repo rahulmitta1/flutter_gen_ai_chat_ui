@@ -1,3 +1,12 @@
+## 2.2.1 - [2025-05-16] Better Image Control & Developer Experience
+
+### Added
+- **Image Interaction Control**: Added `enableImageTaps` parameter to `MessageOptions` to control whether images in markdown content respond to tap events
+- **Enhanced Documentation**: Added comprehensive usage examples for controlling image interactions
+
+### Fixed
+- Prevented unintended navigation when tapping images in markdown content by default
+
 ## 2.2.0 - [2025-05-05] Scroll Behavior Controls & UX Improvements
 
 ### Added

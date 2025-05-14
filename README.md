@@ -300,6 +300,7 @@ InputOptions(
 Control how the chat widget scrolls when new messages are added:
 
 ```dart
+// Default configuration with manual parameters
 ScrollBehaviorConfig(
   // When to auto-scroll (one of: always, onNewMessage, onUserMessageOnly, never)
   autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
@@ -312,23 +313,28 @@ ScrollBehaviorConfig(
   scrollAnimationDuration: Duration(milliseconds: 300),
   scrollAnimationCurve: Curves.easeOut,
 )
+
+// Or use convenient preset configurations:
+ScrollBehaviorConfig.smooth() // Smooth easeInOutCubic curve
+ScrollBehaviorConfig.bouncy() // Bouncy elasticOut curve
+ScrollBehaviorConfig.fast()   // Quick scrolling with minimal animation
+ScrollBehaviorConfig.decelerate() // Starts fast, slows down
+ScrollBehaviorConfig.accelerate() // Starts slow, speeds up
 ```
 
 #### Use Case: Preventing Long Responses from Auto-Scrolling
 
-When an AI returns a long response, you may want to prevent the widget from auto-scrolling to the bottom, which can hide the beginning of the response. This configuration solves that issue:
+When an AI returns a long response in multiple parts, scrollToFirstResponseMessage ensures users see the beginning of the response rather than being automatically scrolled to the end. This is crucial for readability, especially with complex information.
 
-```dart
-AiChatWidget(
-  // ... other parameters
-  scrollBehaviorConfig: ScrollBehaviorConfig(
-    // Only auto-scroll when user sends a message (not for AI responses)
-    autoScrollBehavior: AutoScrollBehavior.onUserMessageOnly,
-    // When an AI response starts, scroll to show its first message
-    scrollToFirstResponseMessage: true,
-  ),
-)
-```
+**For optimal scroll behavior with long responses:**
+1. Mark the first message in a response with `'isStartOfResponse': true`
+2. Link related messages in a chain using a shared `'responseId'` property
+3. Set `scrollToFirstResponseMessage: true` in your configuration
+
+**For optimal scroll behavior with long responses:**
+1. Mark the first message in a response with `'isStartOfResponse': true`
+2. Link related messages in a chain using a shared `'responseId'` property
+3. Set `scrollToFirstResponseMessage: true` in your configuration
 
 ### Message Bubble Customization
 

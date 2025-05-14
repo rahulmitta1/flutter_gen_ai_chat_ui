@@ -6,10 +6,11 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import '../controllers/chat_messages_controller.dart';
 import '../models/ai_chat_config.dart';
 import '../models/chat/models.dart';
-import '../models/example_question_config.dart';
+import '../models/example_question.dart';
+import '../models/example_question_config.dart' hide ExampleQuestion;
+import '../models/file_upload_options.dart';
 import '../models/input_options.dart';
 import '../models/welcome_message_config.dart';
-import '../theme/custom_theme_extension.dart';
 import '../utils/color_extensions.dart';
 import 'chat_input.dart';
 import 'custom_chat_widget.dart';
@@ -51,6 +52,9 @@ class AiChatWidget extends StatefulWidget {
 
     // Scroll behavior configuration
     this.scrollBehaviorConfig,
+
+    // New parameters
+    this.fileUploadOptions,
   });
 
   /// The current user in the conversation
@@ -134,6 +138,9 @@ class AiChatWidget extends StatefulWidget {
 
   /// Configuration for scroll behavior
   final ScrollBehaviorConfig? scrollBehaviorConfig;
+
+  /// Optional file upload options
+  final FileUploadOptions? fileUploadOptions;
 
   @override
   State<AiChatWidget> createState() => _AiChatWidgetState();
@@ -701,84 +708,25 @@ class _AiChatWidgetState extends State<AiChatWidget>
     );
   }
 
-  // Update the _buildChatInput method
+  // Build the chat input bar
   Widget _buildChatInput() {
-    if (widget.readOnly) {
-      return const SizedBox.shrink();
-    }
-
-    // Get the app's text direction
-    final appDirection = Directionality.of(context);
-    final theme = Theme.of(context);
-    final themeExtension = theme.extension<CustomThemeExtension>();
-    final isDarkMode = theme.brightness == Brightness.dark;
-
-    // Get the appropriate input options
-    final baseInputOptions = widget.inputOptions ?? const InputOptions();
-
-    // Get default decoration
-    final decoration = baseInputOptions.decoration;
-
-    // Apply theme-specific colors
-    final effectiveDecoration = decoration?.copyWith(
-      fillColor: themeExtension?.inputBackgroundColor ??
-          (isDarkMode ? const Color(0xFF1E2026) : Colors.white),
-    );
-
-    // Create input options without dynamic direction changes
-    final effectiveInputOptions = InputOptions(
-      // Preserve original properties
-      textStyle: baseInputOptions.textStyle,
-      decoration: effectiveDecoration,
-      margin: baseInputOptions.margin,
-      containerDecoration: baseInputOptions.containerDecoration?.copyWith(
-        color: themeExtension?.inputBackgroundColor ??
-            (isDarkMode ? const Color(0xFF1E2026) : Colors.white),
-      ),
-      containerBackgroundColor: baseInputOptions.containerBackgroundColor,
-      blurStrength: baseInputOptions.blurStrength,
-      containerPadding: baseInputOptions.containerPadding,
-      clipBehavior: baseInputOptions.clipBehavior,
-      materialElevation: baseInputOptions.materialElevation,
-      materialColor: themeExtension?.inputBackgroundColor ??
-          (isDarkMode ? const Color(0xFF1E2026) : Colors.white),
-      materialShape: baseInputOptions.materialShape,
-      useScaffoldBackground: baseInputOptions.useScaffoldBackground,
-      materialPadding: baseInputOptions.materialPadding,
-      inputHeight: baseInputOptions.inputHeight,
-      inputContainerHeight: baseInputOptions.inputContainerHeight,
-      inputContainerConstraints: baseInputOptions.inputContainerConstraints,
-      inputContainerWidth: baseInputOptions.inputContainerWidth,
-      useOuterContainer: baseInputOptions.useOuterContainer,
-      useOuterMaterial: baseInputOptions.useOuterMaterial,
-      sendButtonBuilder: baseInputOptions.sendButtonBuilder,
-      sendOnEnter: baseInputOptions.sendOnEnter,
-      autocorrect: baseInputOptions.autocorrect,
-
-      // Use app direction instead of dynamic direction
-      inputTextDirection: appDirection,
-    );
-
     return ChatInput(
       controller: _textController,
+      onSend: () {
+        if (_textController.text.trim().isNotEmpty) {
+          final message = ChatMessage(
+            text: _textController.text.trim(),
+            user: widget.currentUser,
+            createdAt: DateTime.now(),
+          );
+          _textController.clear();
+          _handleSend(message);
+        }
+      },
+      options: widget.inputOptions ?? const InputOptions(),
       focusNode: _inputFocusNode,
-      options: effectiveInputOptions,
-      onSend: _handleSubmitted,
+      fileUploadOptions: widget.fileUploadOptions,
     );
-  }
-
-  void _handleSubmitted() {
-    if (_textController.text.trim().isNotEmpty) {
-      _handleSend(
-        ChatMessage(
-          text: _textController.text,
-          user: widget.currentUser,
-          createdAt: DateTime.now(),
-          isMarkdown: false,
-        ),
-      );
-      _textController.clear();
-    }
   }
 
   @override
