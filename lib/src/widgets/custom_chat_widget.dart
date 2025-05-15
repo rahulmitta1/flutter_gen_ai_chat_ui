@@ -8,8 +8,6 @@ import '../controllers/chat_messages_controller.dart';
 import '../models/chat/models.dart';
 import '../models/input_options.dart';
 import '../utils/color_extensions.dart';
-import '../utils/font_helper.dart';
-import 'message_content_text.dart';
 import 'message_attachment.dart';
 
 class CustomChatWidget extends StatefulWidget {
@@ -350,14 +348,9 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     final aiBubbleColor = bubbleStyle.aiBubbleColor ?? defaultAiBubbleColor;
 
     // Enhanced text colors with precise opacity for readability
-    final userTextColor = isDark
+    final _ = isDark
         ? Colors.white.withOpacityCompat(0.96)
         : Colors.black.withOpacityCompat(0.86);
-    final aiTextColor = isDark
-        ? Colors.white.withOpacityCompat(0.96)
-        : Colors.black.withOpacityCompat(0.86);
-
-    final textColor = isUser ? userTextColor : aiTextColor;
 
     // Premium AI message container border
     final aiBorder = !isUser
@@ -620,19 +613,6 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         selectable: true,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        // Add a custom image builder when enableImageTaps is false
-        imageBuilder: widget.messageOptions.enableImageTaps
-            ? null // Use default behavior which allows taps
-            : (Uri uri, String? title, String? alt) {
-                // Custom image builder that does not respond to taps
-                return Image.network(
-                  uri.toString(),
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image);
-                  },
-                );
-              },
         styleSheet: widget.messageOptions.markdownStyleSheet ??
             MarkdownStyleSheet(
               p: textStyle,

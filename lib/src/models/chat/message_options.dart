@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'media.dart';
+import '../chat_message.dart';
 
 import '../ai_chat_config.dart';
 
@@ -225,10 +226,13 @@ class MessageOptions {
   final Color? aiTextColor;
 
   /// Callback when media is tapped in a message
-  final Function(ChatMedia)? onMediaTap;
+  final void Function(ChatMedia)? onMediaTap;
 
-  /// Whether to enable taps on images in markdown content
+  /// Whether to enable tapping on images in markdown content
   final bool enableImageTaps;
+
+  /// Custom builder for message bubbles
+  final Widget Function(BuildContext, ChatMessage, Widget)? customBubbleBuilder;
 
   /// Creates an instance of [MessageOptions].
   ///
@@ -265,6 +269,7 @@ class MessageOptions {
     this.aiTextColor,
     this.onMediaTap,
     this.enableImageTaps = false,
+    this.customBubbleBuilder,
   });
 
   MessageOptions copyWith({
@@ -289,8 +294,9 @@ class MessageOptions {
     void Function(String)? onCopy,
     Color? userTextColor,
     Color? aiTextColor,
-    Function(ChatMedia)? onMediaTap,
+    void Function(ChatMedia)? onMediaTap,
     bool? enableImageTaps,
+    Widget Function(BuildContext, ChatMessage, Widget)? customBubbleBuilder,
   }) =>
       MessageOptions(
         textStyle: textStyle ?? this.textStyle,
@@ -316,6 +322,7 @@ class MessageOptions {
         aiTextColor: aiTextColor ?? this.aiTextColor,
         onMediaTap: onMediaTap ?? this.onMediaTap,
         enableImageTaps: enableImageTaps ?? this.enableImageTaps,
+        customBubbleBuilder: customBubbleBuilder ?? this.customBubbleBuilder,
       );
 
   /// Get effective decoration with fallback to containerColor

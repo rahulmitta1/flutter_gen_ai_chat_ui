@@ -64,6 +64,14 @@ class ExamplesHomeScreen extends StatelessWidget {
                   ),
                   _buildExampleCard(
                     context,
+                    title: 'Real File Upload',
+                    description: 'Upload actual files and images from device',
+                    icon: Icons.file_upload,
+                    color: Colors.red,
+                    routeName: '/real-file-upload',
+                  ),
+                  _buildExampleCard(
+                    context,
                     title: 'Scroll Behavior',
                     description: 'Control auto-scrolling for long responses',
                     icon: Icons.swipe_vertical,

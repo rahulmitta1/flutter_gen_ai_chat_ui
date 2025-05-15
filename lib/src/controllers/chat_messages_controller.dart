@@ -151,11 +151,12 @@ class ChatMessagesController extends ChangeNotifier {
     final messageId = _getMessageId(message);
     if (!_messageCache.containsKey(messageId)) {
       // Determine if this is a user message using the ID and properties
-      final isFromUser = message.customProperties?['isUserMessage'] as bool? ??
-          message.customProperties?['source'] == 'user' ??
-          (message.user.id != 'ai' &&
-              message.user.id != 'bot' &&
-              message.user.id != 'assistant');
+      final isFromUser =
+          ((message.customProperties?['isUserMessage'] as bool?) == true) ||
+              (message.customProperties?['source'] == 'user') ||
+              (message.user.id != 'ai' &&
+                  message.user.id != 'bot' &&
+                  message.user.id != 'assistant');
 
       // Get the user ID for response tracking
       final userId = message.user.id;
@@ -934,7 +935,6 @@ class ChatMessagesController extends ChangeNotifier {
               'FORCE SCROLL: Found first message in chain at index $index with responseId: $responseId');
 
           // Always use animation when testing different animation curves
-          final useAnimation = true;
           final scrollDuration = scrollBehaviorConfig.scrollAnimationDuration;
           final scrollCurve = scrollBehaviorConfig.scrollAnimationCurve;
 

@@ -2,27 +2,28 @@ import 'package:flutter/material.dart';
 import '../models/chat/media.dart';
 import '../utils/color_extensions.dart';
 
-/// Widget to display file attachments in chat messages
+/// Displays a media attachment in a chat message
 class MessageAttachment extends StatelessWidget {
-  /// The media attachment to display
+  /// The media to display
   final ChatMedia media;
+
+  /// Whether to enable tapping on images
+  final bool enableImageTaps;
+
+  /// Callback when the media is tapped
+  final void Function(ChatMedia)? onTap;
 
   /// Custom builder for rendering media
   final Widget Function(BuildContext, ChatMedia)? customBuilder;
 
-  /// Callback when attachment is tapped
-  final Function(ChatMedia)? onTap;
-
-  /// Whether tapping on images is enabled
-  final bool enableImageTaps;
-
+  /// Creates a [MessageAttachment] widget
   const MessageAttachment({
-    super.key,
+    Key? key,
     required this.media,
     this.customBuilder,
     this.onTap,
-    this.enableImageTaps = false,
-  });
+    this.enableImageTaps = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

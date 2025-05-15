@@ -1,3 +1,19 @@
+## 2.3.0 - [2024-07-12] File Upload & Media Attachments
+
+### Added
+- **File Upload Support**: Comprehensive file upload capabilities for images, documents, videos, and more
+- **Flexible Media Attachments**: ChatMedia model to represent various media types in messages
+- **Customizable Upload Options**: FileUploadOptions to control upload behavior, buttons, and limits
+- **Image Caption Support**: Added the ability to include captions with uploaded images
+- **Multiple File Support**: Ability to upload and display multiple files in a single message
+- **Full Platform Permissions**: Documentation for required permissions on iOS, Android, and macOS
+- **Full Example Implementation**: Complete real-world file upload example in the example app
+
+### Fixed
+- Fixed several code quality issues to improve the package's pub score
+- Resolved deprecated method usage throughout the codebase
+- Fixed type inference issues for better static analysis compatibility
+
 ## 2.2.1 - [2025-05-16] Better Image Control & Developer Experience
 
 ### Added

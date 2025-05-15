@@ -19,7 +19,7 @@ class FileUploadOptions {
   final String? uploadTooltip;
 
   /// Callback to be invoked when a file is selected
-  final Function(List<Object>)? onFilesSelected;
+  final void Function(List<Object>)? onFilesSelected;
 
   /// Maximum number of files allowed in a single message
   final int maxFilesPerMessage;
@@ -69,7 +69,7 @@ class FileUploadOptions {
     Color? uploadIconColor,
     double? uploadIconSize,
     String? uploadTooltip,
-    Function(List<Object>)? onFilesSelected,
+    void Function(List<Object>)? onFilesSelected,
     int? maxFilesPerMessage,
     int? maxFileSize,
     List<String>? allowedFileTypes,
