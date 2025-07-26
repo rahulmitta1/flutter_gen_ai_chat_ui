@@ -12,6 +12,7 @@
 
 ### Technical Improvements
 - Migrated from `flutter_markdown ^0.7.7` to `flutter_markdown_plus ^1.0.3`
+- Updated `flutter_streaming_text_markdown` to latest v1.2.0 with new LLM animation presets
 - Updated all import statements across library and example code
 - Fixed `imageBuilder` API changes for custom image handling
 - Maintained full backward compatibility for existing implementations
