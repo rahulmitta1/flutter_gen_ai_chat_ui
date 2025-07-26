@@ -38,8 +38,8 @@ class SettingsDrawer extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: isDarkMode 
-                ? Colors.white.withOpacityCompat(0.1) 
+            color: isDarkMode
+                ? Colors.white.withOpacityCompat(0.1)
                 : Colors.black.withOpacityCompat(0.05),
             width: 1,
           ),
@@ -316,8 +316,8 @@ class SettingsDrawer extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDarkMode 
-                        ? Colors.white.withOpacityCompat(0.1) 
+                    color: isDarkMode
+                        ? Colors.white.withOpacityCompat(0.1)
                         : Colors.black.withOpacityCompat(0.06),
                     width: 1,
                   ),
@@ -353,15 +353,17 @@ class SettingsDrawer extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
-                                  color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : const Color(0xFF1F2937),
                                 ),
                               ),
                               Text(
                                 'Version 2.3.0',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDarkMode 
-                                      ? Colors.white.withOpacityCompat(0.6) 
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacityCompat(0.6)
                                       : const Color(0xFF64748B),
                                 ),
                               ),
@@ -413,7 +415,8 @@ class SettingsDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacityCompat(0.2),
                       borderRadius: BorderRadius.circular(12),
@@ -520,13 +523,13 @@ class SettingsDrawer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: isDarkMode 
-            ? Colors.white.withOpacityCompat(0.05) 
+        color: isDarkMode
+            ? Colors.white.withOpacityCompat(0.05)
             : Colors.black.withOpacityCompat(0.02),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDarkMode 
-              ? Colors.white.withOpacityCompat(0.1) 
+          color: isDarkMode
+              ? Colors.white.withOpacityCompat(0.1)
               : Colors.black.withOpacityCompat(0.06),
           width: 1,
         ),
@@ -565,8 +568,8 @@ class SettingsDrawer extends StatelessWidget {
           subtitle,
           style: TextStyle(
             fontSize: 12,
-            color: isDarkMode 
-                ? Colors.white.withOpacityCompat(0.7) 
+            color: isDarkMode
+                ? Colors.white.withOpacityCompat(0.7)
                 : const Color(0xFF64748B),
             height: 1.3,
           ),

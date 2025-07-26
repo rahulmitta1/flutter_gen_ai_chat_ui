@@ -104,14 +104,14 @@ void main() {
       for (var i = 0; i < words.length; i++) {
         accumulated += (i > 0 ? ' ' : '') + words[i];
         controller.updateMessage(baseMessage.copyWith(text: accumulated));
-        
+
         // Verify we still have only one message
         expect(controller.messages.length, 1);
         expect(controller.messages[0].text, accumulated);
       }
 
-      expect(controller.messages[0].text, 
-        'This is a test of streaming text functionality');
+      expect(controller.messages[0].text,
+          'This is a test of streaming text functionality');
     });
 
     test('should preserve message properties during updates', () {
@@ -133,7 +133,7 @@ void main() {
 
       // Update text multiple times
       controller.updateMessage(complexMessage.copyWith(text: 'Updated'));
-      
+
       // Verify properties are preserved
       final updatedMessage = controller.messages[0];
       expect(updatedMessage.isMarkdown, true);

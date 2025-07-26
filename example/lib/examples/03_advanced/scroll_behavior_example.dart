@@ -21,8 +21,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
   bool _isLoading = false;
 
   // Initialize with onNewMessage for proper scroll-to-first behavior
-  AutoScrollBehavior _selectedScrollBehavior =
-      AutoScrollBehavior.onNewMessage;
+  AutoScrollBehavior _selectedScrollBehavior = AutoScrollBehavior.onNewMessage;
   bool _scrollToFirstMessage = true;
 
   // Track animation style
@@ -43,7 +42,8 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
       scrollBehaviorConfig: _getCurrentScrollConfig(),
       // Explicitly set pagination to chronological order for better scroll behavior testing
       paginationConfig: const PaginationConfig(
-        reverseOrder: false, // Chronological order - oldest at top, newest at bottom
+        reverseOrder:
+            false, // Chronological order - oldest at top, newest at bottom
         enabled: false, // Disable pagination for simpler testing
       ),
     );
@@ -88,9 +88,10 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final appState = Provider.of<AppState>(context);
-    
+
     return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
+      backgroundColor:
+          isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
       appBar: _buildFuturisticAppBar(context, appState, isDarkMode),
       body: Column(
         children: [
@@ -108,7 +109,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF374151).withOpacity(0.3)
                     : const Color(0xFFE5E7EB),
                 width: 1,
@@ -127,15 +128,16 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: isDarkMode 
+                    color: isDarkMode
                         ? const Color(0xFF00D4FF)
                         : const Color(0xFF6366F1),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (isDarkMode 
-                            ? const Color(0xFF00D4FF)
-                            : const Color(0xFF6366F1)).withOpacity(0.3),
+                        color: (isDarkMode
+                                ? const Color(0xFF00D4FF)
+                                : const Color(0xFF6366F1))
+                            .withOpacity(0.3),
                         blurRadius: 4,
                         offset: const Offset(0, 1),
                       ),
@@ -147,7 +149,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   child: Text(
                     '${_selectedScrollBehavior.name}${_scrollToFirstMessage ? " • First message" : ""} • $_selectedAnimationStyle',
                     style: TextStyle(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFFF3F4F6)
                           : const Color(0xFF1F2937),
                       fontSize: 13,
@@ -160,14 +162,16 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           ),
           Expanded(
             child: AiChatWidget(
-              key: ValueKey('scroll_${_selectedScrollBehavior.name}_first_${_scrollToFirstMessage}_anim_$_selectedAnimationStyle'),
+              key: ValueKey(
+                  'scroll_${_selectedScrollBehavior.name}_first_${_scrollToFirstMessage}_anim_$_selectedAnimationStyle'),
               currentUser: _currentUser,
               aiUser: _aiUser,
               controller: _controller,
               onSendMessage: _handleSendMessage,
               loadingConfig: LoadingConfig(
                 isLoading: _isLoading,
-                loadingIndicator: _isLoading ? _buildFuturisticLoadingIndicator() : null,
+                loadingIndicator:
+                    _isLoading ? _buildFuturisticLoadingIndicator() : null,
               ),
               // Configure scroll behavior with dynamic animation styles
               scrollBehaviorConfig: _getCurrentScrollConfig(),
@@ -187,7 +191,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   fontSize: 15,
                 ),
                 bubbleStyle: BubbleStyle(
-                  userBubbleColor: isDarkMode 
+                  userBubbleColor: isDarkMode
                       ? const Color(0xFF1A1B23).withOpacity(0.6)
                       : const Color(0xFF6366F1).withOpacity(0.1),
                   aiBubbleColor: isDarkMode
@@ -206,11 +210,12 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                 sendOnEnter: true,
                 sendButtonPadding: const EdgeInsets.only(right: 12),
                 sendButtonIconSize: 22,
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: InputDecoration(
                   hintText: 'Test scroll behavior...',
                   hintStyle: TextStyle(
-                    color: isDarkMode 
+                    color: isDarkMode
                         ? const Color(0xFF6B7280)
                         : const Color(0xFF9CA3AF),
                     fontSize: 15,
@@ -218,7 +223,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFF1F2937).withOpacity(0.6)
                           : const Color(0xFFE5E7EB),
                       width: 1,
@@ -227,7 +232,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFF1F2937).withOpacity(0.6)
                           : const Color(0xFFE5E7EB),
                       width: 1,
@@ -236,26 +241,27 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFF00D4FF)
                           : const Color(0xFF6366F1),
                       width: 2,
                     ),
                   ),
                   filled: true,
-                  fillColor: isDarkMode 
+                  fillColor: isDarkMode
                       ? const Color(0xFF0F1419).withOpacity(0.8)
                       : const Color(0xFFFFFFFF).withOpacity(0.9),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                 ),
                 textStyle: TextStyle(
-                  color: isDarkMode 
+                  color: isDarkMode
                       ? const Color(0xFFF3F4F6)
                       : const Color(0xFF1F2937),
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),
-                sendButtonColor: isDarkMode 
+                sendButtonColor: isDarkMode
                     ? const Color(0xFF00D4FF)
                     : const Color(0xFF6366F1),
               ),
@@ -433,35 +439,33 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                       // Explicitly update the controller's scroll behavior configuration
                       _controller.scrollBehaviorConfig =
                           _getCurrentScrollConfig();
-                    
-                    // Force rebuild of the chat widget by updating the key
-                    // This ensures the new scroll configuration is properly applied
 
-                    debugPrint(
-                        'Updated scroll behavior: ${_selectedScrollBehavior.name}, '
-                        'scroll to first message: $_scrollToFirstMessage, '
-                        'animation style: $_selectedAnimationStyle');
+                      // Force rebuild of the chat widget by updating the key
+                      // This ensures the new scroll configuration is properly applied
+
+                      debugPrint(
+                          'Updated scroll behavior: ${_selectedScrollBehavior.name}, '
+                          'scroll to first message: $_scrollToFirstMessage, '
+                          'animation style: $_selectedAnimationStyle');
                     });
                   }
                   Navigator.pop(context);
-                  
+
                   // Show confirmation of settings change after dialog closes
                   Future.delayed(const Duration(milliseconds: 300), () {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '⚙️ Settings Applied!\n'
-                          '${_selectedScrollBehavior.name} • '
-                          '${_scrollToFirstMessage ? "Scroll to FIRST message" : "Scroll to LAST message"} • '
-                          '$_selectedAnimationStyle\n'
-                          'Use the ▶️ test button to see the changes!'
+                        SnackBar(
+                          content: Text('⚙️ Settings Applied!\n'
+                              '${_selectedScrollBehavior.name} • '
+                              '${_scrollToFirstMessage ? "Scroll to FIRST message" : "Scroll to LAST message"} • '
+                              '$_selectedAnimationStyle\n'
+                              'Use the ▶️ test button to see the changes!'),
+                          backgroundColor: _getAnimationColor(),
+                          duration: const Duration(seconds: 3),
+                          behavior: SnackBarBehavior.floating,
                         ),
-                        backgroundColor: _getAnimationColor(),
-                        duration: const Duration(seconds: 3),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
+                      );
                     }
                   });
                 },
@@ -691,17 +695,15 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
   void _testCurrentScrollBehavior() {
     // Check if widget is still mounted before showing SnackBar
     if (!mounted) return;
-    
+
     // Show overlay to explain what's happening
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '🧪 TESTING SCROLL BEHAVIOR\n'
-          '${_selectedScrollBehavior.name} • '
-          '${_scrollToFirstMessage ? "Scroll to FIRST message" : "Scroll to LAST message"} • '
-          '$_selectedAnimationStyle\n'
-          '👀 Watch where the scroll position goes when the response finishes!'
-        ),
+        content: Text('🧪 TESTING SCROLL BEHAVIOR\n'
+            '${_selectedScrollBehavior.name} • '
+            '${_scrollToFirstMessage ? "Scroll to FIRST message" : "Scroll to LAST message"} • '
+            '$_selectedAnimationStyle\n'
+            '👀 Watch where the scroll position goes when the response finishes!'),
         duration: const Duration(seconds: 4),
         backgroundColor: _getAnimationColor(),
         behavior: SnackBarBehavior.floating,
@@ -715,7 +717,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
 
     // Ensure controller has latest configuration
     _controller.scrollBehaviorConfig = _getCurrentScrollConfig();
-    
+
     // Add explanatory message about what's being tested
     _controller.addMessage(ChatMessage(
       text: '# 🧪 STARTING SCROLL BEHAVIOR TEST\n\n'
@@ -754,7 +756,8 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
             "## 📍 THIS IS MESSAGE #1 (FIRST)\n" +
             "**Expected behavior:** When the response finishes, you should ${_scrollToFirstMessage ? '**see THIS message at the top**' : '**scroll to the LAST message at the bottom**'}.\n\n" +
             "## Animation Details\n" +
-            _getAnimationDescription(_selectedAnimationStyle) + "\n\n" +
+            _getAnimationDescription(_selectedAnimationStyle) +
+            "\n\n" +
             "⏳ **More messages coming...** Watch the scroll position!\n\n" +
             "🔥 **IMPORTANT**: This is the FIRST message of the response. " +
             "${_scrollToFirstMessage ? 'You should see this message at the TOP when the response is complete!' : 'You should scroll to the BOTTOM when the response is complete!'}\n\n" +
@@ -801,7 +804,6 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
       // Automatic scroll behavior handles this based on ScrollBehaviorConfig
       debugPrint(
           'First message automatic scroll with $_selectedAnimationStyle animation');
-      
 
       // Add more long messages with longer delays to better show the scroll behavior
       Future.delayed(const Duration(milliseconds: 2000), () {
@@ -1051,7 +1053,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           ),
           border: Border(
             bottom: BorderSide(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF1F2937).withOpacity(0.3)
                   : const Color(0xFFE5E7EB),
               width: 1,
@@ -1062,12 +1064,12 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isDarkMode 
+          color: isDarkMode
               ? const Color(0xFF1A1B23).withOpacity(0.6)
               : const Color(0xFFFFFFFF).withOpacity(0.8),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDarkMode 
+            color: isDarkMode
                 ? const Color(0xFF374151).withOpacity(0.3)
                 : const Color(0xFFE5E7EB),
             width: 1,
@@ -1076,9 +1078,8 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_rounded,
-            color: isDarkMode 
-                ? const Color(0xFF00D4FF)
-                : const Color(0xFF6366F1),
+            color:
+                isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
             size: 18,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -1103,9 +1104,10 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: (isDarkMode 
-                        ? const Color(0xFF00D4FF) 
-                        : const Color(0xFF6366F1)).withOpacity(0.3),
+                    color: (isDarkMode
+                            ? const Color(0xFF00D4FF)
+                            : const Color(0xFF6366F1))
+                        .withOpacity(0.3),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -1126,7 +1128,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   Text(
                     'Scroll Behavior',
                     style: TextStyle(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFFF3F4F6)
                           : const Color(0xFF1F2937),
                       fontSize: 14,
@@ -1137,7 +1139,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
                   Text(
                     'Animation testing',
                     style: TextStyle(
-                      color: isDarkMode 
+                      color: isDarkMode
                           ? const Color(0xFF6B7280)
                           : const Color(0xFF9CA3AF),
                       fontSize: 11,
@@ -1157,12 +1159,12 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isDarkMode 
+            color: isDarkMode
                 ? const Color(0xFF1A1B23).withOpacity(0.6)
                 : const Color(0xFFFFFFFF).withOpacity(0.8),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF374151).withOpacity(0.3)
                   : const Color(0xFFE5E7EB),
               width: 1,
@@ -1171,7 +1173,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           child: IconButton(
             icon: Icon(
               Icons.play_arrow_rounded,
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF00D4FF)
                   : const Color(0xFF6366F1),
               size: 18,
@@ -1187,12 +1189,12 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isDarkMode 
+            color: isDarkMode
                 ? const Color(0xFF1A1B23).withOpacity(0.6)
                 : const Color(0xFFFFFFFF).withOpacity(0.8),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF374151).withOpacity(0.3)
                   : const Color(0xFFE5E7EB),
               width: 1,
@@ -1201,7 +1203,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           child: IconButton(
             icon: Icon(
               Icons.settings_rounded,
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF00D4FF)
                   : const Color(0xFF6366F1),
               size: 18,
@@ -1217,12 +1219,12 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isDarkMode 
+            color: isDarkMode
                 ? const Color(0xFF1A1B23).withOpacity(0.6)
                 : const Color(0xFFFFFFFF).withOpacity(0.8),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF374151).withOpacity(0.3)
                   : const Color(0xFFE5E7EB),
               width: 1,
@@ -1234,7 +1236,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
               child: Icon(
                 isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
                 key: ValueKey(isDarkMode),
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF00D4FF)
                     : const Color(0xFF6366F1),
                 size: 18,
@@ -1253,7 +1255,7 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
   /// Build futuristic loading indicator
   Widget _buildFuturisticLoadingIndicator() {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return LoadingWidget(
       texts: [
         "Testing scroll behavior...",
@@ -1261,10 +1263,9 @@ class _ScrollBehaviorExampleState extends State<ScrollBehaviorExample> {
         "Generating response...",
         "Ready to scroll...",
       ],
-      shimmerBaseColor: isDarkMode 
-          ? const Color(0xFF1F2937)
-          : const Color(0xFFE5E7EB),
-      shimmerHighlightColor: isDarkMode 
+      shimmerBaseColor:
+          isDarkMode ? const Color(0xFF1F2937) : const Color(0xFFE5E7EB),
+      shimmerHighlightColor: isDarkMode
           ? const Color(0xFF00D4FF).withOpacity(0.3)
           : const Color(0xFF6366F1).withOpacity(0.2),
     );

@@ -11,119 +11,128 @@ class ExamplesHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0f0f0f) : const Color(0xFFFAFAFA),
+      backgroundColor:
+          isDark ? const Color(0xFF0f0f0f) : const Color(0xFFFAFAFA),
       body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: _buildModernHeader(context, appState, isDark),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-                  mainAxisSpacing: 20.0,
-                  crossAxisSpacing: 20.0,
-                  childAspectRatio: 0.85,
-                ),
-                delegate: SliverChildListDelegate([
-                  _buildModernExampleCard(
-                    context,
-                    title: 'Basic',
-                    description: 'Simple ChatGPT-style interface with essential features',
-                    icon: Icons.chat_bubble_outline_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/basic',
-                    isDark: isDark,
-                  ),
-                  _buildModernExampleCard(
-                    context,
-                    title: 'Intermediate',
-                    description: 'Claude-style UI with markdown and streaming responses',
-                    icon: Icons.auto_awesome_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF059669), Color(0xFF0D9488)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/intermediate',
-                    isDark: isDark,
-                  ),
-                  _buildModernExampleCard(
-                    context,
-                    title: 'Advanced',
-                    description: 'Full-featured chat with custom themes and animations',
-                    icon: Icons.psychology_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF7C2D12), Color(0xFFDC2626)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/advanced',
-                    isDark: isDark,
-                  ),
-                  _buildModernExampleCard(
-                    context,
-                    title: 'File Attachments',
-                    description: 'Multi-media chat with image, document, and file support',
-                    icon: Icons.attach_file_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF0F766E), Color(0xFF06B6D4)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/file-attachments',
-                    isDark: isDark,
-                  ),
-                  _buildModernExampleCard(
-                    context,
-                    title: 'Real File Upload',
-                    description: 'Upload and process actual files from your device',
-                    icon: Icons.cloud_upload_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFBE185D), Color(0xFFEC4899)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/real-file-upload',
-                    isDark: isDark,
-                  ),
-                  _buildModernExampleCard(
-                    context,
-                    title: 'Scroll Behavior',
-                    description: 'Advanced scroll control for long AI responses',
-                    icon: Icons.swipe_vertical_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFEA580C), Color(0xFFF59E0B)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    routeName: '/scroll-behavior',
-                    isDark: isDark,
-                  ),
-                ]),
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buildModernHeader(context, appState, isDark),
+          ),
+          SliverPadding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+                childAspectRatio: 0.85,
               ),
+              delegate: SliverChildListDelegate([
+                _buildModernExampleCard(
+                  context,
+                  title: 'Basic',
+                  description:
+                      'Simple ChatGPT-style interface with essential features',
+                  icon: Icons.chat_bubble_outline_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/basic',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Intermediate',
+                  description:
+                      'Claude-style UI with markdown and streaming responses',
+                  icon: Icons.auto_awesome_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF0D9488)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/intermediate',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Advanced',
+                  description:
+                      'Full-featured chat with custom themes and animations',
+                  icon: Icons.psychology_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF7C2D12), Color(0xFFDC2626)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/advanced',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'File Attachments',
+                  description:
+                      'Multi-media chat with image, document, and file support',
+                  icon: Icons.attach_file_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0F766E), Color(0xFF06B6D4)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/file-attachments',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Real File Upload',
+                  description:
+                      'Upload and process actual files from your device',
+                  icon: Icons.cloud_upload_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFBE185D), Color(0xFFEC4899)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/real-file-upload',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Scroll Behavior',
+                  description: 'Advanced scroll control for long AI responses',
+                  icon: Icons.swipe_vertical_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFEA580C), Color(0xFFF59E0B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/scroll-behavior',
+                  isDark: isDark,
+                ),
+              ]),
             ),
-            SliverToBoxAdapter(
-              child: _buildFooter(context, isDark),
-            ),
-          ],
-        ),
+          ),
+          SliverToBoxAdapter(
+            child: _buildFooter(context, isDark),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildModernHeader(BuildContext context, AppState appState, bool isDark) {
+  Widget _buildModernHeader(
+      BuildContext context, AppState appState, bool isDark) {
     return Container(
-      padding: EdgeInsets.fromLTRB(24.0, MediaQuery.of(context).padding.top + 16.0, 24.0, 32.0),
+      padding: EdgeInsets.fromLTRB(
+          24.0, MediaQuery.of(context).padding.top + 16.0, 24.0, 32.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
+          colors: isDark
               ? [const Color(0xFF1F2937), const Color(0xFF111827)]
               : [const Color(0xFFFFFFFF), const Color(0xFFF8FAFC)],
           begin: Alignment.topCenter,
@@ -152,7 +161,8 @@ class ExamplesHomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
@@ -174,8 +184,12 @@ class ExamplesHomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Gen AI Chat UI',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineLarge
+                          ?.copyWith(
+                            color:
+                                isDark ? Colors.white : const Color(0xFF1F2937),
                             fontWeight: FontWeight.w800,
                             fontSize: 32,
                             letterSpacing: -0.5,
@@ -185,8 +199,8 @@ class ExamplesHomeScreen extends StatelessWidget {
                     Text(
                       'Interactive Examples Gallery',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: isDark 
-                                ? Colors.white.withOpacity(0.7) 
+                            color: isDark
+                                ? Colors.white.withOpacity(0.7)
                                 : const Color(0xFF64748B),
                             fontWeight: FontWeight.w500,
                           ),
@@ -197,8 +211,8 @@ class ExamplesHomeScreen extends StatelessWidget {
               // Theme toggle button
               Container(
                 decoration: BoxDecoration(
-                  color: isDark 
-                      ? Colors.white.withOpacity(0.1) 
+                  color: isDark
+                      ? Colors.white.withOpacity(0.1)
                       : Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -207,13 +221,16 @@ class ExamplesHomeScreen extends StatelessWidget {
                   icon: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: Icon(
-                      isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      isDark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
                       key: ValueKey(isDark),
                       color: isDark ? Colors.yellow : const Color(0xFF4F46E5),
                       size: 24,
                     ),
                   ),
-                  tooltip: isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',
+                  tooltip:
+                      isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',
                 ),
               ),
             ],
@@ -222,8 +239,8 @@ class ExamplesHomeScreen extends StatelessWidget {
           Text(
             'Explore powerful AI chat interfaces with streaming responses, markdown support, file attachments, and more. Each example demonstrates different capabilities of the Flutter Gen AI Chat UI package.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isDark 
-                      ? Colors.white.withOpacity(0.8) 
+                  color: isDark
+                      ? Colors.white.withOpacity(0.8)
                       : const Color(0xFF64748B),
                   height: 1.6,
                 ),
@@ -254,8 +271,8 @@ class ExamplesHomeScreen extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: isDark 
-              ? Colors.white.withOpacity(0.1) 
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
               : Colors.black.withOpacity(0.05),
           width: 1,
         ),
@@ -295,7 +312,7 @@ class ExamplesHomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                
+
                 // Title
                 Text(
                   title,
@@ -308,14 +325,14 @@ class ExamplesHomeScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
-                
+
                 // Description - Now with more space and better visibility
                 Expanded(
                   child: Text(
                     description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: isDark 
-                              ? Colors.white.withOpacity(0.8) 
+                          color: isDark
+                              ? Colors.white.withOpacity(0.8)
                               : const Color(0xFF64748B),
                           height: 1.5,
                           fontSize: 14,
@@ -338,7 +355,7 @@ class ExamplesHomeScreen extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
+          colors: isDark
               ? [const Color(0xFF1F2937), const Color(0xFF111827)]
               : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
           begin: Alignment.topLeft,
@@ -346,8 +363,8 @@ class ExamplesHomeScreen extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark 
-              ? Colors.white.withOpacity(0.1) 
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
               : Colors.black.withOpacity(0.05),
           width: 1,
         ),
@@ -357,8 +374,8 @@ class ExamplesHomeScreen extends StatelessWidget {
           Icon(
             Icons.auto_awesome_rounded,
             size: 32,
-            color: isDark 
-                ? Colors.white.withOpacity(0.8) 
+            color: isDark
+                ? Colors.white.withOpacity(0.8)
                 : const Color(0xFF64748B),
           ),
           const SizedBox(height: 12),
@@ -374,8 +391,8 @@ class ExamplesHomeScreen extends StatelessWidget {
             'Build powerful AI chat interfaces with streaming responses,\nmarkdown support, and customizable themes.',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isDark 
-                      ? Colors.white.withOpacity(0.7) 
+                  color: isDark
+                      ? Colors.white.withOpacity(0.7)
                       : const Color(0xFF64748B),
                   height: 1.5,
                 ),

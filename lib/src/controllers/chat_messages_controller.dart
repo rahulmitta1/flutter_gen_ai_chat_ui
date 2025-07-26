@@ -16,7 +16,7 @@ class ChatMessagesController extends ChangeNotifier {
 
   // Track streaming state to prevent scroll issues
   bool _isCurrentlyStreaming = false;
-  
+
   /// Whether a message is currently being streamed
   bool get isCurrentlyStreaming => _isCurrentlyStreaming;
 
@@ -93,7 +93,8 @@ class ChatMessagesController extends ChangeNotifier {
   /// Add this property at the top of the class with other properties
   DateTime _lastScrollTime = DateTime.now();
   int _scrollDebounceMs = 500; // Default debounce time
-  String? _lastScrollOperation; // Track the last scroll operation to prevent conflicts
+  String?
+      _lastScrollOperation; // Track the last scroll operation to prevent conflicts
 
   /// Sets the scroll controller for auto-scrolling
   void setScrollController(ScrollController controller) {
@@ -101,7 +102,7 @@ class ChatMessagesController extends ChangeNotifier {
     if (_scrollController != null && _scrollListener != null) {
       _scrollController!.removeListener(_scrollListener!);
     }
-    
+
     _scrollController = controller;
 
     // Create and add new listener to detect manual scrolling
@@ -126,7 +127,7 @@ class ChatMessagesController extends ChangeNotifier {
         }
       }
     };
-    
+
     _scrollController?.addListener(_scrollListener!);
   }
 
@@ -272,7 +273,8 @@ class ChatMessagesController extends ChangeNotifier {
       final isFirstResponse =
           updatedProperties['isFirstResponseMessage'] as bool? ?? false;
 
-      final shouldScroll = _determineShouldScroll(config, isUserMessage, isFirstResponse);
+      final shouldScroll =
+          _determineShouldScroll(config, isUserMessage, isFirstResponse);
 
       if (shouldScroll) {
         debugPrint('SCROLLING: After render for isUserMessage=$isUserMessage');
@@ -284,7 +286,8 @@ class ChatMessagesController extends ChangeNotifier {
   }
 
   /// Determines if scrolling should occur based on configuration and message type
-  bool _determineShouldScroll(ScrollBehaviorConfig config, bool isUserMessage, bool isFirstResponse) {
+  bool _determineShouldScroll(
+      ScrollBehaviorConfig config, bool isUserMessage, bool isFirstResponse) {
     // If this is a user message, always scroll (user messages should be visible)
     if (isUserMessage) {
       debugPrint('SCROLL DECISION: User message - will scroll');
@@ -301,7 +304,8 @@ class ChatMessagesController extends ChangeNotifier {
             'SCROLL DECISION: onNewMessage mode - ${shouldScroll ? "will scroll (first response)" : "will NOT scroll (continuation)"}');
         return shouldScroll;
       case AutoScrollBehavior.onUserMessageOnly:
-        debugPrint('SCROLL DECISION: onUserMessageOnly mode - will NOT scroll (AI message)');
+        debugPrint(
+            'SCROLL DECISION: onUserMessageOnly mode - will NOT scroll (AI message)');
         return false;
       case AutoScrollBehavior.never:
         debugPrint('SCROLL DECISION: Never scroll mode - will NOT scroll');
@@ -314,7 +318,7 @@ class ChatMessagesController extends ChangeNotifier {
       bool isUserMessage, bool isStartOfResponse, ScrollBehaviorConfig config) {
     // Create a unique operation ID for this scroll request
     final operationId = 'scroll_${DateTime.now().millisecondsSinceEpoch}';
-    
+
     // Apply debounce for scrolling to prevent jitter
     final now = DateTime.now();
     if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
@@ -341,22 +345,24 @@ class ChatMessagesController extends ChangeNotifier {
         latestResponseId =
             _messages.last.customProperties?['responseId'] as String?;
       }
-      
+
       // If the latest message doesn't have a responseId, but we're tracking a current response,
       // check if the current message being added has the same responseId as the tracked response
       if (latestResponseId == null && _currentResponseFirstMessageId != null) {
         // Look for messages with the same responseId as the current tracked response
         final relatedMessages = _messages.where((msg) {
           final msgResponseId = msg.customProperties?['responseId'] as String?;
-          return msgResponseId != null && 
-                 _messages.any((m) => _getMessageId(m) == _currentResponseFirstMessageId &&
-                                     m.customProperties?['responseId'] == msgResponseId);
+          return msgResponseId != null &&
+              _messages.any((m) =>
+                  _getMessageId(m) == _currentResponseFirstMessageId &&
+                  m.customProperties?['responseId'] == msgResponseId);
         });
         if (relatedMessages.isNotEmpty) {
-          latestResponseId = relatedMessages.first.customProperties?['responseId'] as String?;
+          latestResponseId =
+              relatedMessages.first.customProperties?['responseId'] as String?;
         }
       }
-      
+
       isPartOfResponseChain = latestResponseId != null;
     }
 
@@ -376,13 +382,13 @@ class ChatMessagesController extends ChangeNotifier {
         debugPrint('SCROLL ABORTED: Controller disposed');
         return;
       }
-      
+
       // Check if this operation is still the current one (prevents race conditions)
       if (_lastScrollOperation != operationId) {
         debugPrint('SCROLL ABORTED: Newer scroll operation in progress');
         return;
       }
-      
+
       // Make sure the widget is still mounted and the response ID hasn't changed
       if (_scrollController?.hasClients != true) {
         debugPrint('SCROLL ABORTED: Scroll controller no longer has clients');
@@ -489,7 +495,8 @@ class ChatMessagesController extends ChangeNotifier {
         return;
       }
 
-      debugPrint('SCROLLING: To message at index $index with ID $messageId, reverseOrder: ${paginationConfig.reverseOrder}');
+      debugPrint(
+          'SCROLLING: To message at index $index with ID $messageId, reverseOrder: ${paginationConfig.reverseOrder}');
 
       // Get configuration for animation timing
       final config = scrollBehaviorConfig;
@@ -497,11 +504,12 @@ class ChatMessagesController extends ChangeNotifier {
       // Use the same improved logic as forceScrollToFirstMessageInChain
       final maxExtent = _scrollController!.position.maxScrollExtent;
       final itemCount = _messages.length;
-      
-      debugPrint('SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
+
+      debugPrint(
+          'SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
 
       double targetPosition;
-      
+
       if (paginationConfig.reverseOrder) {
         // In reverse order mode (newest messages at bottom)
         if (index == 0) {
@@ -517,7 +525,8 @@ class ChatMessagesController extends ChangeNotifier {
           targetPosition = 0.0;
         } else {
           // Calculate position to show this message near the top of viewport
-          targetPosition = (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
+          targetPosition =
+              (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
         }
       }
 
@@ -741,7 +750,7 @@ class ChatMessagesController extends ChangeNotifier {
         // If we were streaming and now we're not, this is the end of stream
         final wasStreaming = _isCurrentlyStreaming;
         _isCurrentlyStreaming = false;
-        
+
         // Always notify listeners
         notifyListeners();
 
@@ -764,7 +773,7 @@ class ChatMessagesController extends ChangeNotifier {
             shouldScroll = false;
             break;
         }
-        
+
         if (shouldScroll && wasStreaming) {
           // For streaming end, use a longer delay to prevent assertion errors
           // Cancel any pending scroll timer first
@@ -901,7 +910,8 @@ class ChatMessagesController extends ChangeNotifier {
       final moreMessages = loadCallback != null
           ? await loadCallback()
           : _onLoadMoreMessagesCallback != null
-              ? await _onLoadMoreMessagesCallback!(_messages.isNotEmpty ? _messages.last : null)
+              ? await _onLoadMoreMessagesCallback!(
+                  _messages.isNotEmpty ? _messages.last : null)
               : <ChatMessage>[];
 
       if (moreMessages.isEmpty) {
@@ -986,8 +996,8 @@ class ChatMessagesController extends ChangeNotifier {
                 msg.customProperties?['isFirstResponseMessage'] == true),
         orElse: () => _messages.firstWhere(
           (msg) => msg.customProperties?['responseId'] == responseId,
-          orElse: () => throw Exception(
-              'No message found with responseId: $responseId'),
+          orElse: () =>
+              throw Exception('No message found with responseId: $responseId'),
         ),
       );
 
@@ -1012,11 +1022,12 @@ class ChatMessagesController extends ChangeNotifier {
       // Get list properties
       final maxExtent = _scrollController!.position.maxScrollExtent;
       final itemCount = _messages.length;
-      
-      debugPrint('SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
+
+      debugPrint(
+          'SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
 
       double targetPosition;
-      
+
       if (paginationConfig.reverseOrder) {
         // In reverse order mode (newest messages at bottom)
         // Index 0 = newest message (bottom), higher index = older messages (top)
@@ -1026,7 +1037,9 @@ class ChatMessagesController extends ChangeNotifier {
         } else {
           // Calculate position to show this message near the top of the viewport
           // Since it's reverse order, we need to scroll down more to see older messages
-          targetPosition = maxExtent * (index / itemCount) * 0.8; // Show near top of viewport
+          targetPosition = maxExtent *
+              (index / itemCount) *
+              0.8; // Show near top of viewport
         }
       } else {
         // In chronological mode (oldest messages at top)
@@ -1037,7 +1050,8 @@ class ChatMessagesController extends ChangeNotifier {
           targetPosition = 0.0;
         } else {
           // Calculate position to show this message near the top of viewport
-          targetPosition = (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
+          targetPosition =
+              (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
         }
       }
 
@@ -1076,18 +1090,18 @@ class ChatMessagesController extends ChangeNotifier {
     // Mark as unmounted to prevent race conditions
     _mounted = false;
     _isCurrentlyStreaming = false;
-    
+
     // Cancel any pending scroll timer to prevent memory leaks
     _pendingScrollTimer?.cancel();
     _pendingScrollTimer = null;
-    
+
     // Remove scroll listener to prevent memory leaks
     if (_scrollController != null && _scrollListener != null) {
       _scrollController!.removeListener(_scrollListener!);
     }
     _scrollController = null;
     _scrollListener = null;
-    
+
     _messages.clear();
     _messageCache.clear();
     super.dispose();

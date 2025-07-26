@@ -73,7 +73,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
   /// Build the futuristic file upload options bottom sheet
   Widget _buildFileUploadOptions(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -88,7 +88,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
           topRight: Radius.circular(24),
         ),
         border: Border.all(
-          color: isDarkMode 
+          color: isDarkMode
               ? const Color(0xFF374151).withOpacity(0.3)
               : const Color(0xFFE5E7EB),
           width: 1,
@@ -103,7 +103,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF374151)
                   : const Color(0xFFD1D5DB),
               borderRadius: BorderRadius.circular(2),
@@ -115,7 +115,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             child: Text(
               'Upload Options',
               style: TextStyle(
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFFF3F4F6)
                     : const Color(0xFF1F2937),
                 fontSize: 18,
@@ -199,16 +199,16 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
     required VoidCallback onTap,
   }) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       decoration: BoxDecoration(
-        color: isDarkMode 
+        color: isDarkMode
             ? const Color(0xFF1A1B23).withOpacity(0.6)
             : const Color(0xFFFFFFFF).withOpacity(0.8),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDarkMode 
+          color: isDarkMode
               ? const Color(0xFF374151).withOpacity(0.3)
               : const Color(0xFFE5E7EB),
           width: 1,
@@ -251,7 +251,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
                       Text(
                         title,
                         style: TextStyle(
-                          color: isDarkMode 
+                          color: isDarkMode
                               ? const Color(0xFFF3F4F6)
                               : const Color(0xFF1F2937),
                           fontSize: 16,
@@ -262,7 +262,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: isDarkMode 
+                          color: isDarkMode
                               ? const Color(0xFF6B7280)
                               : const Color(0xFF9CA3AF),
                           fontSize: 13,
@@ -274,7 +274,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
                 ),
                 Icon(
                   Icons.arrow_forward_ios_rounded,
-                  color: isDarkMode 
+                  color: isDarkMode
                       ? const Color(0xFF6B7280)
                       : const Color(0xFF9CA3AF),
                   size: 16,
@@ -604,7 +604,8 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
+      backgroundColor:
+          isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
       appBar: _buildFuturisticAppBar(context, appState, isDarkMode),
       body: AiChatWidget(
         // Required parameters
@@ -619,7 +620,8 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
         // Loading configuration with futuristic styling
         loadingConfig: LoadingConfig(
           isLoading: _isGenerating,
-          loadingIndicator: _isGenerating ? _buildFuturisticLoadingIndicator() : null,
+          loadingIndicator:
+              _isGenerating ? _buildFuturisticLoadingIndicator() : null,
         ),
 
         // Message customization with futuristic styling
@@ -631,8 +633,8 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Opened: ${media.fileName ?? 'File'}'),
-                backgroundColor: isDarkMode 
-                    ? const Color(0xFF1A1B23) 
+                backgroundColor: isDarkMode
+                    ? const Color(0xFF1A1B23)
                     : const Color(0xFF6366F1),
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
@@ -642,7 +644,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             );
           },
           bubbleStyle: BubbleStyle(
-            userBubbleColor: isDarkMode 
+            userBubbleColor: isDarkMode
                 ? const Color(0xFF1A1B23).withOpacity(0.6)
                 : const Color(0xFF6366F1).withOpacity(0.1),
             aiBubbleColor: isDarkMode
@@ -655,9 +657,8 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
         fileUploadOptions: FileUploadOptions(
           enabled: true,
           uploadIcon: Icons.cloud_upload_rounded,
-          uploadIconColor: isDarkMode 
-              ? const Color(0xFF00D4FF) 
-              : const Color(0xFF6366F1),
+          uploadIconColor:
+              isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
           uploadTooltip: 'Upload real files',
           onFilesSelected: _handleFileUpload,
           maxFilesPerMessage: 10,
@@ -672,15 +673,15 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
           decoration: InputDecoration(
             hintText: 'Message or upload real files...',
             hintStyle: TextStyle(
-              color: isDarkMode 
-                  ? const Color(0xFF6B7280) 
+              color: isDarkMode
+                  ? const Color(0xFF6B7280)
                   : const Color(0xFF9CA3AF),
               fontSize: 15,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF1F2937).withOpacity(0.6)
                     : const Color(0xFFE5E7EB),
                 width: 1,
@@ -689,7 +690,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF1F2937).withOpacity(0.6)
                     : const Color(0xFFE5E7EB),
                 width: 1,
@@ -698,22 +699,22 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF00D4FF)
                     : const Color(0xFF6366F1),
                 width: 2,
               ),
             ),
             filled: true,
-            fillColor: isDarkMode 
+            fillColor: isDarkMode
                 ? const Color(0xFF0F1419).withOpacity(0.8)
                 : const Color(0xFFFFFFFF).withOpacity(0.9),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           ),
           textStyle: TextStyle(
-            color: isDarkMode 
-                ? const Color(0xFFF3F4F6) 
-                : const Color(0xFF1F2937),
+            color:
+                isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
@@ -748,7 +749,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
           ),
           border: Border(
             bottom: BorderSide(
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF1F2937).withOpacity(0.3)
                   : const Color(0xFFE5E7EB),
               width: 1,
@@ -759,12 +760,12 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isDarkMode 
+          color: isDarkMode
               ? const Color(0xFF1A1B23).withOpacity(0.6)
               : const Color(0xFFFFFFFF).withOpacity(0.8),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDarkMode 
+            color: isDarkMode
                 ? const Color(0xFF374151).withOpacity(0.3)
                 : const Color(0xFFE5E7EB),
             width: 1,
@@ -773,9 +774,8 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_rounded,
-            color: isDarkMode 
-                ? const Color(0xFF00D4FF)
-                : const Color(0xFF6366F1),
+            color:
+                isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
             size: 18,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -798,9 +798,10 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: (isDarkMode 
-                      ? const Color(0xFF00D4FF) 
-                      : const Color(0xFF6366F1)).withOpacity(0.3),
+                  color: (isDarkMode
+                          ? const Color(0xFF00D4FF)
+                          : const Color(0xFF6366F1))
+                      .withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -819,7 +820,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
               Text(
                 'Real File Upload',
                 style: TextStyle(
-                  color: isDarkMode 
+                  color: isDarkMode
                       ? const Color(0xFFF3F4F6)
                       : const Color(0xFF1F2937),
                   fontSize: 16,
@@ -829,7 +830,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
               Text(
                 'Actual device files',
                 style: TextStyle(
-                  color: isDarkMode 
+                  color: isDarkMode
                       ? const Color(0xFF6B7280)
                       : const Color(0xFF9CA3AF),
                   fontSize: 12,
@@ -849,7 +850,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
               child: Icon(
                 isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
                 key: ValueKey(isDarkMode),
-                color: isDarkMode 
+                color: isDarkMode
                     ? const Color(0xFF00D4FF)
                     : const Color(0xFF6366F1),
                 size: 22,
@@ -864,7 +865,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
           child: IconButton(
             icon: Icon(
               Icons.refresh_rounded,
-              color: isDarkMode 
+              color: isDarkMode
                   ? const Color(0xFF00D4FF)
                   : const Color(0xFF6366F1),
               size: 22,
@@ -896,7 +897,7 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
   /// Build futuristic loading indicator
   Widget _buildFuturisticLoadingIndicator() {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return LoadingWidget(
       texts: [
         "Processing upload...",
@@ -904,10 +905,9 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
         "Generating response...",
         "Ready to assist...",
       ],
-      shimmerBaseColor: isDarkMode 
-          ? const Color(0xFF1F2937)
-          : const Color(0xFFE5E7EB),
-      shimmerHighlightColor: isDarkMode 
+      shimmerBaseColor:
+          isDarkMode ? const Color(0xFF1F2937) : const Color(0xFFE5E7EB),
+      shimmerHighlightColor: isDarkMode
           ? const Color(0xFF00D4FF).withOpacity(0.3)
           : const Color(0xFF6366F1).withOpacity(0.2),
     );

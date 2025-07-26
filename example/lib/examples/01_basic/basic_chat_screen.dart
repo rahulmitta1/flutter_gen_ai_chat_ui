@@ -71,7 +71,7 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   void dispose() {
     // Dispose the controller to avoid memory leaks
     _chatController.dispose();
-    _textController.dispose();  // Fix memory leak
+    _textController.dispose(); // Fix memory leak
     super.dispose();
   }
 
@@ -127,12 +127,16 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
     final appState = Provider.of<AppState>(context);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     // ChatGPT-inspired color scheme
-    final backgroundColor = isDark ? const Color(0xFF212121) : const Color(0xFFFFFFFF);
-    final surfaceColor = isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8);
-    final borderColor = isDark ? const Color(0xFF565869) : const Color(0xFFD1D5DB);
-    final accentColor = isDark ? const Color(0xFF10a37f) : const Color(0xFF10a37f);
+    final backgroundColor =
+        isDark ? const Color(0xFF212121) : const Color(0xFFFFFFFF);
+    final surfaceColor =
+        isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8);
+    final borderColor =
+        isDark ? const Color(0xFF565869) : const Color(0xFFD1D5DB);
+    final accentColor =
+        isDark ? const Color(0xFF10a37f) : const Color(0xFF10a37f);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -197,12 +201,8 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
               'Generating response...',
             ],
             interval: const Duration(seconds: 2),
-            shimmerBaseColor: isDark 
-                ? Colors.grey[700] 
-                : Colors.grey[300],
-            shimmerHighlightColor: isDark 
-                ? Colors.grey[600] 
-                : Colors.grey[100],
+            shimmerBaseColor: isDark ? Colors.grey[700] : Colors.grey[300],
+            shimmerHighlightColor: isDark ? Colors.grey[600] : Colors.grey[100],
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             textStyle: TextStyle(
               fontSize: 14,
@@ -229,7 +229,8 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
           containerDecoration: BoxDecoration(
             color: backgroundColor,
           ),
-          containerPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          containerPadding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           questionsSectionPadding: const EdgeInsets.all(16),
         ),
 
@@ -312,7 +313,8 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
             ),
             filled: true,
             fillColor: surfaceColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           ),
           textStyle: TextStyle(
             fontSize: 16,
@@ -326,26 +328,28 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
           showUserName: false,
           showTime: false,
           showCopyButton: true,
-          containerMargin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          containerMargin:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           bubbleStyle: BubbleStyle(
             // User messages - ChatGPT style (right aligned, darker)
-            userBubbleColor: isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8),
+            userBubbleColor:
+                isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8),
             userBubbleTopLeftRadius: 18,
             userBubbleTopRightRadius: 18,
             userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,
-            
+
             // AI messages - ChatGPT style (left aligned, different color)
             aiBubbleColor: isDark ? const Color(0xFF444654) : Colors.white,
             aiBubbleTopLeftRadius: 18,
             aiBubbleTopRightRadius: 18,
             aiBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,
-            
+
             // Shared properties
             bottomLeftRadius: 18,
             bottomRightRadius: 18,
             enableShadow: false,
-            
+
             // Copy button styling
             copyIconColor: isDark ? Colors.white60 : Colors.black54,
           ),
@@ -364,5 +368,4 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
       ),
     );
   }
-
 }

@@ -334,11 +334,6 @@ When an AI returns a long response in multiple parts, scrollToFirstResponseMessa
 2. Link related messages in a chain using a shared `'responseId'` property
 3. Set `scrollToFirstResponseMessage: true` in your configuration
 
-**For optimal scroll behavior with long responses:**
-1. Mark the first message in a response with `'isStartOfResponse': true`
-2. Link related messages in a chain using a shared `'responseId'` property
-3. Set `scrollToFirstResponseMessage: true` in your configuration
-
 ### Message Bubble Customization
 
 ```dart

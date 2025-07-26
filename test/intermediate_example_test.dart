@@ -65,7 +65,8 @@ void main() {
       expect(controller.messages.length, 1);
 
       // Add initial empty AI message for streaming
-      final streamingMessageId = 'streaming_${DateTime.now().millisecondsSinceEpoch}';
+      final streamingMessageId =
+          'streaming_${DateTime.now().millisecondsSinceEpoch}';
       final aiMessage = ChatMessage(
         text: '',
         user: aiUser,
@@ -78,7 +79,8 @@ void main() {
 
       controller.addMessage(aiMessage);
       expect(controller.messages.length, 2);
-      expect(controller.messages[0].text, ''); // Empty initially (newest message)
+      expect(
+          controller.messages[0].text, ''); // Empty initially (newest message)
 
       // Update with streaming text
       final words = ['Once', 'upon', 'a', 'time'];
@@ -86,7 +88,7 @@ void main() {
 
       for (var i = 0; i < words.length; i++) {
         accumulated += (i > 0 ? ' ' : '') + words[i];
-        
+
         controller.updateMessage(
           ChatMessage(
             text: accumulated,
@@ -101,12 +103,15 @@ void main() {
 
         // Should still have only 2 messages (user + AI)
         expect(controller.messages.length, 2);
-        expect(controller.messages[1].user.id, 'user123'); // User message still there (older)
-        expect(controller.messages[0].text, accumulated); // AI message updated (newer)
+        expect(controller.messages[1].user.id,
+            'user123'); // User message still there (older)
+        expect(controller.messages[0].text,
+            accumulated); // AI message updated (newer)
       }
 
       // Final check
-      expect(controller.messages[0].text, 'Once upon a time'); // AI message (newest)
+      expect(controller.messages[0].text,
+          'Once upon a time'); // AI message (newest)
     });
   });
 }

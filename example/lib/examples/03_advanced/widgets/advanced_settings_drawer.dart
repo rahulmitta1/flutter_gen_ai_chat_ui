@@ -39,8 +39,8 @@ class AdvancedSettingsDrawer extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: isDark 
-                ? Colors.white.withOpacityCompat(0.1) 
+            color: isDark
+                ? Colors.white.withOpacityCompat(0.1)
                 : Colors.black.withOpacityCompat(0.05),
             width: 1,
           ),

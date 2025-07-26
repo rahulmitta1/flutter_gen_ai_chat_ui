@@ -180,7 +180,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
         });
       }
     };
-    
+
     _textController.addListener(_textControllerListener!);
 
     // Set the scroll behavior configuration
