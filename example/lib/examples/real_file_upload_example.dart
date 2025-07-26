@@ -70,44 +70,220 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
     );
   }
 
-  /// Build the file upload options bottom sheet
+  /// Build the futuristic file upload options bottom sheet
   Widget _buildFileUploadOptions(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          leading: const Icon(Icons.camera_alt),
-          title: const Text('Take Photo'),
-          onTap: () {
-            Navigator.pop(context);
-            _pickImage(ImageSource.camera);
-          },
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDarkMode
+              ? [const Color(0xFF0A0A0F), const Color(0xFF1A1B23)]
+              : [const Color(0xFFF8F9FF), const Color(0xFFFFFFFF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        ListTile(
-          leading: const Icon(Icons.photo_library),
-          title: const Text('Choose from Gallery'),
-          onTap: () {
-            Navigator.pop(context);
-            _pickImage(ImageSource.gallery);
-          },
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
-        ListTile(
-          leading: const Icon(Icons.attach_file),
-          title: const Text('Upload Document'),
-          onTap: () {
-            Navigator.pop(context);
-            _pickFile();
-          },
+        border: Border.all(
+          color: isDarkMode 
+              ? const Color(0xFF374151).withOpacity(0.3)
+              : const Color(0xFFE5E7EB),
+          width: 1,
         ),
-        ListTile(
-          leading: const Icon(Icons.folder),
-          title: const Text('Upload Multiple Files'),
-          onTap: () {
-            Navigator.pop(context);
-            _pickMultipleFiles();
-          },
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: isDarkMode 
+                  ? const Color(0xFF374151)
+                  : const Color(0xFFD1D5DB),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Title
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'Upload Options',
+              style: TextStyle(
+                color: isDarkMode 
+                    ? const Color(0xFFF3F4F6)
+                    : const Color(0xFF1F2937),
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          _buildFuturisticUploadOption(
+            context,
+            icon: Icons.camera_alt_rounded,
+            title: 'Take Photo',
+            subtitle: 'Capture using camera',
+            gradient: const LinearGradient(
+              colors: [Color(0xFF10B981), Color(0xFF059669)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              _pickImage(ImageSource.camera);
+            },
+          ),
+          _buildFuturisticUploadOption(
+            context,
+            icon: Icons.photo_library_rounded,
+            title: 'Choose from Gallery',
+            subtitle: 'Pick from photo library',
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              _pickImage(ImageSource.gallery);
+            },
+          ),
+          _buildFuturisticUploadOption(
+            context,
+            icon: Icons.description_rounded,
+            title: 'Upload Document',
+            subtitle: 'PDF, Word, Excel files',
+            gradient: const LinearGradient(
+              colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              _pickFile();
+            },
+          ),
+          _buildFuturisticUploadOption(
+            context,
+            icon: Icons.folder_copy_rounded,
+            title: 'Multiple Files',
+            subtitle: 'Select multiple files at once',
+            gradient: const LinearGradient(
+              colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              _pickMultipleFiles();
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  /// Build a futuristic upload option tile
+  Widget _buildFuturisticUploadOption(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required LinearGradient gradient,
+    required VoidCallback onTap,
+  }) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      decoration: BoxDecoration(
+        color: isDarkMode 
+            ? const Color(0xFF1A1B23).withOpacity(0.6)
+            : const Color(0xFFFFFFFF).withOpacity(0.8),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDarkMode 
+              ? const Color(0xFF374151).withOpacity(0.3)
+              : const Color(0xFFE5E7EB),
+          width: 1,
         ),
-      ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: gradient,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: gradient.colors.first.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: isDarkMode 
+                              ? const Color(0xFFF3F4F6)
+                              : const Color(0xFF1F2937),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: isDarkMode 
+                              ? const Color(0xFF6B7280)
+                              : const Color(0xFF9CA3AF),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: isDarkMode 
+                      ? const Color(0xFF6B7280)
+                      : const Color(0xFF9CA3AF),
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -428,29 +604,273 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Real File Upload Example'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+      backgroundColor: isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
+      appBar: _buildFuturisticAppBar(context, appState, isDarkMode),
+      body: AiChatWidget(
+        // Required parameters
+        currentUser: _currentUser,
+        aiUser: _aiUser,
+        controller: _chatController,
+        onSendMessage: _handleSendMessage,
+
+        // Max width constraint
+        maxWidth: appState.chatMaxWidth,
+
+        // Loading configuration with futuristic styling
+        loadingConfig: LoadingConfig(
+          isLoading: _isGenerating,
+          loadingIndicator: _isGenerating ? _buildFuturisticLoadingIndicator() : null,
         ),
-        actions: [
-          // Theme toggle
-          IconButton(
-            icon: Icon(
-              appState.themeMode == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: appState.toggleTheme,
-            tooltip: 'Toggle theme',
+
+        // Message customization with futuristic styling
+        messageOptions: MessageOptions(
+          showUserName: true,
+          showTime: true,
+          enableImageTaps: true,
+          onMediaTap: (media) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Opened: ${media.fileName ?? 'File'}'),
+                backgroundColor: isDarkMode 
+                    ? const Color(0xFF1A1B23) 
+                    : const Color(0xFF6366F1),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            );
+          },
+          bubbleStyle: BubbleStyle(
+            userBubbleColor: isDarkMode 
+                ? const Color(0xFF1A1B23).withOpacity(0.6)
+                : const Color(0xFF6366F1).withOpacity(0.1),
+            aiBubbleColor: isDarkMode
+                ? const Color(0xFF0F1419).withOpacity(0.8)
+                : const Color(0xFFFFFFFF).withOpacity(0.9),
           ),
-          // Reset conversation
-          IconButton(
-            icon: const Icon(Icons.refresh),
+        ),
+
+        // File upload configuration with futuristic styling
+        fileUploadOptions: FileUploadOptions(
+          enabled: true,
+          uploadIcon: Icons.cloud_upload_rounded,
+          uploadIconColor: isDarkMode 
+              ? const Color(0xFF00D4FF) 
+              : const Color(0xFF6366F1),
+          uploadTooltip: 'Upload real files',
+          onFilesSelected: _handleFileUpload,
+          maxFilesPerMessage: 10,
+        ),
+
+        // Futuristic input field styling
+        inputOptions: InputOptions(
+          sendOnEnter: true,
+          sendButtonPadding: const EdgeInsets.only(right: 12),
+          sendButtonIconSize: 22,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: InputDecoration(
+            hintText: 'Message or upload real files...',
+            hintStyle: TextStyle(
+              color: isDarkMode 
+                  ? const Color(0xFF6B7280) 
+                  : const Color(0xFF9CA3AF),
+              fontSize: 15,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDarkMode 
+                    ? const Color(0xFF1F2937).withOpacity(0.6)
+                    : const Color(0xFFE5E7EB),
+                width: 1,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDarkMode 
+                    ? const Color(0xFF1F2937).withOpacity(0.6)
+                    : const Color(0xFFE5E7EB),
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDarkMode 
+                    ? const Color(0xFF00D4FF)
+                    : const Color(0xFF6366F1),
+                width: 2,
+              ),
+            ),
+            filled: true,
+            fillColor: isDarkMode 
+                ? const Color(0xFF0F1419).withOpacity(0.8)
+                : const Color(0xFFFFFFFF).withOpacity(0.9),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          ),
+          textStyle: TextStyle(
+            color: isDarkMode 
+                ? const Color(0xFFF3F4F6) 
+                : const Color(0xFF1F2937),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Build futuristic app bar
+  PreferredSizeWidget _buildFuturisticAppBar(
+    BuildContext context,
+    AppState appState,
+    bool isDarkMode,
+  ) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isDarkMode
+                ? [
+                    const Color(0xFF0A0A0F),
+                    const Color(0xFF1A1B23).withOpacity(0.8),
+                  ]
+                : [
+                    const Color(0xFFF8F9FF),
+                    const Color(0xFFFFFFFF).withOpacity(0.9),
+                  ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          border: Border(
+            bottom: BorderSide(
+              color: isDarkMode 
+                  ? const Color(0xFF1F2937).withOpacity(0.3)
+                  : const Color(0xFFE5E7EB),
+              width: 1,
+            ),
+          ),
+        ),
+      ),
+      leading: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isDarkMode 
+              ? const Color(0xFF1A1B23).withOpacity(0.6)
+              : const Color(0xFFFFFFFF).withOpacity(0.8),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDarkMode 
+                ? const Color(0xFF374151).withOpacity(0.3)
+                : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        child: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: isDarkMode 
+                ? const Color(0xFF00D4FF)
+                : const Color(0xFF6366F1),
+            size: 18,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+          padding: EdgeInsets.zero,
+        ),
+      ),
+      title: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isDarkMode
+                    ? [const Color(0xFF00D4FF), const Color(0xFF0EA5E9)]
+                    : [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: (isDarkMode 
+                      ? const Color(0xFF00D4FF) 
+                      : const Color(0xFF6366F1)).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.cloud_upload_rounded,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Real File Upload',
+                style: TextStyle(
+                  color: isDarkMode 
+                      ? const Color(0xFFF3F4F6)
+                      : const Color(0xFF1F2937),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                'Actual device files',
+                style: TextStyle(
+                  color: isDarkMode 
+                      ? const Color(0xFF6B7280)
+                      : const Color(0xFF9CA3AF),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 8),
+          child: IconButton(
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                key: ValueKey(isDarkMode),
+                color: isDarkMode 
+                    ? const Color(0xFF00D4FF)
+                    : const Color(0xFF6366F1),
+                size: 22,
+              ),
+            ),
+            onPressed: () => appState.toggleTheme(),
+            tooltip: isDarkMode ? 'Light Mode' : 'Dark Mode',
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          child: IconButton(
+            icon: Icon(
+              Icons.refresh_rounded,
+              color: isDarkMode 
+                  ? const Color(0xFF00D4FF)
+                  : const Color(0xFF6366F1),
+              size: 22,
+            ),
             onPressed: () {
               _chatController.clearMessages();
-              // Re-add welcome message
               _chatController.addMessage(
                 ChatMessage(
                   text: '# Real File Upload Example 📤\n\n'
@@ -468,70 +888,28 @@ class _RealFileUploadExampleState extends State<RealFileUploadExample> {
             },
             tooltip: 'Reset conversation',
           ),
-        ],
-      ),
-      body: AiChatWidget(
-        // Required parameters
-        currentUser: _currentUser,
-        aiUser: _aiUser,
-        controller: _chatController,
-        onSendMessage: _handleSendMessage,
-
-        // Max width constraint
-        maxWidth: appState.chatMaxWidth,
-
-        // Loading configuration
-        loadingConfig: LoadingConfig(
-          isLoading: _isGenerating,
         ),
+      ],
+    );
+  }
 
-        // Message customization
-        messageOptions: MessageOptions(
-          showUserName: true,
-          showTime: true,
-          enableImageTaps: true,
-          onMediaTap: (media) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Tapped on: ${media.fileName ?? 'File'}'),
-                backgroundColor: colorScheme.primaryContainer,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          },
-          bubbleStyle: BubbleStyle(
-            userBubbleColor: colorScheme.primaryContainer,
-            aiBubbleColor:
-                isDarkMode ? colorScheme.surfaceContainerHighest : colorScheme.surface,
-          ),
-        ),
-
-        // File upload configuration
-        fileUploadOptions: FileUploadOptions(
-          enabled: true,
-          uploadIcon: Icons.attach_file,
-          uploadIconColor: colorScheme.primary,
-          uploadTooltip: 'Upload Files',
-          onFilesSelected: _handleFileUpload,
-          maxFilesPerMessage: 5,
-        ),
-
-        // Input customization
-        inputOptions: InputOptions(
-          sendOnEnter: true,
-          decoration: InputDecoration(
-            hintText: 'Type a message or upload files...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: isDarkMode
-                ? colorScheme.surfaceContainerHighest
-                : colorScheme.surfaceContainerHigh,
-          ),
-        ),
-      ),
+  /// Build futuristic loading indicator
+  Widget _buildFuturisticLoadingIndicator() {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    return LoadingWidget(
+      texts: [
+        "Processing upload...",
+        "Analyzing file content...",
+        "Generating response...",
+        "Ready to assist...",
+      ],
+      shimmerBaseColor: isDarkMode 
+          ? const Color(0xFF1F2937)
+          : const Color(0xFFE5E7EB),
+      shimmerHighlightColor: isDarkMode 
+          ? const Color(0xFF00D4FF).withOpacity(0.3)
+          : const Color(0xFF6366F1).withOpacity(0.2),
     );
   }
 

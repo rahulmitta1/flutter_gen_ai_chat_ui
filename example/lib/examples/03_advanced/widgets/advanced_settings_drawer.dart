@@ -16,27 +16,37 @@ class AdvancedSettingsDrawer extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Drawer(
-      width: 320,
+      width: 340,
       backgroundColor: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
-          color: isDark
-              ? Colors.black.withOpacityCompat(0.85)
-              : Colors.white.withOpacityCompat(0.9),
+          gradient: LinearGradient(
+            colors: isDark
+                ? [const Color(0xFF1F2937), const Color(0xFF111827)]
+                : [const Color(0xFFFFFFFF), const Color(0xFFF8FAFC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            bottomLeft: Radius.circular(24),
+            topLeft: Radius.circular(28),
+            bottomLeft: Radius.circular(28),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacityCompat(0.2),
-              blurRadius: 20,
-              offset: const Offset(-5, 0),
+              color: Colors.black.withOpacityCompat(isDark ? 0.4 : 0.15),
+              blurRadius: 25,
+              offset: const Offset(-8, 0),
             ),
           ],
+          border: Border.all(
+            color: isDark 
+                ? Colors.white.withOpacityCompat(0.1) 
+                : Colors.black.withOpacityCompat(0.05),
+            width: 1,
+          ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Column(
             children: [
               _buildHeader(context),

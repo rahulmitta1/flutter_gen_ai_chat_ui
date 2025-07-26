@@ -28,6 +28,9 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   // Track loading state
   bool _isLoading = false;
 
+  // Text controller for input field (to fix memory leak)
+  late TextEditingController _textController;
+
   // Example questions for the welcome message
   final _exampleQuestions = [
     const ExampleQuestion(question: "What can you help me with?"),
@@ -45,6 +48,22 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
     // The controller's showWelcomeMessage property controls this
     _chatController.showWelcomeMessage = true;
 
+    // Initialize text controller
+    _textController = TextEditingController();
+    _textController.addListener(() {
+      if (_textController.text.endsWith('\n')) {
+        _textController.text = _textController.text.trim();
+        if (_textController.text.isNotEmpty) {
+          _handleSendMessage(ChatMessage(
+            text: _textController.text,
+            user: _currentUser,
+            createdAt: DateTime.now(),
+          ));
+          _textController.clear();
+        }
+      }
+    });
+
     // No initial messages added to chat
   }
 
@@ -52,26 +71,39 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   void dispose() {
     // Dispose the controller to avoid memory leaks
     _chatController.dispose();
+    _textController.dispose();  // Fix memory leak
     super.dispose();
   }
 
   /// Handle sending a user message and generating a response
   Future<void> _handleSendMessage(ChatMessage message) async {
+    // Prevent multiple concurrent requests
+    if (_isLoading) return;
+
     // Hide welcome message if it's currently shown
     if (_chatController.showWelcomeMessage) {
       _chatController.hideWelcomeMessage();
     }
 
-    // Add the user's message to the chat
+    // Add the user's message to the chat immediately
     _chatController.addMessage(message);
 
-    // Set loading state to show typing indicator
+    // Set loading state to show typing indicator (immediately like intermediate example)
     setState(() => _isLoading = true);
+
+    // Add a small delay for visual feedback
+    await Future.delayed(const Duration(milliseconds: 600));
 
     try {
       // Simulate API call to generate response
       final response = await _aiService.generateResponse(message.text,
           includeCodeBlock: false);
+
+      // Reset loading state before adding response
+      setState(() => _isLoading = false);
+
+      // Small delay to make the transition smoother
+      await Future.delayed(const Duration(milliseconds: 200));
 
       // Add the AI response to the chat
       _chatController.addMessage(
@@ -82,9 +114,10 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
           isMarkdown: response.isMarkdown,
         ),
       );
-    } finally {
-      // Reset loading state
+    } catch (error) {
+      // Reset loading state on error
       setState(() => _isLoading = false);
+      rethrow;
     }
   }
 
@@ -92,31 +125,55 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   Widget build(BuildContext context) {
     // Get app state for theme and settings
     final appState = Provider.of<AppState>(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // ChatGPT-inspired color scheme
+    final backgroundColor = isDark ? const Color(0xFF212121) : const Color(0xFFFFFFFF);
+    final surfaceColor = isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8);
+    final borderColor = isDark ? const Color(0xFF565869) : const Color(0xFFD1D5DB);
+    final accentColor = isDark ? const Color(0xFF10a37f) : const Color(0xFF10a37f);
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Basic Chat Example'),
+        backgroundColor: surfaceColor,
+        foregroundColor: isDark ? Colors.white : Colors.black87,
+        elevation: 0,
+        title: Text(
+          'ChatGPT',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: borderColor,
+          ),
+        ),
         actions: [
           // Theme toggle button
           IconButton(
             icon: Icon(
-              appState.themeMode == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
             ),
             onPressed: appState.toggleTheme,
             tooltip: 'Toggle theme',
           ),
           // Reset conversation button
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             onPressed: () {
               // Clear all messages
               _chatController.clearMessages();
               // Show the welcome message again
               _chatController.showWelcomeMessage = true;
             },
-            tooltip: 'Reset conversation',
+            tooltip: 'New conversation',
           ),
         ],
       ),
@@ -127,131 +184,185 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
         controller: _chatController,
         onSendMessage: _handleSendMessage,
 
-        // Loading state
+        // Max width for better readability
+        maxWidth: 600,
+
+        // Loading state with built-in shimmer
         loadingConfig: LoadingConfig(
           isLoading: _isLoading,
-          loadingIndicator: const LoadingWidget(
-            texts: [
-              'Generating response...',
+          loadingIndicator: LoadingWidget(
+            texts: const [
               'Thinking...',
-              'Loading...',
-              'Please wait...',
-              'Loading...',
+              'Processing your request...',
+              'Generating response...',
             ],
-            shimmerBaseColor: Colors.grey,
-            shimmerHighlightColor: Colors.black38,
-          ),
-        ),
-
-        // Welcome message configuration
-        welcomeMessageConfig: WelcomeMessageConfig(
-          title: "Welcome to the AI Chat",
-          titleStyle: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          questionsSectionTitle: "Try asking these questions:",
-          questionsSectionTitleStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          containerPadding: const EdgeInsets.all(24),
-          questionsSectionPadding: const EdgeInsets.all(16),
-          containerDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacityCompat(0.1),
-                blurRadius: 10,
-                spreadRadius: -5,
-              ),
-            ],
-            border: Border.all(
-              color:
-                  Theme.of(context).colorScheme.primary.withOpacityCompat(0.2),
-              width: 1.5,
+            interval: const Duration(seconds: 2),
+            shimmerBaseColor: isDark 
+                ? Colors.grey[700] 
+                : Colors.grey[300],
+            shimmerHighlightColor: isDark 
+                ? Colors.grey[600] 
+                : Colors.grey[100],
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            textStyle: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
         ),
 
-        // Example questions to display in the welcome message with enhanced styling
+        // Welcome message configuration (keeping it intact as requested)
+        welcomeMessageConfig: WelcomeMessageConfig(
+          title: "How can I help you today?",
+          titleStyle: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+          questionsSectionTitle: "Examples",
+          questionsSectionTitleStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: isDark ? Colors.white60 : Colors.black54,
+          ),
+          containerDecoration: BoxDecoration(
+            color: backgroundColor,
+          ),
+          containerPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          questionsSectionPadding: const EdgeInsets.all(16),
+        ),
+
+        // ChatGPT-style example questions
         exampleQuestions: _exampleQuestions
             .map((q) => ExampleQuestion(
                   question: q.question,
                   config: ExampleQuestionConfig(
-                    iconData: Icons.chat_bubble_outline_rounded,
+                    iconData: Icons.lightbulb_outline,
                     textStyle: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                     containerPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: 20,
+                      vertical: 16,
                     ),
-                    iconColor: Theme.of(context).colorScheme.primary,
+                    containerDecoration: BoxDecoration(
+                      color: surfaceColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: borderColor.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    iconColor: isDark ? Colors.white60 : Colors.black54,
+                    iconSize: 16,
                   ),
                 ))
             .toList(),
 
-        // Input configuration
+        // ChatGPT-style input field
         inputOptions: InputOptions(
-          containerPadding: const EdgeInsets.all(16),
-          materialPadding: const EdgeInsets.all(16),
-          minLines: 1,
-          maxLines: 4,
-          positionedBottom: 10,
-          positionedLeft: 10,
-          positionedRight: 10,
           unfocusOnTapOutside: false,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           sendOnEnter: true,
-          textInputAction: TextInputAction.send,
-          textController: _buildTextControllerWithEnterHandler(),
-          decoration: const InputDecoration(
-            hintText: 'Type a message...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
-              borderSide: BorderSide.none,
+          maxLines: 6,
+          minLines: 1,
+          textController: _textController,
+          sendButtonBuilder: (onSend) => Container(
+            margin: const EdgeInsets.only(left: 8),
+            child: Material(
+              color: accentColor,
+              borderRadius: BorderRadius.circular(6),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(6),
+                onTap: onSend,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.arrow_upward,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+          decoration: InputDecoration(
+            hintText: 'Message ChatGPT...',
+            hintStyle: TextStyle(
+              color: isDark ? Colors.white60 : Colors.black54,
+              fontSize: 16,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(24),
+              borderSide: BorderSide(color: borderColor, width: 1),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(24),
+              borderSide: BorderSide(color: borderColor, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(24),
+              borderSide: BorderSide(
+                color: borderColor,
+                width: 1.5,
+              ),
+            ),
             filled: true,
+            fillColor: surfaceColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          ),
+          textStyle: TextStyle(
+            fontSize: 16,
+            color: isDark ? Colors.white : Colors.black,
+            height: 1.4,
           ),
         ),
 
-        // Message styling
+        // ChatGPT-style message styling
         messageOptions: MessageOptions(
-          showUserName: true,
+          showUserName: false,
+          showTime: false,
+          showCopyButton: true,
+          containerMargin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           bubbleStyle: BubbleStyle(
-            userBubbleColor: Theme.of(context).colorScheme.primaryContainer,
-            aiBubbleColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest,
+            // User messages - ChatGPT style (right aligned, darker)
+            userBubbleColor: isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8),
+            userBubbleTopLeftRadius: 18,
+            userBubbleTopRightRadius: 18,
+            userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,
+            
+            // AI messages - ChatGPT style (left aligned, different color)
+            aiBubbleColor: isDark ? const Color(0xFF444654) : Colors.white,
+            aiBubbleTopLeftRadius: 18,
+            aiBubbleTopRightRadius: 18,
+            aiBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,
+            
+            // Shared properties
+            bottomLeftRadius: 18,
+            bottomRightRadius: 18,
+            enableShadow: false,
+            
+            // Copy button styling
+            copyIconColor: isDark ? Colors.white60 : Colors.black54,
+          ),
+          userTextColor: isDark ? Colors.white : Colors.black,
+          aiTextColor: isDark ? Colors.white : Colors.black,
+          textStyle: const TextStyle(
+            fontSize: 16,
+            height: 1.5,
+            fontWeight: FontWeight.w400,
           ),
         ),
 
-        // Enable animations based on app state
-        enableAnimation: appState.enableAnimation,
+        // Smooth animations
+        enableAnimation: true,
+        streamingDuration: const Duration(milliseconds: 50),
       ),
     );
   }
 
-  TextEditingController _buildTextControllerWithEnterHandler() {
-    final controller = TextEditingController();
-    controller.addListener(() {
-      if (controller.text.endsWith('\n')) {
-        controller.text = controller.text.trim();
-        if (controller.text.isNotEmpty) {
-          _handleSendMessage(ChatMessage(
-            text: controller.text,
-            user: _currentUser,
-            createdAt: DateTime.now(),
-          ));
-          controller.clear();
-        }
-      }
-    });
-    return controller;
-  }
 }

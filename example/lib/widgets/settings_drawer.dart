@@ -15,27 +15,37 @@ class SettingsDrawer extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Drawer(
-      width: 320,
+      width: 340,
       backgroundColor: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
-          color: isDarkMode
-              ? Colors.black.withOpacityCompat(0.85)
-              : Colors.white.withOpacityCompat(0.9),
+          gradient: LinearGradient(
+            colors: isDarkMode
+                ? [const Color(0xFF1F2937), const Color(0xFF111827)]
+                : [const Color(0xFFFFFFFF), const Color(0xFFF8FAFC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            bottomLeft: Radius.circular(24),
+            topLeft: Radius.circular(28),
+            bottomLeft: Radius.circular(28),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacityCompat(0.2),
-              blurRadius: 20,
-              offset: const Offset(-5, 0),
+              color: Colors.black.withOpacityCompat(isDarkMode ? 0.4 : 0.15),
+              blurRadius: 25,
+              offset: const Offset(-8, 0),
             ),
           ],
+          border: Border.all(
+            color: isDarkMode 
+                ? Colors.white.withOpacityCompat(0.1) 
+                : Colors.black.withOpacityCompat(0.05),
+            width: 1,
+          ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Column(
             children: [
               _buildHeader(context),
@@ -292,39 +302,73 @@ class SettingsDrawer extends StatelessWidget {
                 ),
               ),
 
-              // Footer
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Modern Footer
+              Container(
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: isDarkMode
+                        ? [const Color(0xFF374151), const Color(0xFF1F2937)]
+                        : [const Color(0xFFF1F5F9), const Color(0xFFE2E8F0)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDarkMode 
+                        ? Colors.white.withOpacityCompat(0.1) 
+                        : Colors.black.withOpacityCompat(0.06),
+                    width: 1,
+                  ),
+                ),
+                child: Column(
                   children: [
-                    Text(
-                      'Version 1.0.0',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isDarkMode
-                              ? Colors.grey.withOpacityCompat(0.4)
-                              : Colors.grey.withOpacityCompat(0.6)),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: colorScheme.primary.withOpacityCompat(0.5),
-                          width: 1,
+                    Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.auto_awesome_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'Dila UI',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.primary,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Flutter Gen AI Chat UI',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
+                                ),
+                              ),
+                              Text(
+                                'Version 2.3.0',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isDarkMode 
+                                      ? Colors.white.withOpacityCompat(0.6) 
+                                      : const Color(0xFF64748B),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -337,28 +381,25 @@ class SettingsDrawer extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+      padding: const EdgeInsets.fromLTRB(24, 60, 24, 28),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primary,
-            colorScheme.primary
-                .withValues(blue: (colorScheme.primary.b + 40).clamp(0, 255)),
-          ],
         ),
         borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
           bottomRight: Radius.circular(24),
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withOpacityCompat(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: const Color(0xFF4F46E5).withOpacityCompat(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -368,36 +409,64 @@ class SettingsDrawer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacityCompat(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Configuration',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Settings',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 26,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ],
               ),
               Container(
-                width: 40,
-                height: 40,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacityCompat(0.2),
-                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacityCompat(0.15),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.white.withOpacityCompat(0.2),
+                    width: 1,
+                  ),
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                   padding: EdgeInsets.zero,
-                  iconSize: 20,
+                  iconSize: 22,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Text(
-            'Customize your Dila chat experience',
+            'Customize your Gen AI Chat UI experience with these settings',
             style: TextStyle(
-              color: Colors.white.withOpacityCompat(0.8),
+              color: Colors.white.withOpacityCompat(0.85),
               fontSize: 14,
+              height: 1.4,
             ),
           ),
         ],
@@ -406,16 +475,34 @@ class SettingsDrawer extends StatelessWidget {
   }
 
   Widget _buildSectionHeader(BuildContext context, String title) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 24, bottom: 8, right: 20),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          letterSpacing: 0.5,
-        ),
+      padding: const EdgeInsets.only(left: 24, top: 28, bottom: 12, right: 24),
+      child: Row(
+        children: [
+          Container(
+            width: 3,
+            height: 16,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -429,36 +516,66 @@ class SettingsDrawer extends StatelessWidget {
     required IconData icon,
     required Color color,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: isDarkMode 
+            ? Colors.white.withOpacityCompat(0.05) 
+            : Colors.black.withOpacityCompat(0.02),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDarkMode 
+              ? Colors.white.withOpacityCompat(0.1) 
+              : Colors.black.withOpacityCompat(0.06),
+          width: 1,
+        ),
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         leading: Container(
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: color.withOpacityCompat(0.1),
-            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [
+                color.withOpacityCompat(0.2),
+                color.withOpacityCompat(0.1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: color.withOpacityCompat(0.3),
+              width: 1,
+            ),
           ),
-          child: Icon(icon, color: color),
+          child: Icon(icon, color: color, size: 22),
         ),
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+            color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
+          ),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
             fontSize: 12,
-            color: Theme.of(context).textTheme.bodySmall?.color,
+            color: isDarkMode 
+                ? Colors.white.withOpacityCompat(0.7) 
+                : const Color(0xFF64748B),
+            height: 1.3,
           ),
         ),
         trailing: Switch.adaptive(
           value: value,
           onChanged: onChanged,
           activeColor: color,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),
     );

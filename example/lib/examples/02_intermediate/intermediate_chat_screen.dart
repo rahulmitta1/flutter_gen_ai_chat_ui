@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_state.dart';
-import '../../services/ai_service.dart';
 
 /// Intermediate example of Flutter Gen AI Chat UI demonstrating streaming text responses
 /// and additional customization options.
@@ -18,46 +18,29 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
   // Chat controller to manage messages
   final _chatController = ChatMessagesController();
 
-  // Service to generate AI responses (removed unused field)
-  // final _aiService = AiService();
-
   // User definitions
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(
     id: 'ai123',
-    firstName: 'AI Assistant',
-    avatar: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff',
+    firstName: 'Claude',
+    avatar: 'https://ui-avatars.com/api/?name=Claude&background=6366f1&color=fff',
   );
 
   // Streaming state management
   bool _isGenerating = false;
-  String _currentText = '';
   bool _useStreaming = true;
-
-  // Example questions
-  final _exampleQuestions = [
-    const ExampleQuestion(question: "What can you help me with?"),
-    const ExampleQuestion(question: "Show me a code example"),
-    const ExampleQuestion(question: "How does streaming text work?"),
-    const ExampleQuestion(question: "Tell me about markdown support"),
-  ];
 
   @override
   void initState() {
     super.initState();
 
-    // Add welcome message
+    // Add Claude-style welcome message
     _chatController.addMessage(
       ChatMessage(
-        text: '# Welcome to the Intermediate Example! 👋\n\n'
-            'This example demonstrates more advanced features:\n\n'
-            '- **Markdown formatting** with rich text\n'
-            '- **Streaming responses** with typing animation\n'
-            '- **File uploads** for images and documents\n\n'
-            'Try sending a message or uploading a file!',
+        text: 'Hello! I\'m Claude, an AI assistant. I can help you with a wide variety of tasks like analysis, math, coding, creative writing, and thoughtful conversation.\n\nHow can I assist you today?',
         user: _aiUser,
         createdAt: DateTime.now(),
-        isMarkdown: true,
+        isMarkdown: false,
       ),
     );
   }
@@ -68,61 +51,14 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
     super.dispose();
   }
 
-  /// Handle uploading files - this is just a UI demo
-  void _handleFileUpload(List<Object> files) {
-    // For demonstration, we'll simulate a file upload with a mock response
-    // In a real app, you would process the files and upload them to your backend
-
-    // Show demo file message from the user
-    final message = ChatMessage(
-      text: 'I\'ve attached a file for you.',
-      user: _currentUser,
-      createdAt: DateTime.now(),
-      // Add a mock file attachment
-      media: [
-        ChatMedia(
-          url: 'https://www.example.com/document.pdf',
-          type: ChatMediaType.document,
-          fileName: 'document.pdf',
-          size: 1024 * 1024 * 2, // 2MB
-          extension: 'pdf',
-        ),
-      ],
-    );
-
-    _chatController.addMessage(message);
-
-    // Simulate AI response about the file
-    setState(() => _isGenerating = true);
-
-    Future.delayed(const Duration(seconds: 1), () {
-      final aiResponse = ChatMessage(
-        text:
-            'I\'ve received your PDF file. It appears to be 2MB in size. Would you like me to analyze it for you?',
-        user: _aiUser,
-        createdAt: DateTime.now(),
-        // Add a reference to the same file
-        media: [
-          ChatMedia(
-            url: 'https://www.example.com/document.pdf',
-            type: ChatMediaType.document,
-            fileName: 'document.pdf',
-            size: 1024 * 1024 * 2, // 2MB
-            extension: 'pdf',
-          ),
-        ],
-      );
-
-      _chatController.addMessage(aiResponse);
-      setState(() => _isGenerating = false);
-    });
-  }
 
   /// Handle sending a message and generating a streaming response
   Future<void> _handleSendMessage(ChatMessage message) async {
+    // Add the user message first
+    _chatController.addMessage(message);
+
     // Reset streaming state
     setState(() {
-      _currentText = '';
       _isGenerating = true;
     });
 
@@ -130,16 +66,24 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (_useStreaming) {
-      // Create an empty message to update incrementally
+      // Create an empty message to update incrementally with a stable ID
+      final messageId = 'ai_${DateTime.now().millisecondsSinceEpoch}';
       final aiMessage = ChatMessage(
         text: '',
         user: _aiUser,
         createdAt: DateTime.now(),
         isMarkdown: true,
+        customProperties: {
+          'id': messageId,
+          'isStreaming': true,
+        },
       );
 
       // Add the empty message to the chat
       _chatController.addMessage(aiMessage);
+
+      // Wait a bit longer for the UI to settle and scroll properly
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Generate a response word by word
       final words = _generateResponse(message.text).split(' ');
@@ -147,17 +91,31 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
 
       for (var i = 0; i < words.length; i++) {
         // Simulate typing latency
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 80));
 
         // Append the next word
         accumulatedText = accumulatedText + (i > 0 ? ' ' : '') + words[i];
 
-        // Update state and message
-        setState(() => _currentText = accumulatedText);
-
+        // Update the message with the same ID to ensure proper streaming
+        final isLastWord = i >= words.length - 1;
         _chatController.updateMessage(
-          aiMessage.copyWith(text: accumulatedText),
+          ChatMessage(
+            text: accumulatedText,
+            user: _aiUser,
+            createdAt: aiMessage.createdAt,  // Keep the same creation time
+            isMarkdown: true,
+            customProperties: {
+              'id': messageId,  // Use the same ID
+              'isStreaming': !isLastWord,  // Mark as not streaming on last word
+            },
+          ),
         );
+
+        // Add a longer delay to ensure proper scroll positioning
+        // This prevents rapid updates that confuse the scroll controller
+        if (i < words.length - 1) {
+          await Future.delayed(const Duration(milliseconds: 20));
+        }
       }
     } else {
       // Just add the complete response
@@ -176,16 +134,33 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
     setState(() => _isGenerating = false);
   }
 
-  // Generate a markdown response based on the user's input
+  // Generate a Claude-style response based on the user's input
   String _generateResponse(String input) {
-    // Simple response generation for demonstration
     var lowercaseInput = input.toLowerCase();
     if (lowercaseInput.contains('hello') ||
         lowercaseInput.contains('hi') ||
         lowercaseInput.contains('hey')) {
-      return "# Hello there! 👋\n\nGreat to meet you. I'm an AI assistant ready to help with:\n\n- Answering questions\n- Generating content\n- Providing information\n\nWhat can I help you with today?";
-    } else if (lowercaseInput.contains('markdown')) {
-      return "# Markdown Support\n\nThis chat UI supports rich markdown formatting, including:\n\n## Headings\n\n### And sub-headings\n\n**Bold text** and *italic text*\n\n- Bullet points\n- In a list\n\n1. Numbered lists\n2. Are also supported\n\n```dart\n// Code blocks with syntax highlighting\nvoid main() {\n  print('Hello, World!');\n}\n```\n\n> Blockquotes for important information\n\nTry it yourself!";
+      return "Hello! It's nice to meet you. I'm here to help with whatever you need - whether that's answering questions, helping with analysis, creative writing, coding, or just having a thoughtful conversation. What would you like to explore today?";
+    } 
+    
+    else if (lowercaseInput.contains('help') && lowercaseInput.contains('email')) {
+      return "I'd be happy to help you write an email! To get started, could you tell me:\n\n• Who is the email for?\n• What's the main purpose or topic?\n• What tone would you like (formal, casual, etc.)?\n• Any specific points you want to include?\n\nOnce I know these details, I can draft something for you to review and refine.";
+    }
+    
+    else if (lowercaseInput.contains('quantum') && lowercaseInput.contains('computing')) {
+      return "Quantum computing is a fascinating field that leverages quantum mechanical phenomena to process information in fundamentally different ways than classical computers.\n\n**Key Concepts:**\n\n• **Qubits**: Unlike classical bits (0 or 1), qubits can exist in \"superposition\" - simultaneously 0 and 1 until measured\n\n• **Entanglement**: Qubits can be correlated in ways that classical particles cannot, allowing coordinated behavior across distances\n\n• **Quantum Gates**: Operations that manipulate qubits, analogous to logic gates in classical computing\n\n**Potential Applications:**\n- Cryptography and security\n- Drug discovery and molecular modeling\n- Financial optimization\n- Machine learning acceleration\n\nThe field is still emerging, with companies like IBM, Google, and others making significant progress. Would you like me to dive deeper into any particular aspect?";
+    }
+    
+    else if (lowercaseInput.contains('python') && lowercaseInput.contains('function')) {
+      return "I'd be happy to help you write a Python function! Here's a simple example to get started:\n\n```python\ndef greet_user(name, greeting=\"Hello\"):\n    \"\"\"\n    Greets a user with a personalized message.\n    \n    Args:\n        name (str): The user's name\n        greeting (str): The greeting to use (default: \"Hello\")\n    \n    Returns:\n        str: A formatted greeting message\n    \"\"\"\n    return f\"{greeting}, {name}! Welcome to our application.\"\n\n# Example usage\nmessage = greet_user(\"Alice\")\nprint(message)  # Output: Hello, Alice! Welcome to our application.\n```\n\nThis function demonstrates:\n• Parameter handling with defaults\n• Docstring documentation\n• F-string formatting\n• Return values\n\nWhat specific functionality would you like your function to have? I can help you build something more tailored to your needs.";
+    }
+    
+    else if (lowercaseInput.contains('analyze') && lowercaseInput.contains('data')) {
+      return "I can definitely help with data analysis! I'm able to:\n\n**Statistical Analysis:**\n• Descriptive statistics and summaries\n• Hypothesis testing\n• Correlation and regression analysis\n• Time series analysis\n\n**Data Processing:**\n• Cleaning and preprocessing\n• Transformation and normalization\n• Handling missing values\n• Feature engineering\n\n**Visualization Guidance:**\n• Choosing appropriate chart types\n• Creating meaningful visualizations\n• Interpreting results\n\n**Tools I can help with:**\n• Python (pandas, numpy, matplotlib, seaborn)\n• R for statistical computing\n• SQL for database queries\n• Excel for simpler analyses\n\nWhat kind of data are you working with? If you can share some details about your dataset or analysis goals, I can provide more specific guidance.";
+    }
+    
+    else if (lowercaseInput.contains('markdown')) {
+      return "This interface supports **Markdown formatting** for rich text display! Here are some key features:\n\n## Text Formatting\n**Bold text** and *italic text*\n~~Strikethrough text~~\n\n## Lists\n• Bulleted lists\n• Multiple items\n• Easy to read\n\n1. Numbered lists\n2. Sequential items\n3. Well organized\n\n## Code\nInline `code snippets` and full code blocks:\n\n```python\n# Python example\nfor i in range(3):\n    print(f\"Hello, world {i}!\")\n```\n\n## Quotes\n> \"Markdown makes formatting text intuitive and readable.\"\n\nThe formatting renders beautifully in both light and dark modes. Try using some Markdown in your next message!";
     } else if (lowercaseInput.contains('streaming') ||
         lowercaseInput.contains('typing')) {
       return "# Streaming Text\n\nThe chat UI supports streaming responses word by word, creating a realistic typing effect. This is done by:\n\n1. Creating an empty message\n2. Continuously updating it with new words\n3. Using the `updateMessage` method\n\nThis creates a natural conversational feel and lets users start reading responses as they're being generated.";
@@ -195,18 +170,42 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
         lowercaseInput.contains('document')) {
       return "# File Upload Support\n\nThis chat UI supports file attachments like:\n\n- Images (PNG, JPEG, GIF)\n- Documents (PDF, DOC, XLS)\n- Audio files\n- Video files\n\nThe UI provides default display components for each file type, with customization options for:\n\n- Custom file previews\n- File size limits\n- Allowed file types\n- Custom upload buttons\n\nThe actual file processing is handled by your app code.";
     } else {
-      return "Thanks for your message! This is a demonstration of markdown formatting in the chat UI.\n\n```dart\n// Here's some example code\nclass Example {\n  final String name;\n  \n  Example(this.name);\n  \n  void greet() {\n    print('Hello, \$name!');\n  }\n}\n```\n\nYou can customize the appearance of these messages using the `MessageOptions` class.";
+      return "I'm here to help with a wide range of tasks! Whether you need assistance with writing, analysis, coding, creative projects, or just want to explore ideas through conversation, I'm ready to assist.\n\nSome things I'm particularly good at:\n• Breaking down complex problems\n• Providing detailed explanations\n• Creative and technical writing\n• Code review and debugging\n• Research and analysis\n• Brainstorming and ideation\n\nWhat would you like to work on together?";
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // Claude-inspired color scheme
+    final backgroundColor = isDark ? const Color(0xFF1a1a1a) : const Color(0xFFFAFAFA);
+    final surfaceColor = isDark ? const Color(0xFF2d2d2d) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF404040) : const Color(0xFFE5E5E5);
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Intermediate Example'),
+        backgroundColor: surfaceColor,
+        foregroundColor: isDark ? Colors.white : Colors.black87,
+        elevation: 0,
+        title: Text(
+          'Claude-Style Chat',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: isDark ? Colors.white : Colors.black87,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: borderColor,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -215,9 +214,7 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
           // Theme toggle
           IconButton(
             icon: Icon(
-              appState.themeMode == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+              appState.isDarkMode(context) ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
             ),
             onPressed: appState.toggleTheme,
             tooltip: 'Toggle theme',
@@ -225,171 +222,342 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
           // Streaming toggle
           IconButton(
             icon: Icon(
-              appState.isStreaming ? Icons.autorenew : Icons.text_fields,
+              _useStreaming ? Icons.pause_outlined : Icons.play_arrow_outlined,
             ),
-            onPressed: appState.toggleStreaming,
-            tooltip: 'Toggle streaming',
+            onPressed: () {
+              setState(() => _useStreaming = !_useStreaming);
+            },
+            tooltip: _useStreaming ? 'Disable streaming' : 'Enable streaming',
           ),
           // Reset conversation
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             onPressed: () {
               _chatController.clearMessages();
               // Re-add welcome message
               _chatController.addMessage(
                 ChatMessage(
-                  text: '# Welcome to the Intermediate Example! 👋\n\n'
-                      'This example demonstrates more advanced features:\n\n'
-                      '- **Markdown formatting** with rich text\n'
-                      '- **Streaming responses** with typing animation\n'
-                      '- **File uploads** for images and documents\n\n'
-                      'Try sending a message or uploading a file!',
+                  text: 'Hello! I\'m Claude, an AI assistant. I can help you with a wide variety of tasks like analysis, math, coding, creative writing, and thoughtful conversation.\n\nHow can I assist you today?',
                   user: _aiUser,
                   createdAt: DateTime.now(),
-                  isMarkdown: true,
+                  isMarkdown: false,
                 ),
               );
             },
-            tooltip: 'Reset conversation',
-          ),
-          // Toggle for streaming mode
-          Row(
-            children: [
-              const Text('Stream'),
-              Switch(
-                value: _useStreaming,
-                onChanged: (value) {
-                  setState(() => _useStreaming = value);
-                },
-              ),
-            ],
+            tooltip: 'New conversation',
           ),
         ],
       ),
-      body: AiChatWidget(
+      body: SafeArea(
+        child: AiChatWidget(
         // Required parameters
         currentUser: _currentUser,
         aiUser: _aiUser,
         controller: _chatController,
         onSendMessage: _handleSendMessage,
 
-        // Max width constraint from app state
-        maxWidth: appState.chatMaxWidth,
+        // Max width constraint - Claude style
+        maxWidth: 768,
 
         // Loading configuration
         loadingConfig: LoadingConfig(
           isLoading: _isGenerating,
-          loadingIndicator:
-              _isGenerating ? _buildCustomLoadingIndicator(colorScheme) : null,
+          loadingIndicator: _isGenerating 
+              ? _buildClaudeStyleLoadingIndicator(isDark) 
+              : null,
         ),
 
         // Enable streaming markdown rendering
-        enableMarkdownStreaming: appState.isStreaming,
-        streamingDuration: const Duration(milliseconds: 10),
+        enableMarkdownStreaming: _useStreaming,
+        streamingDuration: const Duration(milliseconds: 30),
 
-        // Welcome message config
-        welcomeMessageConfig: WelcomeMessageConfig(
-          title: "Interactive AI Chat Example",
-          questionsSectionTitle: "Try asking:",
-          containerDecoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                colorScheme.primaryContainer,
-                colorScheme.primary.withOpacityCompat(0.1 * 255),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: colorScheme.primary.withOpacityCompat(0.3 * 255),
-              width: 1.5,
-            ),
-          ),
+        // Configure scroll behavior for smooth streaming experience
+        scrollBehaviorConfig: const ScrollBehaviorConfig(
+          autoScrollBehavior: AutoScrollBehavior.onNewMessage, // Only scroll on new messages, not during streaming updates
+          scrollToFirstResponseMessage: true, // Scroll to first message of response to keep it visible
+          scrollAnimationDuration: Duration(milliseconds: 200),
+          scrollAnimationCurve: Curves.easeOut,
         ),
 
-        // Example questions
-        exampleQuestions: _exampleQuestions,
-        persistentExampleQuestions: appState.persistentExampleQuestions,
+        // Welcome message config - Claude style
+        welcomeMessageConfig: WelcomeMessageConfig(
+          title: "Claude",
+          titleStyle: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w300,
+            color: isDark ? Colors.white : Colors.black87,
+            letterSpacing: -0.5,
+          ),
+          questionsSectionTitle: "Here are some things I can help with:",
+          questionsSectionTitleStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: isDark ? Colors.white70 : Colors.black54,
+          ),
+          containerDecoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(0),
+          ),
+          containerPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+        ),
 
-        // Input customization
+        // Example questions - Claude style
+        exampleQuestions: [
+          const ExampleQuestion(question: "Help me write an email"),
+          const ExampleQuestion(question: "Explain quantum computing"),
+          const ExampleQuestion(question: "Write a Python function"),
+          const ExampleQuestion(question: "Analyze this data"),
+        ].map((q) => ExampleQuestion(
+          question: q.question,
+          config: ExampleQuestionConfig(
+            containerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            containerDecoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1),
+            ),
+            textStyle: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            iconData: Icons.chat_bubble_outline,
+            iconColor: isDark ? Colors.white54 : Colors.black54,
+            iconSize: 18,
+            trailingIconData: Icons.arrow_forward,
+            trailingIconColor: isDark ? Colors.white38 : Colors.black38,
+            trailingIconSize: 16,
+          ),
+        )).toList(),
+
+        // Input customization - Claude style
         inputOptions: InputOptions(
           unfocusOnTapOutside: false,
-          margin: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           sendOnEnter: true,
-          sendButtonPadding: const EdgeInsets.only(right: 8),
-          sendButtonIconSize: 24,
+          maxLines: 8,
+          minLines: 1,
+          sendButtonBuilder: (onSend) => Container(
+            margin: const EdgeInsets.only(left: 8),
+            child: Material(
+              color: isDark ? Colors.white : Colors.black87,
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: onSend,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.arrow_upward,
+                    size: 20,
+                    color: isDark ? Colors.black : Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
           decoration: InputDecoration(
-            hintText: 'Ask anything...',
+            hintText: 'Message Claude...',
+            hintStyle: TextStyle(
+              color: isDark ? Colors.white54 : Colors.black54,
+              fontSize: 16,
+            ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor, width: 1),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isDark ? Colors.white : Colors.black87,
+                width: 1.5,
+              ),
             ),
             filled: true,
-            fillColor: colorScheme.surfaceContainerHighest
-                .withOpacityCompat(0.8 * 255),
-
-            // suffixIcon: const Icon(Icons.send_rounded),
+            fillColor: surfaceColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          ),
+          textStyle: TextStyle(
+            fontSize: 16,
+            color: isDark ? Colors.white : Colors.black87,
+            height: 1.4,
           ),
         ),
 
-        // Message customization
+        // Message customization - Claude style
         messageOptions: MessageOptions(
-          showUserName: true,
-          showTime: true,
-          timeFormat: (dateTime) => '${dateTime.hour}:${dateTime.minute}',
+          showUserName: false,
+          showTime: false,
+          showCopyButton: true,
+          containerMargin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           bubbleStyle: BubbleStyle(
-            userBubbleColor: colorScheme.primaryContainer,
-            aiBubbleColor: colorScheme.surfaceContainerHighest,
+            // User messages - right aligned with darker color
+            userBubbleColor: isDark ? const Color(0xFF3d3d3d) : const Color(0xFFF0F0F0),
+            userBubbleTopLeftRadius: 18,
+            userBubbleTopRightRadius: 4,
+            userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.8,
+            
+            // AI messages - left aligned, clean background
+            aiBubbleColor: surfaceColor,
+            aiBubbleTopLeftRadius: 4,
+            aiBubbleTopRightRadius: 18,
+            aiBubbleMaxWidth: MediaQuery.of(context).size.width * 0.9,
+            
+            // Shared properties
+            bottomLeftRadius: 18,
+            bottomRightRadius: 18,
+            enableShadow: false,
+            
+            // Copy button styling
+            copyIconColor: isDark ? Colors.white70 : Colors.black54,
+          ),
+          userTextColor: isDark ? Colors.white : Colors.black87,
+          aiTextColor: isDark ? Colors.white : Colors.black87,
+          textStyle: const TextStyle(
+            fontSize: 16,
+            height: 1.5,
+            fontWeight: FontWeight.w400,
+          ),
+          markdownStyleSheet: MarkdownStyleSheet(
+            p: TextStyle(
+              fontSize: 16,
+              height: 1.5,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            code: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 14,
+              backgroundColor: isDark 
+                  ? const Color(0xFF1e1e1e) 
+                  : const Color(0xFFF5F5F5),
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            codeblockDecoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1e1e1e) : const Color(0xFFF5F5F5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: borderColor),
+            ),
+            h1: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            h2: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            h3: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            blockquote: TextStyle(
+              fontSize: 16,
+              fontStyle: FontStyle.italic,
+              color: isDark ? Colors.white70 : Colors.black54,
+            ),
+            listBullet: TextStyle(
+              color: isDark ? Colors.white : Colors.black87,
+            ),
           ),
         ),
 
         // Animation settings
-        enableAnimation: appState.enableAnimation,
+        enableAnimation: true,
 
-        // Add file upload support
-        fileUploadOptions: FileUploadOptions(
-          enabled: true,
-          uploadIconColor: Theme.of(context).colorScheme.primary,
-          onFilesSelected: _handleFileUpload,
-          uploadTooltip: 'Upload files',
+        // File upload - Claude style
+        fileUploadOptions: const FileUploadOptions(
+          enabled: false, // Disable for cleaner Claude-like interface
+        ),
         ),
       ),
     );
   }
 
-  /// Custom typing indicator with blinking dots
-  Widget _buildCustomLoadingIndicator(ColorScheme colorScheme) {
-    return LoadingWidget(
-      texts: [
-        "Generating response...",
-        "Thinking...",
-        "Loading...",
-        "Please wait...",
-        "Loading data...",
-        "Processing...",
-        "Please wait...",
-      ],
-      shimmerBaseColor: colorScheme.primary,
-      shimmerHighlightColor: colorScheme.primaryContainer,
+  /// Claude-style loading indicator
+  Widget _buildClaudeStyleLoadingIndicator(bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF3d3d3d) : const Color(0xFFF0F0F0),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.smart_toy_outlined,
+                size: 16,
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF2d2d2d) : Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(18),
+                  bottomLeft: Radius.circular(18),
+                  bottomRight: Radius.circular(18),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTypingDot(delay: 0),
+                  const SizedBox(width: 4),
+                  _buildTypingDot(delay: 0.15),
+                  const SizedBox(width: 4),
+                  _buildTypingDot(delay: 0.3),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  /// Blinking animation for typing indicator dots
-  Widget _buildBlinkingDot({required Duration duration}) {
+  /// Individual typing dot animation
+  Widget _buildTypingDot({required double delay}) {
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.4, end: 1.0),
-      duration: duration,
+      duration: const Duration(milliseconds: 600),
+      tween: Tween(begin: 0.3, end: 1.0),
+      onEnd: () {
+        if (mounted) {
+          setState(() {}); // Restart animation
+        }
+      },
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
-          child: child,
+          child: Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white54
+                  : Colors.black54,
+              shape: BoxShape.circle,
+            ),
+          ),
         );
-      },
-      child: Container(),
-      onEnd: () {
-        setState(() {}); // Trigger rebuild to restart animation
       },
     );
   }
+
+
 }

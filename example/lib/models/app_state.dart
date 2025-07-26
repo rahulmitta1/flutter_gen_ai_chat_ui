@@ -31,13 +31,26 @@ class AppState extends ChangeNotifier {
         _themeMode = ThemeMode.dark;
         break;
       case ThemeMode.dark:
-        _themeMode = ThemeMode.system;
+        _themeMode = ThemeMode.light; // Direct toggle between light and dark
         break;
       case ThemeMode.system:
-        _themeMode = ThemeMode.light;
+        // When coming from system mode, switch to the opposite of current system theme
+        _themeMode = ThemeMode.dark; // Default to dark when leaving system mode
         break;
     }
     notifyListeners();
+  }
+
+  // Get effective theme for UI icon display
+  bool isDarkMode(BuildContext context) {
+    switch (_themeMode) {
+      case ThemeMode.light:
+        return false;
+      case ThemeMode.dark:
+        return true;
+      case ThemeMode.system:
+        return MediaQuery.of(context).platformBrightness == Brightness.dark;
+    }
   }
 
   void setThemeMode(ThemeMode mode) {
