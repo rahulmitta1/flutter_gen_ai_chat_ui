@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../controllers/chat_messages_controller.dart';
 import '../models/chat/models.dart';
@@ -628,26 +628,22 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-        sizedImageBuilder: widget.messageOptions.enableImageTaps
-            ? null // Use default sizedImageBuilder which allows taps
-            : (config) {
-                // Custom sizedImageBuilder that blocks taps
+        imageBuilder: widget.messageOptions.enableImageTaps
+            ? null // Use default imageBuilder which allows taps
+            : (uri, title, alt) {
+                // Custom imageBuilder that blocks taps
                 return GestureDetector(
                   onTap: widget.messageOptions.onImageTap != null
                       ? () => widget.messageOptions.onImageTap!(
-                            config.uri.toString(),
-                            config.title,
-                            config.alt,
+                            uri.toString(),
+                            title,
+                            alt,
                           )
                       : null,
                   child: Image.network(
-                    config.uri.toString(),
-                    width: config.width,
-                    height: config.height,
+                    uri.toString(),
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        width: config.width,
-                        height: config.height,
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
@@ -660,9 +656,9 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                               Icons.broken_image,
                               color: Colors.grey[600],
                             ),
-                            if (config.alt != null)
+                            if (alt != null)
                               Text(
-                                config.alt!,
+                                alt,
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                   fontSize: 12,

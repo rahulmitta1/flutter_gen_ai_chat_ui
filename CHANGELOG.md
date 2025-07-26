@@ -1,3 +1,21 @@
+## 2.3.3 - [2025-01-26] Critical Dependency Update - Professional Quality Release
+
+### Fixed
+- **Breaking Dependency Issue**: Replaced discontinued `flutter_markdown` package with `flutter_markdown_plus` for continued support and updates
+- **API Compatibility**: Updated all markdown-related code to work seamlessly with `flutter_markdown_plus` API
+- **Pub.dev Score Optimization**: Eliminated discontinued dependency warnings that negatively impact package scoring
+
+### Improved
+- **Future-Proof Dependencies**: All dependencies are now actively maintained and supported
+- **Enhanced Package Reliability**: No more dependency deprecation warnings or security concerns
+- **Better Developer Experience**: Smoother installation and usage without discontinued package warnings
+
+### Technical Improvements
+- Migrated from `flutter_markdown ^0.7.7` to `flutter_markdown_plus ^1.0.3`
+- Updated all import statements across library and example code
+- Fixed `imageBuilder` API changes for custom image handling
+- Maintained full backward compatibility for existing implementations
+
 ## 2.3.2 - [2025-01-26] Professional Quality Release - Comprehensive Package Improvements
 
 ### Fixed
