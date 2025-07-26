@@ -1,3 +1,24 @@
+## 2.3.2 - [2025-01-26] Professional Quality Release - Comprehensive Package Improvements
+
+### Fixed
+- **Critical Memory Leak**: Fixed timer memory leak in ChatMessagesController that was causing test failures and potential production issues
+- **Enhanced UI Layouts**: Improved example app interfaces with better responsive design and accessibility
+- **Code Quality**: Resolved multiple code quality issues and improved package stability
+- **Testing Reliability**: Fixed all failing tests and improved test coverage for streaming functionality
+
+### Improved
+- **Example App Design**: Enhanced all example screens with better layouts, improved accessibility, and professional styling
+- **Scroll Behavior**: Optimized scroll behavior in intermediate example with better streaming message positioning
+- **AppBar Layout**: Fixed responsive design issues in advanced example AppBar with proper title and button sizing
+- **Home Screen**: Improved example discovery with better text visibility and optimized information density
+- **Documentation**: Updated internal documentation and improved code comments for better maintainability
+
+### Technical Improvements
+- Enhanced timer management in ChatMessagesController with proper disposal patterns
+- Improved widget lifecycle handling in scroll behavior examples
+- Better error handling and state management in streaming examples
+- Optimized example app performance with reduced unnecessary rebuilds
+
 ## 2.3.0 - [2024-07-12] File Upload & Media Attachments
 
 ### Added

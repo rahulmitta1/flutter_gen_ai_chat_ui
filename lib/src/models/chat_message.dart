@@ -28,6 +28,10 @@ class ChatMessage {
         user: user ?? this.user,
         createdAt: createdAt ?? this.createdAt,
         isMarkdown: isMarkdown ?? this.isMarkdown,
-        customProperties: customProperties ?? this.customProperties,
+        customProperties: customProperties != null 
+            ? Map<String, dynamic>.from(customProperties) 
+            : this.customProperties != null 
+                ? Map<String, dynamic>.from(this.customProperties!)
+                : null,
       );
 }

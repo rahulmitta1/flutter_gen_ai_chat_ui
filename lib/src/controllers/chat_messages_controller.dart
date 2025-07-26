@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/ai_chat_config.dart';
@@ -9,6 +10,16 @@ import '../models/chat/models.dart';
 /// and loading more messages. It also manages the welcome message state
 /// and loading states for pagination.
 class ChatMessagesController extends ChangeNotifier {
+  // Track if the controller is still mounted to prevent race conditions
+  bool _mounted = true;
+  bool get mounted => _mounted;
+
+  // Track streaming state to prevent scroll issues
+  bool _isCurrentlyStreaming = false;
+  
+  /// Whether a message is currently being streamed
+  bool get isCurrentlyStreaming => _isCurrentlyStreaming;
+
   /// Creates a new chat messages controller.
   ///
   /// [initialMessages] - Optional list of messages to initialize the chat with.
@@ -66,6 +77,8 @@ class ChatMessagesController extends ChangeNotifier {
   bool _hasMoreMessages = true;
   int _currentPage = 1;
   ScrollController? _scrollController;
+  VoidCallback? _scrollListener;
+  Timer? _pendingScrollTimer;
 
   /// The ID of the first message in the current AI response
   String? _currentResponseFirstMessageId;
@@ -80,13 +93,19 @@ class ChatMessagesController extends ChangeNotifier {
   /// Add this property at the top of the class with other properties
   DateTime _lastScrollTime = DateTime.now();
   int _scrollDebounceMs = 500; // Default debounce time
+  String? _lastScrollOperation; // Track the last scroll operation to prevent conflicts
 
   /// Sets the scroll controller for auto-scrolling
   void setScrollController(ScrollController controller) {
+    // Remove the old listener if it exists
+    if (_scrollController != null && _scrollListener != null) {
+      _scrollController!.removeListener(_scrollListener!);
+    }
+    
     _scrollController = controller;
 
-    // Add listener to detect manual scrolling
-    _scrollController?.addListener(() {
+    // Create and add new listener to detect manual scrolling
+    _scrollListener = () {
       if (_scrollController?.hasClients == true) {
         // If user is dragging or a manual scroll action is happening
         if (_scrollController!.position.isScrollingNotifier.value) {
@@ -106,7 +125,9 @@ class ChatMessagesController extends ChangeNotifier {
           });
         }
       }
-    });
+    };
+    
+    _scrollController?.addListener(_scrollListener!);
   }
 
   /// Whether more messages are currently being loaded.
@@ -138,7 +159,7 @@ class ChatMessagesController extends ChangeNotifier {
   String _getMessageId(ChatMessage message) {
     final customId = message.customProperties?['id'] as String?;
     return customId ??
-        '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}_${message.text.hashCode}';
+        '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}';
   }
 
   /// Public method to get a message ID (for testing/debugging)
@@ -264,19 +285,24 @@ class ChatMessagesController extends ChangeNotifier {
 
   /// Determines if scrolling should occur based on configuration and message type
   bool _determineShouldScroll(ScrollBehaviorConfig config, bool isUserMessage, bool isFirstResponse) {
+    // If this is a user message, always scroll (user messages should be visible)
+    if (isUserMessage) {
+      debugPrint('SCROLL DECISION: User message - will scroll');
+      return true;
+    }
+
     switch (config.autoScrollBehavior) {
       case AutoScrollBehavior.always:
         debugPrint('SCROLL DECISION: Always mode - will scroll');
         return true;
       case AutoScrollBehavior.onNewMessage:
-        final shouldScroll = isUserMessage || isFirstResponse;
+        final shouldScroll = isFirstResponse;
         debugPrint(
-            'SCROLL DECISION: onNewMessage mode - ${shouldScroll ? "will scroll" : "will NOT scroll"}');
+            'SCROLL DECISION: onNewMessage mode - ${shouldScroll ? "will scroll (first response)" : "will NOT scroll (continuation)"}');
         return shouldScroll;
       case AutoScrollBehavior.onUserMessageOnly:
-        debugPrint(
-            'SCROLL DECISION: onUserMessageOnly mode - ${isUserMessage ? "will scroll" : "will NOT scroll"}');
-        return isUserMessage;
+        debugPrint('SCROLL DECISION: onUserMessageOnly mode - will NOT scroll (AI message)');
+        return false;
       case AutoScrollBehavior.never:
         debugPrint('SCROLL DECISION: Never scroll mode - will NOT scroll');
         return false;
@@ -286,12 +312,18 @@ class ChatMessagesController extends ChangeNotifier {
   /// Scroll after the message is rendered
   void _scrollAfterRender(
       bool isUserMessage, bool isStartOfResponse, ScrollBehaviorConfig config) {
+    // Create a unique operation ID for this scroll request
+    final operationId = 'scroll_${DateTime.now().millisecondsSinceEpoch}';
+    
     // Apply debounce for scrolling to prevent jitter
     final now = DateTime.now();
     if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
       debugPrint('SCROLL AFTER RENDER DEBOUNCED: Too soon after last scroll');
       return;
     }
+
+    // Set this as the current operation
+    _lastScrollOperation = operationId;
 
     // Store the current response ID to prevent re-scrolling if it changes during the delay
     final currentResponseId = _currentResponseFirstMessageId;
@@ -301,7 +333,7 @@ class ChatMessagesController extends ChangeNotifier {
     String? latestResponseId;
 
     if (_messages.isNotEmpty) {
-      // Look for responseId in the most recent message
+      // Look for responseId in the most recent message first
       if (paginationConfig.reverseOrder) {
         latestResponseId =
             _messages.first.customProperties?['responseId'] as String?;
@@ -309,6 +341,22 @@ class ChatMessagesController extends ChangeNotifier {
         latestResponseId =
             _messages.last.customProperties?['responseId'] as String?;
       }
+      
+      // If the latest message doesn't have a responseId, but we're tracking a current response,
+      // check if the current message being added has the same responseId as the tracked response
+      if (latestResponseId == null && _currentResponseFirstMessageId != null) {
+        // Look for messages with the same responseId as the current tracked response
+        final relatedMessages = _messages.where((msg) {
+          final msgResponseId = msg.customProperties?['responseId'] as String?;
+          return msgResponseId != null && 
+                 _messages.any((m) => _getMessageId(m) == _currentResponseFirstMessageId &&
+                                     m.customProperties?['responseId'] == msgResponseId);
+        });
+        if (relatedMessages.isNotEmpty) {
+          latestResponseId = relatedMessages.first.customProperties?['responseId'] as String?;
+        }
+      }
+      
       isPartOfResponseChain = latestResponseId != null;
     }
 
@@ -323,6 +371,18 @@ class ChatMessagesController extends ChangeNotifier {
 
     // Longer delay to ensure messages have time to render
     Future.delayed(scrollDelay, () {
+      // Check if the controller is still mounted (prevents race conditions)
+      if (!mounted) {
+        debugPrint('SCROLL ABORTED: Controller disposed');
+        return;
+      }
+      
+      // Check if this operation is still the current one (prevents race conditions)
+      if (_lastScrollOperation != operationId) {
+        debugPrint('SCROLL ABORTED: Newer scroll operation in progress');
+        return;
+      }
+      
       // Make sure the widget is still mounted and the response ID hasn't changed
       if (_scrollController?.hasClients != true) {
         debugPrint('SCROLL ABORTED: Scroll controller no longer has clients');
@@ -340,21 +400,31 @@ class ChatMessagesController extends ChangeNotifier {
           'latestResponseId=$latestResponseId, '
           'autoScrollBehavior=${config.autoScrollBehavior.name}');
 
-      // Handle scrolling to first message in a more direct way
+      // Handle scrolling to first message - only scroll to first when appropriate
       if (!isUserMessage &&
           config.scrollToFirstResponseMessage &&
-          isPartOfResponseChain &&
-          latestResponseId != null) {
-        // Use our direct approach for more reliable scrolling
+          latestResponseId != null &&
+          isStartOfResponse) {
+        // Only scroll to first message if this is the START of a response
+        // This prevents later messages in the chain from overriding the scroll position
         debugPrint(
-            'USING DIRECT FORCE SCROLL to responseId: $latestResponseId');
+            'AUTO SCROLL TO FIRST: responseId=$latestResponseId, isStartOfResponse=$isStartOfResponse');
 
-        // If in onNewMessage mode, use a smoother animation
-        if (config.autoScrollBehavior == AutoScrollBehavior.onNewMessage) {
-          _scrollDebounceMs = 800; // Increase debounce for onNewMessage
-        } else {
-          _scrollDebounceMs = 500; // Default debounce
-        }
+        // Use longer debounce for response chains to prevent conflicts
+        _scrollDebounceMs = 800;
+
+        forceScrollToFirstMessageInChain(latestResponseId);
+        hasScrolled = true;
+      }
+      // Handle continuation messages in a response chain
+      else if (!isUserMessage &&
+          config.scrollToFirstResponseMessage &&
+          latestResponseId != null &&
+          isPartOfResponseChain &&
+          !isStartOfResponse) {
+        // For continuation messages, also scroll to first to maintain position
+        debugPrint(
+            'MAINTAIN SCROLL TO FIRST: responseId=$latestResponseId, maintaining first message position');
 
         forceScrollToFirstMessageInChain(latestResponseId);
         hasScrolled = true;
@@ -419,62 +489,48 @@ class ChatMessagesController extends ChangeNotifier {
         return;
       }
 
-      debugPrint('SCROLLING: To message at index $index with ID $messageId');
+      debugPrint('SCROLLING: To message at index $index with ID $messageId, reverseOrder: ${paginationConfig.reverseOrder}');
 
       // Get configuration for animation timing
       final config = scrollBehaviorConfig;
 
-      // Calculate position based on item index
+      // Use the same improved logic as forceScrollToFirstMessageInChain
+      final maxExtent = _scrollController!.position.maxScrollExtent;
+      final itemCount = _messages.length;
+      
+      debugPrint('SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
+
+      double targetPosition;
+      
       if (paginationConfig.reverseOrder) {
-        // In reverse mode (newest at bottom)
+        // In reverse order mode (newest messages at bottom)
         if (index == 0) {
-          // If it's the newest message, scroll to the start (which is "bottom" in reverse mode)
-          debugPrint('REVERSE MODE: Scrolling to newest message (0.0)');
-          _scrollController!.animateTo(
-            0.0,
-            duration: config.scrollAnimationDuration,
-            curve: config.scrollAnimationCurve,
-          );
+          targetPosition = 0.0; // Show the newest message (at bottom)
         } else {
-          // Find 1/3 of the way through the list for a good position to show the message
-          final maxExtent = _scrollController!.position.maxScrollExtent;
-          final visibleHeight = _scrollController!.position.viewportDimension;
-          final itemCount = _messages.length;
-
-          // Get approximate position (1/3 of the way through)
-          // For index closer to 0, we'll be closer to the top
-          final position =
-              maxExtent * (index / itemCount) + (visibleHeight * 0.3);
-
-          debugPrint(
-              'REVERSE MODE: Scrolling to position ${position.clamp(0.0, maxExtent)}');
-
-          _scrollController!.animateTo(
-            position.clamp(0.0, maxExtent),
-            duration: config.scrollAnimationDuration,
-            curve: config.scrollAnimationCurve,
-          );
+          // Calculate position to show this message near the top of the viewport
+          targetPosition = maxExtent * (index / itemCount) * 0.8;
         }
       } else {
-        // In chronological mode (oldest at top)
-        final maxExtent = _scrollController!.position.maxScrollExtent;
-        final visibleHeight = _scrollController!.position.viewportDimension;
-        final itemCount = _messages.length;
-
-        // Get approximate position (2/3 of the way through)
-        // For index closer to itemCount, we'll be closer to the bottom
-        final position =
-            maxExtent * (index / itemCount) - (visibleHeight * 0.3);
-
-        debugPrint(
-            'CHRONOLOGICAL MODE: Scrolling to position ${position.clamp(0.0, maxExtent)}');
-
-        _scrollController!.animateTo(
-          position.clamp(0.0, maxExtent),
-          duration: config.scrollAnimationDuration,
-          curve: config.scrollAnimationCurve,
-        );
+        // In chronological mode (oldest messages at top)
+        if (index < itemCount * 0.2) {
+          // If message is in first 20% of list, scroll to top
+          targetPosition = 0.0;
+        } else {
+          // Calculate position to show this message near the top of viewport
+          targetPosition = (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
+        }
       }
+
+      // Clamp to valid range
+      targetPosition = targetPosition.clamp(0.0, maxExtent);
+
+      debugPrint('SCROLLING: To position $targetPosition');
+
+      _scrollController!.animateTo(
+        targetPosition,
+        duration: config.scrollAnimationDuration,
+        curve: config.scrollAnimationCurve,
+      );
     } catch (e) {
       debugPrint('ERROR SCROLLING: $e');
       // Do not scroll to bottom as fallback - this causes the double-scroll issue
@@ -676,36 +732,59 @@ class ChatMessagesController extends ChangeNotifier {
         _messageCache[messageId] = updatedMessage;
       }
 
-      // Notify listeners about the change
-      notifyListeners();
+      // Safe notification and scrolling strategy
+      if (isStreaming) {
+        _isCurrentlyStreaming = true;
+        // For streaming: just notify, no scrolling to prevent assertion errors
+        notifyListeners();
+      } else {
+        // If we were streaming and now we're not, this is the end of stream
+        final wasStreaming = _isCurrentlyStreaming;
+        _isCurrentlyStreaming = false;
+        
+        // Always notify listeners
+        notifyListeners();
 
-      // Only scroll if configured to do so based on behavior and message type
-      final config = scrollBehaviorConfig;
-      var shouldScroll = false;
-      switch (config.autoScrollBehavior) {
-        case AutoScrollBehavior.always:
-          shouldScroll = true;
-          break;
-        case AutoScrollBehavior.onNewMessage:
-          // Only scroll on truly new messages (index == -1)
-          shouldScroll = index == -1;
-          break;
-        case AutoScrollBehavior.onUserMessageOnly:
-          shouldScroll = isUserMessage;
-          break;
-        case AutoScrollBehavior.never:
-          shouldScroll = false;
-          break;
-      }
-      if (shouldScroll) {
-        _scrollAfterRender(isUserMessage, false, config);
+        // Only scroll if configured to do so and not during rapid updates
+        final config = scrollBehaviorConfig;
+        var shouldScroll = false;
+        switch (config.autoScrollBehavior) {
+          case AutoScrollBehavior.always:
+            // For streaming end, scroll after a delay to prevent assertion errors
+            shouldScroll = true;
+            break;
+          case AutoScrollBehavior.onNewMessage:
+            // Only scroll on truly new messages (index == -1) or when streaming ends
+            shouldScroll = index == -1 || wasStreaming;
+            break;
+          case AutoScrollBehavior.onUserMessageOnly:
+            shouldScroll = isUserMessage;
+            break;
+          case AutoScrollBehavior.never:
+            shouldScroll = false;
+            break;
+        }
+        
+        if (shouldScroll && wasStreaming) {
+          // For streaming end, use a longer delay to prevent assertion errors
+          // Cancel any pending scroll timer first
+          _pendingScrollTimer?.cancel();
+          _pendingScrollTimer = Timer(const Duration(milliseconds: 500), () {
+            if (mounted && _scrollController?.hasClients == true) {
+              _scrollAfterRender(isUserMessage, false, config);
+            }
+            _pendingScrollTimer = null;
+          });
+        } else if (shouldScroll) {
+          _scrollAfterRender(isUserMessage, false, config);
+        }
       }
     } catch (e) {
       debugPrint('Error updating message: $e');
       // If updating fails, try to add as a new message instead
       try {
         final newId =
-            '${message.user.id}_${DateTime.now().millisecondsSinceEpoch}_${message.text.hashCode}';
+            '${message.user.id}_${DateTime.now().millisecondsSinceEpoch}';
         final messageWithId = ChatMessage(
           text: message.text,
           user: message.user,
@@ -899,93 +978,116 @@ class ChatMessagesController extends ChangeNotifier {
     debugPrint('SCROLL ANIMATION INFO: $animationInfo');
 
     try {
-      // Directly animate to the target position without abrupt jumps
+      // Find the first message with this responseId
+      final firstMessageInChain = _messages.firstWhere(
+        (msg) =>
+            msg.customProperties?['responseId'] == responseId &&
+            (msg.customProperties?['isStartOfResponse'] == true ||
+                msg.customProperties?['isFirstResponseMessage'] == true),
+        orElse: () => _messages.firstWhere(
+          (msg) => msg.customProperties?['responseId'] == responseId,
+          orElse: () => throw Exception(
+              'No message found with responseId: $responseId'),
+        ),
+      );
 
-      // Then find the first message with this responseId after a brief delay
-      // Use longer delay for onNewMessage mode to allow UI to settle
-      final delay = scrollBehaviorConfig.autoScrollBehavior ==
-              AutoScrollBehavior.onNewMessage
-          ? const Duration(milliseconds: 150)
-          : const Duration(milliseconds: 50);
+      // Find the index of this message
+      final index = _messages.indexOf(firstMessageInChain);
+      if (index < 0) {
+        debugPrint('FORCE SCROLL: Message not found in list');
+        return;
+      }
 
-      Future.delayed(delay, () {
-        try {
-          // Find the first message with this responseId
-          final firstMessageInChain = _messages.firstWhere(
-            (msg) =>
-                msg.customProperties?['responseId'] == responseId &&
-                (msg.customProperties?['isStartOfResponse'] == true ||
-                    msg.customProperties?['isFirstResponseMessage'] == true),
-            orElse: () => _messages.firstWhere(
-              (msg) => msg.customProperties?['responseId'] == responseId,
-              orElse: () => throw Exception(
-                  'No message found with responseId: $responseId'),
-            ),
-          );
+      debugPrint(
+          'FORCE SCROLL: Found first message in chain at index $index with responseId: $responseId, reverseOrder: ${paginationConfig.reverseOrder}');
 
-          // Find the index of this message
-          final index = _messages.indexOf(firstMessageInChain);
-          if (index < 0) return;
+      // Always use animation when testing different animation curves
+      final scrollDuration = scrollBehaviorConfig.scrollAnimationDuration;
+      final scrollCurve = scrollBehaviorConfig.scrollAnimationCurve;
 
-          debugPrint(
-              'FORCE SCROLL: Found first message in chain at index $index with responseId: $responseId');
+      debugPrint(
+          'APPLYING ANIMATION: duration=${scrollDuration.inMilliseconds}ms, curve=$scrollCurve');
 
-          // Always use animation when testing different animation curves
-          final scrollDuration = scrollBehaviorConfig.scrollAnimationDuration;
-          final scrollCurve = scrollBehaviorConfig.scrollAnimationCurve;
+      // Use a simple approach: scroll to a calculated position based on message index
+      // Get list properties
+      final maxExtent = _scrollController!.position.maxScrollExtent;
+      final itemCount = _messages.length;
+      
+      debugPrint('SCROLL INFO: maxExtent=$maxExtent, itemCount=$itemCount, messageIndex=$index');
 
-          debugPrint(
-              'APPLYING ANIMATION: duration=${scrollDuration.inMilliseconds}ms, curve=$scrollCurve');
-
-          // Force a scroll to ensure we're at the right position
-          if (paginationConfig.reverseOrder) {
-            // Calculate a position for reverse order (newest at bottom)
-            final maxExtent = _scrollController!.position.maxScrollExtent;
-            final itemCount = _messages.length;
-
-            if (index == 0) {
-              // If it's the newest message, scroll to top
-              _scrollController!.animateTo(
-                0.0,
-                duration: scrollDuration,
-                curve: scrollCurve,
-              );
-            } else {
-              // Approximate position (newer messages are closer to top)
-              final position = maxExtent * (index / itemCount);
-              _scrollController!.animateTo(
-                position.clamp(0.0, maxExtent),
-                duration: scrollDuration,
-                curve: scrollCurve,
-              );
-            }
-          } else {
-            // This is chronological mode (oldest at top)
-            final maxExtent = _scrollController!.position.maxScrollExtent;
-            final itemCount = _messages.length;
-
-            // Approximate position based on index
-            final position = maxExtent * (index / itemCount);
-            _scrollController!.animateTo(
-              position.clamp(0.0, maxExtent),
-              duration: scrollDuration,
-              curve: scrollCurve,
-            );
-          }
-
-          debugPrint(
-              'FORCE SCROLL: Animated to position for first message in chain using ${scrollCurve.runtimeType}');
-        } catch (e) {
-          debugPrint('ERROR FORCE SCROLLING TO CHAIN: $e');
+      double targetPosition;
+      
+      if (paginationConfig.reverseOrder) {
+        // In reverse order mode (newest messages at bottom)
+        // Index 0 = newest message (bottom), higher index = older messages (top)
+        // We want to show the first message of the response, so scroll towards the top
+        if (index == 0) {
+          targetPosition = 0.0; // Show the newest message (at bottom)
+        } else {
+          // Calculate position to show this message near the top of the viewport
+          // Since it's reverse order, we need to scroll down more to see older messages
+          targetPosition = maxExtent * (index / itemCount) * 0.8; // Show near top of viewport
         }
-      });
+      } else {
+        // In chronological mode (oldest messages at top)
+        // Index 0 = oldest message (top), higher index = newer messages (bottom)
+        // We want to show the first message of the response near the top
+        if (index < itemCount * 0.2) {
+          // If message is in first 20% of list, scroll to top
+          targetPosition = 0.0;
+        } else {
+          // Calculate position to show this message near the top of viewport
+          targetPosition = (maxExtent * (index / itemCount)) - (maxExtent * 0.2);
+        }
+      }
+
+      // Clamp to valid range
+      targetPosition = targetPosition.clamp(0.0, maxExtent);
+
+      debugPrint(
+          'FORCE SCROLL: Scrolling to position $targetPosition (reverse: ${paginationConfig.reverseOrder})');
+
+      _scrollController!.animateTo(
+        targetPosition,
+        duration: scrollDuration,
+        curve: scrollCurve,
+      );
+
+      debugPrint(
+          'FORCE SCROLL: Animation started to first message in chain using ${scrollCurve.runtimeType}');
     } catch (e) {
-      debugPrint('ERROR FORCE SCROLLING: $e');
+      debugPrint('ERROR FORCE SCROLLING TO CHAIN: $e');
+      // Fallback: just scroll to top to show the beginning of messages
+      try {
+        _scrollController!.animateTo(
+          0.0,
+          duration: scrollBehaviorConfig.scrollAnimationDuration,
+          curve: scrollBehaviorConfig.scrollAnimationCurve,
+        );
+        debugPrint('FALLBACK SCROLL: Scrolled to top as fallback');
+      } catch (fallbackError) {
+        debugPrint('FALLBACK SCROLL ERROR: $fallbackError');
+      }
     }
   }
 
   @override
   void dispose() {
+    // Mark as unmounted to prevent race conditions
+    _mounted = false;
+    _isCurrentlyStreaming = false;
+    
+    // Cancel any pending scroll timer to prevent memory leaks
+    _pendingScrollTimer?.cancel();
+    _pendingScrollTimer = null;
+    
+    // Remove scroll listener to prevent memory leaks
+    if (_scrollController != null && _scrollListener != null) {
+      _scrollController!.removeListener(_scrollListener!);
+    }
+    _scrollController = null;
+    _scrollListener = null;
+    
     _messages.clear();
     _messageCache.clear();
     super.dispose();

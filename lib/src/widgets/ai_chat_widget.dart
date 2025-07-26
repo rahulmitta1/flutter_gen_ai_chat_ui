@@ -154,6 +154,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
   late TextEditingController _textController;
   late FocusNode _inputFocusNode;
   bool _isComposing = false;
+  VoidCallback? _textControllerListener;
 
   @override
   void initState() {
@@ -170,14 +171,17 @@ class _AiChatWidgetState extends State<AiChatWidget>
         widget.inputOptions?.textController ?? TextEditingController();
     _inputFocusNode = FocusNode();
 
-    _textController.addListener(() {
+    // Create and store the listener to prevent memory leaks
+    _textControllerListener = () {
       final isComposing = _textController.text.isNotEmpty;
       if (isComposing != _isComposing) {
         setState(() {
           _isComposing = isComposing;
         });
       }
-    });
+    };
+    
+    _textController.addListener(_textControllerListener!);
 
     // Set the scroll behavior configuration
     if (widget.scrollBehaviorConfig != null) {
@@ -680,8 +684,8 @@ class _AiChatWidgetState extends State<AiChatWidget>
     Color primaryColor,
   ) {
     final chipColor = isDarkMode
-        ? primaryColor.withOpacityCompat(0.15 * 255)
-        : primaryColor.withOpacityCompat(0.08 * 255);
+        ? primaryColor.withOpacityCompat(0.15)
+        : primaryColor.withOpacityCompat(0.08);
 
     return InkWell(
       onTap: () => handleExampleQuestionTap(question.question),
@@ -692,7 +696,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
           color: chipColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: primaryColor.withOpacityCompat(0.2 * 255),
+            color: primaryColor.withOpacityCompat(0.2),
             width: 1,
           ),
         ),
@@ -734,7 +738,10 @@ class _AiChatWidgetState extends State<AiChatWidget>
     _scrollController.dispose();
     _animationController.dispose();
 
-    _textController.removeListener(() {});
+    // Remove text controller listener to prevent memory leaks
+    if (_textControllerListener != null) {
+      _textController.removeListener(_textControllerListener!);
+    }
 
     // Don't dispose if using external controller
     if (widget.inputOptions?.textController == null) {
