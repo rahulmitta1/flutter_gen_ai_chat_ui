@@ -1,6 +1,6 @@
 /// A Flutter package that provides a customizable chat UI for AI applications,
 /// featuring streaming responses, code highlighting, and markdown support.
-library flutter_gen_ai_chat_ui;
+library;
 
 // Controllers
 export 'src/controllers/chat_messages_controller.dart';

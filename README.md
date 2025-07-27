@@ -15,7 +15,7 @@ A modern, high-performance Flutter chat UI kit for building beautiful messaging 
 
 ## Table of Contents
 - [Features](#features)
-- [Performance & Comparison](#-performance--comparison)
+- [Performance & Features](#-performance--features)
 - [Installation](#installation)
 - [Quick Start](#basic-usage)
 - [Live Examples](#-live-examples)
@@ -65,22 +65,21 @@ A modern, high-performance Flutter chat UI kit for building beautiful messaging 
 - 🎨 Enhanced theme customization to match your brand
 - 📝 Better code block styling for developers
 
-## 🏆 Performance & Comparison
+## ⚡ Performance & Features
 
-| Feature | This Package | flutter_chat_ui | dash_chat_2 | stream_chat_flutter |
-|---------|-------------|-----------------|-------------|-------------------|
-| **Streaming Text** | ✅ Word-by-word animation | ❌ | ❌ | ❌ |
-| **File Attachments** | ✅ Multi-format support | ❌ | ✅ Basic | ✅ |
-| **Markdown Rendering** | ✅ Full support + code highlighting | ✅ | ✅ | ✅ |
-| **Performance** | ✅ Optimized for 10K+ messages | ✅ | ⚠️ | ✅ |
-| **Customization** | ✅ Extensive theming | ✅ | ✅ | ✅ |
-| **Cross-Platform** | ✅ All platforms | ✅ | ✅ | ✅ |
-| **Backend Agnostic** | ✅ Any API/service | ✅ | ✅ | ❌ Stream only |
-| **Real-time Updates** | ✅ Built-in support | ✅ | ✅ | ✅ |
+### Key Capabilities
+- **✨ Unique Streaming Text**: Word-by-word animations like ChatGPT and Claude
+- **📁 Complete File Support**: Multi-format attachments (images, documents, videos)
+- **📝 Advanced Markdown**: Full support with syntax highlighting for code blocks
+- **🚀 High Performance**: Optimized for large conversations (10K+ messages)
+- **🎨 Extensive Theming**: Complete customization to match your brand
+- **📱 Cross-Platform**: Works on all Flutter-supported platforms
+- **🔗 Backend Agnostic**: Compatible with any API or service
+- **⚡ Real-time Ready**: Built-in support for live updates
 
-### ⚡ Performance Benchmarks
+### Performance Benchmarks
 - **Message Rendering**: 60 FPS with 1000+ messages
-- **Memory Usage**: 40% less than alternatives for large conversations
+- **Memory Efficiency**: Optimized for large conversations
 - **Startup Time**: <100ms initialization
 - **Streaming Speed**: Configurable 10-100ms per word
 
@@ -96,7 +95,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  flutter_gen_ai_chat_ui: ^2.3.3
+  flutter_gen_ai_chat_ui: ^2.3.4
 ```
 
 Then run:
