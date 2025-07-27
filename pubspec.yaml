@@ -40,7 +40,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
+
   # Expose integration test files
   assets:
     - integration_test/

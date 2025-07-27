@@ -207,7 +207,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
     // Build the list with header/footer as needed
     return ListView.builder(
-      key: const PageStorageKey('chat_messages'),
+      // key: const PageStorageKey('chat_messages'),
       controller: _scrollController,
       reverse: paginationConfig.reverseOrder,
       physics: widget.messageListOptions.scrollPhysics ??
@@ -276,6 +276,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           final messageId = message.customProperties?['id'] as String? ??
               '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}_${message.text.hashCode}';
 
+          // return _buildMessageBubble(message, isUser);
           return RepaintBoundary(
             child: KeyedSubtree(
               key: ValueKey(messageId),
@@ -294,6 +295,26 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     if (message.customBuilder != null) {
       return message.customBuilder!(context, message);
     }
+    Size measureText(
+      String text, {
+      double maxWidth = double.infinity,
+      TextStyle? style,
+    }) {
+      final textPainter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+      )..layout(minWidth: 0, maxWidth: maxWidth);
+
+      return textPainter.size;
+    }
+
+    final textSize = measureText(message.text,
+        style: const TextStyle(
+          fontSize: 15,
+          height: 1.5,
+          letterSpacing: 0.2,
+        ));
 
     // Get effective decoration from MessageOptions
     final effectiveDecoration = widget.messageOptions.effectiveDecoration;
@@ -330,17 +351,24 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       left: isUser ? 64 : 16,
     );
 
+    final defaultMaxWidth = MediaQuery.of(context).size.width * 0.75;
     // Use different widths for user vs AI messages
     final maxWidth = isUser
         ? bubbleStyle.userBubbleMaxWidth ??
-            MediaQuery.of(context).size.width * 0.75
+            (textSize.width < defaultMaxWidth
+                ? (115 + textSize.width)
+                : defaultMaxWidth)
         : bubbleStyle.aiBubbleMaxWidth ??
             MediaQuery.of(context).size.width * 0.88;
+    // final maxWidth = isUser
+    //     ? bubbleStyle.userBubbleMaxWidth ??
+    //         MediaQuery.of(context).size.width * 0.75
+    //     : bubbleStyle.aiBubbleMaxWidth ??
+    //         MediaQuery.of(context).size.width * 0.88;
 
     final minWidth = isUser
         ? bubbleStyle.userBubbleMinWidth ?? 0.0
-        : bubbleStyle.aiBubbleMinWidth ??
-            MediaQuery.of(context).size.width * 0.5;
+        : bubbleStyle.aiBubbleMinWidth ?? 0.0;
 
     // Use custom colors if provided, otherwise use premium defaults
     final userBubbleColor =
@@ -475,7 +503,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
                       // Premium footer with timestamp and action buttons
                       Padding(
-                        padding: const EdgeInsets.only(top: 8),
+                        padding: EdgeInsets.only(
+                            top: widget.messageOptions.showTime ? 8 : 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -610,7 +639,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       final markdownWidget = Markdown(
         key: ValueKey('markdown_${message.text.hashCode}'),
         data: message.text,
-        selectable: true,
+        selectable: false,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         onTapLink: widget.messageOptions.onTapLink,
