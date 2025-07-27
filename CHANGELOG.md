@@ -1,3 +1,24 @@
+## 2.3.5 - [2025-01-27] PR #16 Integration - Enhanced Link Handling
+
+### Added
+- **Automatic URL Launching**: Markdown links now automatically open in external browser when tapped
+- **Enhanced onTapLink**: Intelligent link handling with fallback to custom handlers
+- **url_launcher Integration**: Added url_launcher dependency for seamless external link support
+
+### Improved  
+- **Developer Experience**: Links work out-of-the-box without requiring custom onTapLink implementation
+- **Backward Compatibility**: Custom onTapLink handlers still take precedence when provided
+- **User Experience**: Smooth link navigation enhances chat interaction flow
+
+### Technical
+- Added `url_launcher: ^6.3.1` dependency for external link launching
+- Enhanced custom_chat_widget.dart with intelligent URL handling
+- Maintained full compatibility with existing MessageOptions.onTapLink customizations
+
+*Special thanks to @AmanuelYosief for PR #16 - these improvements are now integrated!*
+
+---
+
 ## 2.3.4 - [2025-01-27] Package Visibility & Marketing Enhancement Release
 
 ### Enhanced

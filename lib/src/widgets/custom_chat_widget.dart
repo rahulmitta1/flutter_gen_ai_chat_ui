@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/chat_messages_controller.dart';
 import '../models/chat/models.dart';
@@ -642,7 +643,18 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         selectable: false,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        onTapLink: widget.messageOptions.onTapLink,
+        onTapLink: (text, href, title) async {
+          // First try the custom handler if provided
+          if (widget.messageOptions.onTapLink != null) {
+            widget.messageOptions.onTapLink!(text, href, title);
+          } else if (href != null) {
+            // Default behavior: launch URL automatically
+            final uri = Uri.tryParse(href);
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          }
+        },
         styleSheet: widget.messageOptions.markdownStyleSheet ??
             MarkdownStyleSheet(
               p: textStyle,
