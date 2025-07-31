@@ -7,7 +7,7 @@ issue_tracker: https://github.com/hooshyar/flutter_gen_ai_chat_ui/issues
 documentation: https://github.com/hooshyar/flutter_gen_ai_chat_ui/blob/main/README.md
 funding:
   - https://github.com/sponsors/hooshyar
-topics: [flutter, chat, ui, messaging, ai, chatbot, streaming, markdown, attachments, customizable, cross-platform, sdk]
+topics: [flutter, chat-ui, ai-chat, messaging, streaming]
 
 platforms:
   android:
