@@ -359,7 +359,7 @@ class SettingsDrawer extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Version 2.3.0',
+                                'Version 2.3.6',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: isDarkMode

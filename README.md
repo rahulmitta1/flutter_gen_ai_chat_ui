@@ -59,6 +59,7 @@ A modern, high-performance Flutter chat UI kit for building beautiful messaging 
 
 ### UI Components
 - 💬 Customizable message bubbles with modern design options
+- 🎨 **Custom Bubble Builder** for complete message styling control
 - ⌨️ Multiple input field styles (minimal, glassmorphic, custom)
 - 🔄 Loading indicators with shimmer effects
 - ⬇️ Smart scroll management for chat history
@@ -95,7 +96,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  flutter_gen_ai_chat_ui: ^2.3.5
+  flutter_gen_ai_chat_ui: ^2.3.6
 ```
 
 Then run:
@@ -256,6 +257,24 @@ AiChatWidget(
     // Scroll to first message of a response instead of the last (for long responses)
     scrollToFirstResponseMessage: true,
   ),
+  
+  // Custom bubble builder for complete styling control
+  customBubbleBuilder: (context, message, isCurrentUser, defaultBubble) {
+    // Return your custom bubble widget
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: defaultBubble, // Or create completely custom UI
+    );
+  },
 )
 ```
 
@@ -384,6 +403,36 @@ MessageOptions(
     bottomRightRadius: 22,
     enableShadow: true,
   ),
+)
+```
+
+### Custom Bubble Builder
+
+Create completely custom message bubbles with full control over styling and behavior:
+
+```dart
+AiChatWidget(
+  // ... other parameters
+  customBubbleBuilder: (context, message, isCurrentUser, defaultBubble) {
+    // Wrapper approach: enhance default bubble
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: defaultBubble,
+    );
+    
+    // Or create completely custom UI:
+    // return MyCustomBubbleWidget(message: message, isCurrentUser: isCurrentUser);
+  },
 )
 ```
 

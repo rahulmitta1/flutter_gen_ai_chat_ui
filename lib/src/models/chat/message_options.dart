@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../ai_chat_config.dart';
-import '../chat_message.dart';
+import 'chat_message.dart';
 import 'media.dart';
 
 /// Class for customizing chat bubble appearance
@@ -239,7 +239,16 @@ class MessageOptions {
   final void Function(String url, String? title, String? alt)? onImageTap;
 
   /// Custom builder for message bubbles
-  final Widget Function(BuildContext, ChatMessage, Widget)? customBubbleBuilder;
+  /// 
+  /// This builder allows for complete replacement of the default message bubble.
+  /// The parameters provided are:
+  /// - [BuildContext] context: The build context
+  /// - [ChatMessage] message: The message being rendered
+  /// - [bool] isUser: Whether this message is from the current user
+  /// 
+  /// Return a completely custom widget that replaces the entire bubble.
+  /// This provides true customization rather than just wrapping the default bubble.
+  final Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder;
 
   /// Creates an instance of [MessageOptions].
   ///
@@ -307,7 +316,7 @@ class MessageOptions {
     void Function(ChatMedia)? onMediaTap,
     bool? enableImageTaps,
     void Function(String url, String? title, String? alt)? onImageTap,
-    Widget Function(BuildContext, ChatMessage, Widget)? customBubbleBuilder,
+    Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder,
   }) =>
       MessageOptions(
         textStyle: textStyle ?? this.textStyle,

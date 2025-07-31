@@ -73,7 +73,7 @@ class AppTheme {
       foregroundColor: lightOnSurface,
       centerTitle: true,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: lightSurface,
@@ -123,7 +123,7 @@ class AppTheme {
       foregroundColor: darkOnSurface,
       centerTitle: true,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: darkSurface,

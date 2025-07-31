@@ -296,6 +296,31 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     if (message.customBuilder != null) {
       return message.customBuilder!(context, message);
     }
+
+    // Helper function to build the default bubble
+    Widget buildDefaultBubble() {
+      return _buildDefaultMessageBubble(message, isUser);
+    }
+
+    // Check for custom bubble builder from MessageOptions
+    if (widget.messageOptions.customBubbleBuilder != null) {
+      return widget.messageOptions.customBubbleBuilder!(
+        context,
+        message,
+        isUser,
+      );
+    }
+
+    // Return default bubble if no custom builder is provided
+    return buildDefaultBubble();
+  }
+
+  /// Builds the default message bubble with all standard styling and features.
+  /// 
+  /// This method contains the original bubble building logic and is used as
+  /// the fallback when no custom bubble builder is provided, or as the default
+  /// bubble passed to custom bubble builders.
+  Widget _buildDefaultMessageBubble(ChatMessage message, bool isUser) {
     Size measureText(
       String text, {
       double maxWidth = double.infinity,

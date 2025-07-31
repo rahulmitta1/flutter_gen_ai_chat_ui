@@ -1,3 +1,50 @@
+## 2.3.6 - [2025-01-31] Package Optimization & Pub.dev Preparation
+
+### Removed
+- **Package Cleanup**: Removed unnecessary documentation files and examples to reduce package size
+- **Simplified Structure**: Cleaned up doc/ directory, removed duplicate examples and internal documentation
+- **File Optimization**: Removed development artifacts and test files not needed in published package
+
+### Improved  
+- **Package Metadata**: Optimized pubspec.yaml for better pub.dev scoring with proper topics and metadata
+- **Documentation**: Streamlined package structure for better maintainability
+- **Performance**: Reduced package footprint by removing non-essential files
+
+### Technical
+- **Pub.dev Optimization**: Package prepared for 160/160 pub.dev score achievement
+- **Clean Architecture**: Maintained only essential files for production use
+- **Better Discovery**: Improved package discoverability with optimized topics and keywords
+
+*This release focuses on package optimization and pub.dev preparation, removing unnecessary files while maintaining full functionality.*
+
+---
+
+## 2.3.6 - [2025-01-31] Issue #18 Fix - CustomBubbleBuilder Implementation
+
+### Fixed
+- **CustomBubbleBuilder Functionality**: Fixed Issue #18 where `MessageOptions.customBubbleBuilder` was defined but not implemented
+- **Import Resolution**: Fixed ChatMessage import conflict between `models/chat_message.dart` and `models/chat/chat_message.dart`
+
+### Added
+- **Custom Bubble Builder Support**: Fully functional customBubbleBuilder allows complete customization of message bubble appearance
+- **Comprehensive Test Coverage**: Added extensive test suite for customBubbleBuilder functionality
+- **Example Implementation**: Added CustomBubbleBuilderExample demonstrating various customization patterns
+
+### Improved
+- **Developer Experience**: CustomBubbleBuilder now works as documented with proper parameter passing
+- **Backward Compatibility**: Existing behavior preserved when customBubbleBuilder is null
+- **Code Quality**: Enhanced type safety and removed duplicate ChatMessage imports
+
+### Technical
+- Enhanced `_buildMessageBubble()` method in custom_chat_widget.dart to use customBubbleBuilder when provided
+- Fixed import paths in message_options.dart to use correct ChatMessage type
+- Added `_buildDefaultMessageBubble()` helper method for better code organization
+- Comprehensive test coverage ensuring reliability and proper parameter handling
+
+*This fix resolves Issue #18 and enhances the package's customization capabilities significantly.*
+
+---
+
 ## 2.3.5 - [2025-01-27] PR #16 Integration - Enhanced Link Handling
 
 ### Added

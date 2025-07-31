@@ -82,7 +82,7 @@ class AppTheme {
         color: _lightOnSurfaceColor,
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 3,
       shadowColor: Colors.black.withOpacityCompat(0.1),
       shape: RoundedRectangleBorder(
@@ -185,7 +185,7 @@ class AppTheme {
         color: _darkOnSurfaceColor,
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 6,
       shadowColor: Colors.black.withOpacityCompat(0.3),
       shape: RoundedRectangleBorder(
