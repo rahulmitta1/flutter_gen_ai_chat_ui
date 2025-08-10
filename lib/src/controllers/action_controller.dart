@@ -11,20 +11,28 @@ import 'ai_context_controller.dart';
 enum ActionEventType {
   /// Action started executing
   started,
+
   /// Backward-compat alias
   executionStarted,
+
   /// Action completed successfully
   completed,
+
   /// Backward-compat alias
   executionCompleted,
+
   /// Action failed
   failed,
+
   /// Backward-compat alias
   executionFailed,
+
   /// Action was cancelled
   cancelled,
+
   /// Action is waiting for confirmation
   waitingForConfirmation,
+
   /// Action confirmation was provided
   confirmationProvided,
 }
@@ -33,22 +41,22 @@ enum ActionEventType {
 class ActionEvent {
   /// Type of the event
   final ActionEventType type;
-  
+
   /// Action name
   final String actionName;
-  
+
   /// Parameters passed to the action
   final Map<String, dynamic> parameters;
-  
+
   /// Result of action execution (if completed)
   final ActionResult? result;
-  
+
   /// Error message (if failed)
   final String? error;
-  
+
   /// Timestamp of the event
   final DateTime timestamp;
-  
+
   /// Additional metadata
   final Map<String, dynamic>? metadata;
 
@@ -67,31 +75,31 @@ class ActionEvent {
 class ActionExecution {
   /// Unique ID for this execution
   final String id;
-  
+
   /// The action being executed
   final AiAction action;
-  
+
   /// Parameters for this execution
   final Map<String, dynamic> parameters;
-  
+
   /// Current status
   ActionStatus status;
-  
+
   /// Start time
   final DateTime startTime;
-  
+
   /// End time (if completed)
   DateTime? endTime;
-  
+
   /// Result (if completed)
   ActionResult? result;
-  
+
   /// Error message (if failed)
   String? error;
-  
+
   /// Completer for waiting on confirmation
   Completer<bool>? confirmationCompleter;
-  
+
   /// Completer for the overall execution
   final Completer<ActionResult> completer;
 
@@ -115,8 +123,9 @@ class ActionExecution {
 class ActionController extends ChangeNotifier {
   final Map<String, AiAction> _actions = {};
   final Map<String, ActionExecution> _executions = {};
-  final StreamController<ActionEvent> _eventController = StreamController<ActionEvent>.broadcast();
-  
+  final StreamController<ActionEvent> _eventController =
+      StreamController<ActionEvent>.broadcast();
+
   /// Optional context controller for context-aware actions
   AiContextController? _contextController;
 
@@ -135,21 +144,23 @@ class ActionController extends ChangeNotifier {
   /// Set the context controller for context-aware actions
   set contextController(AiContextController? controller) {
     _contextController = controller;
-    
+
     if (controller != null) {
       dev.log('ActionController: Context controller attached');
     }
   }
 
   /// Callback for showing confirmation dialogs
-  Future<bool> Function(BuildContext context, AiAction action, Map<String, dynamic> parameters)? onConfirmationRequired;
+  Future<bool> Function(BuildContext context, AiAction action,
+      Map<String, dynamic> parameters)? onConfirmationRequired;
 
   /// Register a new action
   void registerAction(AiAction action) {
     if (_actions.containsKey(action.name)) {
-      dev.log('Warning: Action "${action.name}" already exists and will be overwritten');
+      dev.log(
+          'Warning: Action "${action.name}" already exists and will be overwritten');
     }
-    
+
     _actions[action.name] = action;
     dev.log('Registered action: ${action.name}');
     notifyListeners();
@@ -186,14 +197,17 @@ class ActionController extends ChangeNotifier {
     BuildContext? context,
   }) async {
     // Generate unique execution ID
-    final executionId = '${action.name}_${DateTime.now().millisecondsSinceEpoch}';
-    
+    final executionId =
+        '${action.name}_${DateTime.now().millisecondsSinceEpoch}';
+
     // Validate parameters
     final validationErrors = action.validateParameters(parameters);
     if (validationErrors.isNotEmpty) {
-      final errorMsg = 'Parameter validation failed: ${validationErrors.values.join(', ')}';
+      final errorMsg =
+          'Parameter validation failed: ${validationErrors.values.join(', ')}';
       dev.log('Error: $errorMsg');
-      return ActionResult.createFailure(errorMsg, {'validationErrors': validationErrors});
+      return ActionResult.createFailure(
+          errorMsg, {'validationErrors': validationErrors});
     }
 
     // Fill in default values
@@ -213,8 +227,10 @@ class ActionController extends ChangeNotifier {
       // Check if confirmation is required
       if (action.confirmationConfig?.required == true) {
         if (context == null || onConfirmationRequired == null) {
-          final error = 'Action requires confirmation but no context or confirmation handler provided';
-          return _completeExecution(execution, ActionResult.createFailure(error));
+          final error =
+              'Action requires confirmation but no context or confirmation handler provided';
+          return _completeExecution(
+              execution, ActionResult.createFailure(error));
         }
 
         execution.status = ActionStatus.waitingForConfirmation;
@@ -226,8 +242,9 @@ class ActionController extends ChangeNotifier {
         notifyListeners();
 
         // Wait for confirmation
-        final confirmed = await onConfirmationRequired!(context, action, finalParams);
-        
+        final confirmed =
+            await onConfirmationRequired!(context, action, finalParams);
+
         _emitEvent(ActionEvent(
           type: ActionEventType.confirmationProvided,
           actionName: action.name,
@@ -236,7 +253,10 @@ class ActionController extends ChangeNotifier {
         ));
 
         if (!confirmed) {
-          return _completeExecution(execution, ActionResult.createFailure('Action cancelled by user'), ActionStatus.cancelled);
+          return _completeExecution(
+              execution,
+              ActionResult.createFailure('Action cancelled by user'),
+              ActionStatus.cancelled);
         }
       }
 
@@ -259,17 +279,20 @@ class ActionController extends ChangeNotifier {
       late ActionResult result;
       if (action.timeoutMs != null) {
         result = await action.handler(finalParams).timeout(
-          Duration(milliseconds: action.timeoutMs!),
-          onTimeout: () => ActionResult.createFailure('Action timed out after ${action.timeoutMs}ms'),
-        );
+              Duration(milliseconds: action.timeoutMs!),
+              onTimeout: () => ActionResult.createFailure(
+                  'Action timed out after ${action.timeoutMs}ms'),
+            );
       } else {
         result = await action.handler(finalParams);
       }
 
       // Complete execution
-      final eventType = result.success ? ActionEventType.completed : ActionEventType.failed;
-      final status = result.success ? ActionStatus.completed : ActionStatus.failed;
-      
+      final eventType =
+          result.success ? ActionEventType.completed : ActionEventType.failed;
+      final status =
+          result.success ? ActionStatus.completed : ActionStatus.failed;
+
       _emitEvent(ActionEvent(
         type: eventType,
         actionName: action.name,
@@ -279,7 +302,9 @@ class ActionController extends ChangeNotifier {
       ));
       // Emit backward-compat mirror event
       _emitEvent(ActionEvent(
-        type: result.success ? ActionEventType.executionCompleted : ActionEventType.executionFailed,
+        type: result.success
+            ? ActionEventType.executionCompleted
+            : ActionEventType.executionFailed,
         actionName: action.name,
         parameters: finalParams,
         result: result.success ? result : null,
@@ -287,10 +312,9 @@ class ActionController extends ChangeNotifier {
       ));
 
       return _completeExecution(execution, result, status);
-
     } catch (e, stackTrace) {
       dev.log('Action execution error: $e', error: e, stackTrace: stackTrace);
-      
+
       final result = ActionResult.createFailure('Unexpected error: $e');
       _emitEvent(ActionEvent(
         type: ActionEventType.failed,
@@ -311,7 +335,8 @@ class ActionController extends ChangeNotifier {
   ]) {
     execution.result = result;
     execution.error = result.error;
-    execution.status = status ?? (result.success ? ActionStatus.completed : ActionStatus.failed);
+    execution.status = status ??
+        (result.success ? ActionStatus.completed : ActionStatus.failed);
     execution.endTime = DateTime.now();
 
     if (!execution.completer.isCompleted) {
@@ -358,9 +383,7 @@ class ActionController extends ChangeNotifier {
 
   /// Get currently running executions
   List<ActionExecution> getRunningExecutions() {
-    return _executions.values
-        .where((execution) => execution.isActive)
-        .toList();
+    return _executions.values.where((execution) => execution.isActive).toList();
   }
 
   /// Clear completed executions
@@ -394,10 +417,10 @@ class ActionController extends ChangeNotifier {
     List<String>? contextCategories,
   }) {
     final actions = getActionsForFunctionCalling();
-    
+
     String? contextSummary;
     Map<String, dynamic>? contextData;
-    
+
     if (_contextController != null) {
       contextSummary = _contextController!.getContextSummary(
         types: contextTypes,
@@ -405,7 +428,7 @@ class ActionController extends ChangeNotifier {
         categories: contextCategories,
         maxItems: 20,
       );
-      
+
       contextData = _contextController!.getContextForPrompt(
         types: contextTypes,
         priorities: contextPriorities,
@@ -429,19 +452,20 @@ class ActionController extends ChangeNotifier {
     bool includeContext = true,
   }) async {
     dev.log('Handling function call: $functionName with arguments: $arguments');
-    
+
     // Add current context to action execution if available
     if (includeContext && _contextController != null) {
       final contextSummary = _contextController!.getContextSummary(
         maxItems: 10,
         priorities: [AiContextPriority.critical, AiContextPriority.high],
       );
-      
+
       // Log context for debugging
       dev.log('Context for action execution: $contextSummary');
-      
+
       // Add context as metadata to action execution
-      final executionId = '${functionName}_${DateTime.now().millisecondsSinceEpoch}';
+      final executionId =
+          '${functionName}_${DateTime.now().millisecondsSinceEpoch}';
       _contextController!.setContext(AiContextData.custom(
         id: 'action_execution_$executionId',
         name: 'Action Execution Context',
@@ -457,7 +481,7 @@ class ActionController extends ChangeNotifier {
         expiresAt: DateTime.now().add(const Duration(minutes: 5)),
       ));
     }
-    
+
     return executeAction(functionName, arguments, context: context);
   }
 
@@ -470,7 +494,7 @@ class ActionController extends ChangeNotifier {
     bool includeActions = true,
   }) {
     final parts = <String>[basePrompt];
-    
+
     // Add context information
     if (_contextController != null) {
       final contextSummary = _contextController!.getContextSummary(
@@ -479,21 +503,22 @@ class ActionController extends ChangeNotifier {
         categories: contextCategories,
         maxItems: 15,
       );
-      
-      if (contextSummary.isNotEmpty && contextSummary != 'No relevant context available.') {
+
+      if (contextSummary.isNotEmpty &&
+          contextSummary != 'No relevant context available.') {
         parts.add('\n\n$contextSummary');
       }
     }
-    
+
     // Add available actions
     if (includeActions && _actions.isNotEmpty) {
       final actionsList = _actions.values
           .map((action) => '- ${action.name}: ${action.description}')
           .join('\n');
-      
+
       parts.add('\n\nAvailable Actions:\n$actionsList');
     }
-    
+
     return parts.join('');
   }
 

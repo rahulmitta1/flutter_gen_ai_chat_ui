@@ -4,14 +4,19 @@ import 'package:flutter/widgets.dart';
 enum ActionStatus {
   /// Action is idle/not running
   idle,
+
   /// Action is currently executing
   executing,
+
   /// Action completed successfully
   completed,
+
   /// Action failed during execution
   failed,
+
   /// Action is waiting for user confirmation
   waitingForConfirmation,
+
   /// Action was cancelled by user
   cancelled,
 }
@@ -20,12 +25,16 @@ enum ActionStatus {
 enum ActionParameterType {
   /// String parameter
   string,
+
   /// Integer number parameter
   number,
+
   /// Boolean parameter
   boolean,
+
   /// Object parameter (Map<String, dynamic>)
   object,
+
   /// Array parameter (List<dynamic>)
   array,
 }
@@ -34,22 +43,22 @@ enum ActionParameterType {
 class ActionParameter {
   /// Name of the parameter
   final String name;
-  
+
   /// Type of the parameter
   final ActionParameterType type;
-  
+
   /// Human-readable description of the parameter
   final String description;
-  
+
   /// Whether this parameter is required
   final bool required;
-  
+
   /// Default value for the parameter (optional)
   final dynamic defaultValue;
-  
+
   /// Validation function for the parameter value (returns error message or null)
   final String? Function(dynamic value)? validator;
-  
+
   /// Enum values for string parameters (optional)
   final List<String>? enumValues;
 
@@ -277,13 +286,13 @@ class ActionParameter {
 class ActionResult {
   /// Whether the action was successful
   final bool success;
-  
+
   /// Result data (optional)
   final dynamic data;
-  
+
   /// Error message if action failed
   final String? error;
-  
+
   /// Additional metadata
   final Map<String, dynamic>? metadata;
 
@@ -295,7 +304,8 @@ class ActionResult {
   });
 
   /// Creates a successful result
-  static ActionResult createSuccess([dynamic data, Map<String, dynamic>? metadata]) =>
+  static ActionResult createSuccess(
+          [dynamic data, Map<String, dynamic>? metadata]) =>
       ActionResult(
         success: true,
         data: data,
@@ -303,7 +313,8 @@ class ActionResult {
       );
 
   /// Creates a failed result
-  static ActionResult createFailure(String error, [Map<String, dynamic>? metadata]) =>
+  static ActionResult createFailure(String error,
+          [Map<String, dynamic>? metadata]) =>
       ActionResult(
         success: false,
         error: error,
@@ -323,19 +334,20 @@ class ActionResult {
 class ActionConfirmationConfig {
   /// Title for the confirmation dialog
   final String? title;
-  
+
   /// Message to show in the confirmation dialog
   final String? message;
-  
+
   /// Custom confirmation widget builder
-  final Widget Function(BuildContext context, Map<String, dynamic> parameters)? builder;
-  
+  final Widget Function(BuildContext context, Map<String, dynamic> parameters)?
+      builder;
+
   /// Text for confirm button
   final String confirmText;
-  
+
   /// Text for cancel button
   final String cancelText;
-  
+
   /// Whether confirmation is required for this action
   final bool required;
 
@@ -353,16 +365,16 @@ class ActionConfirmationConfig {
 class AiAction {
   /// Unique name/identifier for this action
   final String name;
-  
+
   /// Human-readable description of what this action does
   final String description;
-  
+
   /// List of parameters this action accepts
   final List<ActionParameter> parameters;
-  
+
   /// The function to execute when this action is called
   final Future<ActionResult> Function(Map<String, dynamic> parameters) handler;
-  
+
   /// Optional widget to render during action execution or to show results
   final Widget Function(
     BuildContext context,
@@ -371,16 +383,16 @@ class AiAction {
     ActionResult? result,
     String? error,
   })? render;
-  
+
   /// Configuration for human-in-the-loop confirmations
   final ActionConfirmationConfig? confirmationConfig;
-  
+
   /// Whether this action can run in the background
   final bool canRunInBackground;
-  
+
   /// Maximum execution time in milliseconds
   final int? timeoutMs;
-  
+
   /// Metadata for this action
   final Map<String, dynamic>? metadata;
 
@@ -399,34 +411,35 @@ class AiAction {
   /// Validates parameters against this action's parameter definitions
   Map<String, String> validateParameters(Map<String, dynamic> params) {
     final errors = <String, String>{};
-    
+
     for (final param in parameters) {
       final value = params[param.name];
       if (!param.isValid(value)) {
         if (param.required && (value == null || value == '')) {
           errors[param.name] = 'Parameter "${param.name}" is required';
         } else if (value != null) {
-          errors[param.name] = 'Parameter "${param.name}" has invalid type or value';
+          errors[param.name] =
+              'Parameter "${param.name}" has invalid type or value';
         }
       }
     }
-    
+
     return errors;
   }
-  
+
   /// Fills in default values for missing parameters
   Map<String, dynamic> fillDefaults(Map<String, dynamic> params) {
     final result = Map<String, dynamic>.from(params);
-    
+
     for (final param in parameters) {
       if (!result.containsKey(param.name) && param.defaultValue != null) {
         result[param.name] = param.defaultValue;
       }
     }
-    
+
     return result;
   }
-  
+
   /// Converts action definition to JSON (useful for AI function calling)
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -434,13 +447,10 @@ class AiAction {
         'parameters': {
           'type': 'object',
           'properties': {
-            for (final param in parameters)
-              param.name: param.toJson(),
+            for (final param in parameters) param.name: param.toJson(),
           },
-          'required': parameters
-              .where((p) => p.required)
-              .map((p) => p.name)
-              .toList(),
+          'required':
+              parameters.where((p) => p.required).map((p) => p.name).toList(),
         },
         if (metadata != null) 'metadata': metadata,
       };
@@ -452,13 +462,10 @@ class AiAction {
         'parameters': {
           'type': 'object',
           'properties': {
-            for (final param in parameters)
-              param.name: param.toJsonSchema(),
+            for (final param in parameters) param.name: param.toJsonSchema(),
           },
-          'required': parameters
-              .where((p) => p.required)
-              .map((p) => p.name)
-              .toList(),
+          'required':
+              parameters.where((p) => p.required).map((p) => p.name).toList(),
         },
       };
 }
