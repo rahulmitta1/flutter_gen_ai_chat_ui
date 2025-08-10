@@ -23,7 +23,9 @@ class VoiceStatusBar extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final text = _labelFor(duplexState);
     final latencyText = latencyMs != null ? ' • ${latencyMs}ms' : '';
-    final lossText = packetLoss != null ? ' • ${(packetLoss! * 100).toStringAsFixed(0)}% loss' : '';
+    final lossText = packetLoss != null
+        ? ' • ${(packetLoss! * 100).toStringAsFixed(0)}% loss'
+        : '';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -82,5 +84,3 @@ class VoiceStatusBar extends StatelessWidget {
     }
   }
 }
-
-

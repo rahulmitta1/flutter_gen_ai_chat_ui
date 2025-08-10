@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 enum VoiceSendMode { pushToTalk, toggle }
-enum VoiceState { idle, listening, detecting, recording, sending, error, disabled }
+
+enum VoiceState {
+  idle,
+  listening,
+  detecting,
+  recording,
+  sending,
+  error,
+  disabled
+}
 
 class VoiceSendButton extends StatelessWidget {
   final VoiceSendMode mode;
@@ -10,6 +19,10 @@ class VoiceSendButton extends StatelessWidget {
   final VoidCallback? onHoldEnd;
   final ValueChanged<bool>? onToggle;
   final String? semanticsLabel;
+  final double diameter; // visual diameter inside tap target
+  final double minTapTarget;
+  final BorderRadius? borderRadius;
+  final bool enableHaptics;
 
   const VoiceSendButton({
     super.key,
@@ -19,6 +32,10 @@ class VoiceSendButton extends StatelessWidget {
     this.onHoldEnd,
     this.onToggle,
     this.semanticsLabel,
+    this.diameter = 40,
+    this.minTapTarget = 48,
+    this.borderRadius,
+    this.enableHaptics = false,
   });
 
   bool get _isDisabled => state == VoiceState.disabled;
@@ -34,21 +51,34 @@ class VoiceSendButton extends StatelessWidget {
       label: semanticsLabel ?? 'Voice button: ${_stateLabel(state)}',
       child: _buildGestureWrapper(
         context,
-        Container(
-          decoration: BoxDecoration(
-            color:
-                _isDisabled ? color.surfaceContainerHighest : color.primaryContainer,
-            shape: BoxShape.circle,
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Icon(icon,
-              color:
-                  _isDisabled ? color.onSurfaceVariant : color.onPrimaryContainer),
-        ),
+        _buildVisual(icon, color),
       ),
     );
 
     return button;
+  }
+
+  Widget _buildVisual(IconData icon, ColorScheme color) {
+    final radius = borderRadius ?? BorderRadius.circular(diameter);
+    final inner = AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      width: diameter,
+      height: diameter,
+      decoration: BoxDecoration(
+        color: _isDisabled ? color.surfaceContainerHighest : color.primaryContainer,
+        borderRadius: radius,
+      ),
+      alignment: Alignment.center,
+      child: Icon(
+        icon,
+        color: _isDisabled ? color.onSurfaceVariant : color.onPrimaryContainer,
+      ),
+    );
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: minTapTarget, minHeight: minTapTarget),
+      child: inner,
+    );
   }
 
   Widget _buildGestureWrapper(BuildContext context, Widget child) {
@@ -56,16 +86,17 @@ class VoiceSendButton extends StatelessWidget {
     switch (mode) {
       case VoiceSendMode.pushToTalk:
         return GestureDetector(
-          onTapDown: (_) => onHoldStart?.call(),
-          onTapCancel: () => onHoldEnd?.call(),
-          onTapUp: (_) => onHoldEnd?.call(),
-          child: child,
+          onLongPressStart: (_) => onHoldStart?.call(),
+          onLongPressEnd: (_) => onHoldEnd?.call(),
+          onLongPressCancel: () => onHoldEnd?.call(),
+          child: Focus(autofocus: false, child: child),
         );
       case VoiceSendMode.toggle:
         return InkWell(
-          borderRadius: BorderRadius.circular(40),
-          onTap: () => onToggle?.call(state != VoiceState.listening && state != VoiceState.recording),
-          child: child,
+          borderRadius: borderRadius ?? BorderRadius.circular(diameter),
+          onTap: () => onToggle?.call(
+              !(state == VoiceState.listening || state == VoiceState.recording)),
+          child: Focus(autofocus: false, child: child),
         );
     }
   }
@@ -108,5 +139,3 @@ class VoiceSendButton extends StatelessWidget {
     }
   }
 }
-
-

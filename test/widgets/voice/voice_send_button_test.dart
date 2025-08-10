@@ -47,7 +47,9 @@ void main() {
       expect(ended, isTrue);
     });
 
-    testWidgets('toggle mode toggles active and calls onToggle', (tester) async {
+    testWidgets('toggle mode toggles active and calls onToggle', (
+      tester,
+    ) async {
       bool? last;
       await tester.pumpWidget(
         MaterialApp(
@@ -72,5 +74,3 @@ void main() {
     });
   });
 }
-
-

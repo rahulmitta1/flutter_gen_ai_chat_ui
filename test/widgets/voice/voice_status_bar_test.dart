@@ -20,5 +20,3 @@ void main() {
     expect(find.textContaining('120ms'), findsOneWidget);
   });
 }
-
-

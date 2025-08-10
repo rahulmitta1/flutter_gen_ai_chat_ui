@@ -16,7 +16,9 @@ class TranscriptChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = isFinal
         ? Theme.of(context).textTheme.bodyMedium
-        : Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Theme.of(context).colorScheme.onSurfaceVariant);
+        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontStyle: FontStyle.italic,
+            color: Theme.of(context).colorScheme.onSurfaceVariant);
 
     return Container(
       decoration: BoxDecoration(
@@ -35,5 +37,3 @@ class TranscriptChip extends StatelessWidget {
     );
   }
 }
-
-
