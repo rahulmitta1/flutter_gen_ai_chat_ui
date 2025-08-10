@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 enum VoiceSendMode { pushToTalk, toggle }
 
@@ -65,7 +66,9 @@ class VoiceSendButton extends StatelessWidget {
       width: diameter,
       height: diameter,
       decoration: BoxDecoration(
-        color: _isDisabled ? color.surfaceContainerHighest : color.primaryContainer,
+        color: _isDisabled
+            ? color.surfaceContainerHighest
+            : color.primaryContainer,
         borderRadius: radius,
       ),
       alignment: Alignment.center,
@@ -76,30 +79,63 @@ class VoiceSendButton extends StatelessWidget {
     );
 
     return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: minTapTarget, minHeight: minTapTarget),
+      constraints:
+          BoxConstraints(minWidth: minTapTarget, minHeight: minTapTarget),
       child: inner,
     );
   }
 
   Widget _buildGestureWrapper(BuildContext context, Widget child) {
     if (_isDisabled) return child;
+    final shortcuts = <ShortcutActivator, Intent>{
+      const SingleActivator(LogicalKeyboardKey.space): const ActivateIntent(),
+      const SingleActivator(LogicalKeyboardKey.enter): const ActivateIntent(),
+    };
+    final actions = <Type, Action<Intent>>{
+      ActivateIntent: CallbackAction<ActivateIntent>(
+        onInvoke: (_) {
+          if (mode == VoiceSendMode.toggle) {
+            onToggle?.call(!(state == VoiceState.listening || state == VoiceState.recording));
+          } else {
+            onHoldStart?.call();
+            onHoldEnd?.call();
+          }
+          return null;
+        },
+      ),
+    };
     switch (mode) {
       case VoiceSendMode.pushToTalk:
-        return GestureDetector(
-          onLongPressStart: (_) => onHoldStart?.call(),
-          onLongPressEnd: (_) => onHoldEnd?.call(),
-          onLongPressCancel: () => onHoldEnd?.call(),
-          child: Focus(autofocus: false, child: child),
+        return Shortcuts(
+          shortcuts: shortcuts,
+          child: Actions(
+            actions: actions,
+            child: GestureDetector(
+              // Support both long-press and simple press down/up for broader device behavior
+              onTapDown: (_) => onHoldStart?.call(),
+              onTapUp: (_) => onHoldEnd?.call(),
+              onTapCancel: () => onHoldEnd?.call(),
+              onLongPressStart: (_) => onHoldStart?.call(),
+              onLongPressEnd: (_) => onHoldEnd?.call(),
+              onLongPressCancel: () => onHoldEnd?.call(),
+              child: Focus(autofocus: false, child: child),
+            ),
+          ),
         );
       case VoiceSendMode.toggle:
-        return InkWell(
-          borderRadius: borderRadius ?? BorderRadius.circular(diameter),
-          onTap: () => onToggle?.call(
-              !(state == VoiceState.listening || state == VoiceState.recording)),
-          child: Focus(autofocus: false, child: child),
+        return Shortcuts(
+          shortcuts: shortcuts,
+          child: Actions(
+            actions: actions,
+            child: InkWell(
+              borderRadius: borderRadius ?? BorderRadius.circular(diameter),
+              onTap: () => onToggle?.call(!(state == VoiceState.listening || state == VoiceState.recording)),
+              child: Focus(autofocus: false, child: child),
+            ),
+          ),
         );
     }
-  }
+}
 
   IconData _iconFor(VoiceState s) {
     switch (s) {

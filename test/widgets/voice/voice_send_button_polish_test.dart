@@ -4,7 +4,9 @@ import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 
 void main() {
   group('VoiceSendButton polish', () {
-    testWidgets('long-press triggers hold start/end in PTT mode', (tester) async {
+    testWidgets('long-press triggers hold start/end in PTT mode', (
+      tester,
+    ) async {
       bool started = false;
       bool ended = false;
 
@@ -29,7 +31,9 @@ void main() {
       expect(ended, isTrue);
     });
 
-    testWidgets('diameter controls visual size; min tap target enforced', (tester) async {
+    testWidgets('diameter controls visual size; min tap target enforced', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -51,5 +55,3 @@ void main() {
     });
   });
 }
-
-
