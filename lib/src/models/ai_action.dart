@@ -47,11 +47,14 @@ class ActionParameter {
   /// Default value for the parameter (optional)
   final dynamic defaultValue;
   
-  /// Validation function for the parameter value
-  final bool Function(dynamic value)? validator;
+  /// Validation function for the parameter value (returns error message or null)
+  final String? Function(dynamic value)? validator;
   
   /// Enum values for string parameters (optional)
   final List<String>? enumValues;
+
+  /// For array parameters: the expected item type (optional)
+  final ActionParameterType? itemType;
 
   const ActionParameter({
     required this.name,
@@ -61,6 +64,7 @@ class ActionParameter {
     this.defaultValue,
     this.validator,
     this.enumValues,
+    this.itemType,
   });
 
   /// Creates a string parameter
@@ -69,7 +73,7 @@ class ActionParameter {
     required String description,
     bool required = false,
     String? defaultValue,
-    bool Function(dynamic value)? validator,
+    String? Function(dynamic value)? validator,
     List<String>? enumValues,
   }) =>
       ActionParameter(
@@ -88,7 +92,7 @@ class ActionParameter {
     required String description,
     bool required = false,
     num? defaultValue,
-    bool Function(dynamic value)? validator,
+    String? Function(dynamic value)? validator,
   }) =>
       ActionParameter(
         name: name,
@@ -105,7 +109,7 @@ class ActionParameter {
     required String description,
     bool required = false,
     bool? defaultValue,
-    bool Function(dynamic value)? validator,
+    String? Function(dynamic value)? validator,
   }) =>
       ActionParameter(
         name: name,
@@ -122,7 +126,7 @@ class ActionParameter {
     required String description,
     bool required = false,
     Map<String, dynamic>? defaultValue,
-    bool Function(dynamic value)? validator,
+    String? Function(dynamic value)? validator,
   }) =>
       ActionParameter(
         name: name,
@@ -139,7 +143,8 @@ class ActionParameter {
     required String description,
     bool required = false,
     List<dynamic>? defaultValue,
-    bool Function(dynamic value)? validator,
+    String? Function(dynamic value)? validator,
+    ActionParameterType? itemType,
   }) =>
       ActionParameter(
         name: name,
@@ -148,37 +153,65 @@ class ActionParameter {
         required: required,
         defaultValue: defaultValue,
         validator: validator,
+        itemType: itemType,
       );
 
-  /// Validates a value against this parameter definition
-  bool isValid(dynamic value) {
+  /// Validates a value against this parameter definition.
+  /// Returns null when valid, or an error message when invalid.
+  String? validate(dynamic value) {
     // Check required constraint
     if (required && (value == null || value == '')) {
-      return false;
+      return '$name is required';
     }
 
     // If value is null and not required, it's valid
     if (value == null && !required) {
-      return true;
+      return null;
     }
 
     // Type validation
     switch (type) {
       case ActionParameterType.string:
-        if (value is! String) return false;
-        if (enumValues != null && !enumValues!.contains(value)) return false;
+        if (value is! String) return '$name must be a string';
+        if (enumValues != null && !enumValues!.contains(value)) {
+          return '$name must be one of: ${enumValues!.join(', ')}';
+        }
         break;
       case ActionParameterType.number:
-        if (value is! num) return false;
+        if (value is! num) return '$name must be a number';
         break;
       case ActionParameterType.boolean:
-        if (value is! bool) return false;
+        if (value is! bool) return '$name must be a boolean';
         break;
       case ActionParameterType.object:
-        if (value is! Map<String, dynamic>) return false;
+        if (value is! Map<String, dynamic>) return '$name must be an object';
         break;
       case ActionParameterType.array:
-        if (value is! List) return false;
+        if (value is! List) return '$name must be an array';
+        if (itemType != null) {
+          bool badType = false;
+          switch (itemType!) {
+            case ActionParameterType.string:
+              badType = value.any((e) => e is! String);
+              break;
+            case ActionParameterType.number:
+              badType = value.any((e) => e is! num);
+              break;
+            case ActionParameterType.boolean:
+              badType = value.any((e) => e is! bool);
+              break;
+            case ActionParameterType.object:
+              badType = value.any((e) => e is! Map<String, dynamic>);
+              break;
+            case ActionParameterType.array:
+              badType = value.any((e) => e is! List);
+              break;
+          }
+          if (badType) {
+            final itemTypeName = itemType!.toString().split('.').last;
+            return 'All items in $name must be $itemTypeName';
+          }
+        }
         break;
     }
 
@@ -187,8 +220,11 @@ class ActionParameter {
       return validator!(value);
     }
 
-    return true;
+    return null;
   }
+
+  /// Backward-compatible boolean validator
+  bool isValid(dynamic value) => validate(value) == null;
 
   /// Converts to JSON representation
   Map<String, dynamic> toJson() => {
@@ -198,7 +234,43 @@ class ActionParameter {
         'required': required,
         if (defaultValue != null) 'defaultValue': defaultValue,
         if (enumValues != null) 'enumValues': enumValues,
+        if (itemType != null) 'itemType': itemType.toString().split('.').last,
       };
+
+  /// Converts to JSON schema representation used for function calling
+  Map<String, dynamic> toJsonSchema() {
+    Map<String, dynamic> schema = {
+      'description': description,
+    };
+
+    String typeString(ActionParameterType t) {
+      switch (t) {
+        case ActionParameterType.string:
+          return 'string';
+        case ActionParameterType.number:
+          return 'number';
+        case ActionParameterType.boolean:
+          return 'boolean';
+        case ActionParameterType.object:
+          return 'object';
+        case ActionParameterType.array:
+          return 'array';
+      }
+    }
+
+    schema['type'] = typeString(type);
+
+    if (type == ActionParameterType.string && enumValues != null) {
+      schema['enum'] = enumValues;
+    }
+
+    if (type == ActionParameterType.array) {
+      final inner = itemType ?? ActionParameterType.string;
+      schema['items'] = {'type': typeString(inner)};
+    }
+
+    return schema;
+  }
 }
 
 /// Result of an action execution
@@ -268,12 +340,12 @@ class ActionConfirmationConfig {
   final bool required;
 
   const ActionConfirmationConfig({
-    this.title,
+    this.title = 'Confirm Action',
     this.message,
     this.builder,
     this.confirmText = 'Confirm',
     this.cancelText = 'Cancel',
-    this.required = true,
+    this.required = false,
   });
 }
 
@@ -371,5 +443,22 @@ class AiAction {
               .toList(),
         },
         if (metadata != null) 'metadata': metadata,
+      };
+
+  /// Function calling schema matching tests/compat expectations
+  Map<String, dynamic> toFunctionCallingSchema() => {
+        'name': name,
+        'description': description,
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            for (final param in parameters)
+              param.name: param.toJsonSchema(),
+          },
+          'required': parameters
+              .where((p) => p.required)
+              .map((p) => p.name)
+              .toList(),
+        },
       };
 }

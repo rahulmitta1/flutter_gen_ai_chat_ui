@@ -23,9 +23,17 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
     final registry = ResultRendererRegistry(
       builders: {
         'card': (ctx, data) => ResultCard.fromData(data),
-        'kv': (ctx, data) => const KeyValueList(items: {'Status': 'OK', 'Count': '42'}),
-        'table': (ctx, data) => const DataTableLite(columns: ['Name', 'Age'], rows: [['Alice', '30'], ['Bob', '25']]),
-        'callout': (ctx, data) => const Callout(title: 'Heads up', message: 'Demo callout message'),
+        'kv': (ctx, data) =>
+            const KeyValueList(items: {'Status': 'OK', 'Count': '42'}),
+        'table': (ctx, data) => const DataTableLite(
+          headers: ['Name', 'Age'],
+          data: [
+            ['Alice', '30'],
+            ['Bob', '25'],
+          ],
+        ),
+        'callout': (ctx, data) =>
+            const Callout(title: 'Heads up', message: 'Demo callout message'),
       },
       child: const SizedBox.shrink(),
     );
@@ -42,7 +50,10 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Suggestions & Autocomplete', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Suggestions & Autocomplete',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   AiSuggestionsBar(
                     suggestions: const ['Summarize', 'Explain', 'Create tests'],
@@ -72,23 +83,49 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Result Rendering', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Result Rendering',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
-                  Wrap(spacing: 8, children: [
-                    ChoiceChip(label: const Text('Card'), selected: _resultKind == 'card', onSelected: (_) => setState(() => _resultKind = 'card')),
-                    ChoiceChip(label: const Text('Key/Value'), selected: _resultKind == 'kv', onSelected: (_) => setState(() => _resultKind = 'kv')),
-                    ChoiceChip(label: const Text('Table'), selected: _resultKind == 'table', onSelected: (_) => setState(() => _resultKind = 'table')),
-                    ChoiceChip(label: const Text('Callout'), selected: _resultKind == 'callout', onSelected: (_) => setState(() => _resultKind = 'callout')),
-                  ]),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Card'),
+                        selected: _resultKind == 'card',
+                        onSelected: (_) => setState(() => _resultKind = 'card'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Key/Value'),
+                        selected: _resultKind == 'kv',
+                        onSelected: (_) => setState(() => _resultKind = 'kv'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Table'),
+                        selected: _resultKind == 'table',
+                        onSelected: (_) =>
+                            setState(() => _resultKind = 'table'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Callout'),
+                        selected: _resultKind == 'callout',
+                        onSelected: (_) =>
+                            setState(() => _resultKind = 'callout'),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
-                  Builder(builder: (context) {
-                    final built = registry.buildResult(context, _resultKind, {
-                      'title': 'Analysis',
-                      'subtitle': 'Quick summary',
-                      'body': 'Everything looks good.',
-                    });
-                    return built ?? const SizedBox.shrink();
-                  }),
+                  Builder(
+                    builder: (context) {
+                      final built = registry.buildResult(context, _resultKind, {
+                        'title': 'Analysis',
+                        'subtitle': 'Quick summary',
+                        'body': 'Everything looks good.',
+                      });
+                      return built ?? const SizedBox.shrink();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -102,56 +139,83 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Voice UI', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Voice UI',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
-                  Row(children: [
-                    VoiceSendButton(
-                      mode: VoiceSendMode.pushToTalk,
-                      state: VoiceState.idle,
-                      onHoldStart: () => setState(() => _transcript = 'Recording…'),
-                      onHoldEnd: () => setState(() => _transcript = 'Done'),
-                    ),
-                    const SizedBox(width: 12),
-                    VoiceSendButton(
-                      mode: VoiceSendMode.toggle,
-                      state: VoiceState.listening,
-                      onToggle: (v) => setState(() => _duplex = v ? DuplexState.listening : DuplexState.idle),
-                    ),
-                  ]),
+                  Row(
+                    children: [
+                      VoiceSendButton(
+                        mode: VoiceSendMode.pushToTalk,
+                        state: VoiceState.idle,
+                        onHoldStart: () =>
+                            setState(() => _transcript = 'Recording…'),
+                        onHoldEnd: () => setState(() => _transcript = 'Done'),
+                      ),
+                      const SizedBox(width: 12),
+                      VoiceSendButton(
+                        mode: VoiceSendMode.toggle,
+                        state: VoiceState.listening,
+                        onToggle: (v) => setState(
+                          () => _duplex = v
+                              ? DuplexState.listening
+                              : DuplexState.idle,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   VoiceStatusBar(
                     duplexState: _duplex,
                     latencyMs: _latency,
                     packetLoss: _packetLoss,
-                    onInterrupt: () => setState(() => _duplex = DuplexState.idle),
-                    onReconnect: () => setState(() => _duplex = DuplexState.connecting),
+                    onInterrupt: () =>
+                        setState(() => _duplex = DuplexState.idle),
+                    onReconnect: () =>
+                        setState(() => _duplex = DuplexState.connecting),
                   ),
                   const SizedBox(height: 8),
-                  Row(children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Latency'),
-                          Slider(value: _latency.toDouble(), min: 20, max: 400, onChanged: (v) => setState(() => _latency = v.round())),
-                        ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Latency'),
+                            Slider(
+                              value: _latency.toDouble(),
+                              min: 20,
+                              max: 400,
+                              onChanged: (v) =>
+                                  setState(() => _latency = v.round()),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Packet loss'),
-                          Slider(value: _packetLoss, min: 0, max: 0.2, onChanged: (v) => setState(() => _packetLoss = v)),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Packet loss'),
+                            Slider(
+                              value: _packetLoss,
+                              min: 0,
+                              max: 0.2,
+                              onChanged: (v) => setState(() => _packetLoss = v),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   TranscriptChip(
                     text: _transcript,
                     isFinal: _isFinal,
-                    onPromote: !_isFinal ? () => setState(() => _isFinal = true) : null,
+                    onPromote: !_isFinal
+                        ? () => setState(() => _isFinal = true)
+                        : null,
                   ),
                 ],
               ),
@@ -162,5 +226,3 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
     );
   }
 }
-
-

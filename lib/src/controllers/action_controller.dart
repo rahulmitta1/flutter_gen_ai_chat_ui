@@ -11,10 +11,16 @@ import 'ai_context_controller.dart';
 enum ActionEventType {
   /// Action started executing
   started,
+  /// Backward-compat alias
+  executionStarted,
   /// Action completed successfully
   completed,
+  /// Backward-compat alias
+  executionCompleted,
   /// Action failed
   failed,
+  /// Backward-compat alias
+  executionFailed,
   /// Action was cancelled
   cancelled,
   /// Action is waiting for confirmation
@@ -241,6 +247,12 @@ class ActionController extends ChangeNotifier {
         actionName: action.name,
         parameters: finalParams,
       ));
+      // Emit backward-compat mirror event
+      _emitEvent(ActionEvent(
+        type: ActionEventType.executionStarted,
+        actionName: action.name,
+        parameters: finalParams,
+      ));
       notifyListeners();
 
       // Execute with timeout if specified
@@ -260,6 +272,14 @@ class ActionController extends ChangeNotifier {
       
       _emitEvent(ActionEvent(
         type: eventType,
+        actionName: action.name,
+        parameters: finalParams,
+        result: result.success ? result : null,
+        error: result.success ? null : result.error,
+      ));
+      // Emit backward-compat mirror event
+      _emitEvent(ActionEvent(
+        type: result.success ? ActionEventType.executionCompleted : ActionEventType.executionFailed,
         actionName: action.name,
         parameters: finalParams,
         result: result.success ? result : null,
@@ -346,6 +366,12 @@ class ActionController extends ChangeNotifier {
   /// Clear completed executions
   void clearCompletedExecutions() {
     _executions.removeWhere((key, execution) => !execution.isActive);
+    notifyListeners();
+  }
+
+  /// Backward-compat API used by tests
+  void clearActions() {
+    _actions.clear();
     notifyListeners();
   }
 
