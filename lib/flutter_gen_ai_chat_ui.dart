@@ -4,12 +4,16 @@ library;
 
 // Controllers
 export 'src/controllers/chat_messages_controller.dart';
+export 'src/controllers/action_controller.dart';
+export 'src/controllers/ai_context_controller.dart';
 
 // Configuration
 export 'src/models/ai_chat_config.dart';
 
 // Core models
 export 'src/models/chat/models.dart';
+export 'src/models/ai_action.dart';
+export 'src/models/ai_context.dart';
 export 'src/models/example_question.dart';
 export 'src/models/example_question_config.dart' hide ExampleQuestion;
 export 'src/models/file_upload_options.dart';
@@ -25,8 +29,11 @@ export 'src/utils/color_extensions.dart';
 export 'src/utils/glassmorphic_container.dart';
 
 // Widgets
+export 'src/widgets/action_result_widget.dart';
 export 'src/widgets/ai_chat_widget.dart';
 export 'src/widgets/chat_input.dart';
+export 'src/widgets/ai_action_provider.dart';
+export 'src/widgets/ai_context_provider.dart';
 export 'src/widgets/custom_chat_widget.dart';
 export 'src/widgets/glassmorphic_container.dart';
 export 'src/widgets/loading_widget.dart';
