@@ -179,3 +179,17 @@ a43a5b9 feat(voice-ui): keyboard shortcuts via ActivateIntent; broaden PTT press
 3919d2f chore: auto-update development context
 Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json
 
+
+## Auto-Sync: 2025-08-10 20:35:47
+Branch: feature/ui-ux-surfaces-and-tests
+Recent commits:
+89d8413 feat(core): restore test-expected APIs for ActionParameter/AiAction and add compat ActionController events + clearActions; fix example gallery DataTableLite args; default ActionConfirmationConfig values
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json,example/lib/examples/home_screen.dart,example/lib/examples/ui_gallery.dart,lib/src/controllers/action_controller.dart,lib/src/models/ai_action.dart
+
+
+## Auto-Sync: 2025-08-10 20:36:19
+Branch: feature/ui-ux-surfaces-and-tests
+Recent commits:
+89d8413 feat(core): restore test-expected APIs for ActionParameter/AiAction and add compat ActionController events + clearActions; fix example gallery DataTableLite args; default ActionConfirmationConfig values
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json,example/lib/examples/home_screen.dart,example/lib/examples/ui_gallery.dart,lib/src/controllers/action_controller.dart,lib/src/models/ai_action.dart
+
