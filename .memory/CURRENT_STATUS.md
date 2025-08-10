@@ -10,12 +10,12 @@
 ## Git Context
 Branch: feature/ui-ux-surfaces-and-tests
 Recent commits:
+18ff7e8 chore: auto-update development context
 a43a5b9 feat(voice-ui): keyboard shortcuts via ActivateIntent; broaden PTT press handling; tests passing
 3919d2f chore: auto-update development context
 dc0192e feat(voice-ui): polish VoiceSendButton (long-press PTT, size tokens, min tap target) with tests
 1162035 chore: auto-update development context
-a958841 feat(voice-ui): add VoiceSendButton, VoiceStatusBar, TranscriptChip (UI-only) with unit tests; improve Callout accessibility; add DataTableLite tests
-Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json,lib/src/widgets/voice/voice_send_button.dart,test/widgets/voice/voice_send_button_polish_test.dart
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json
 
 ## Auto-Detected Activity
 

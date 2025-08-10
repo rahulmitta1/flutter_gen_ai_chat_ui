@@ -11,6 +11,7 @@ import 'examples/04_file_attachments/file_attachments_example.dart';
 import 'examples/05_ai_actions/ai_actions_example.dart';
 import 'examples/06_context_aware/context_aware_example.dart';
 import 'examples/real_file_upload_example.dart';
+import 'examples/ui_gallery.dart';
 
 // For state management
 import 'models/app_state.dart';
@@ -60,6 +61,7 @@ class ExampleApp extends StatelessWidget {
               '/ai-actions': (context) => const AiActionsExample(),
               '/context-aware': (context) => const ContextAwareExample(),
               '/real-file-upload': (context) => const RealFileUploadExample(),
+              '/ui-gallery': (context) => const UiGalleryScreen(),
             },
           );
         },

@@ -95,7 +95,8 @@ class VoiceSendButton extends StatelessWidget {
       ActivateIntent: CallbackAction<ActivateIntent>(
         onInvoke: (_) {
           if (mode == VoiceSendMode.toggle) {
-            onToggle?.call(!(state == VoiceState.listening || state == VoiceState.recording));
+            onToggle?.call(!(state == VoiceState.listening ||
+                state == VoiceState.recording));
           } else {
             onHoldStart?.call();
             onHoldEnd?.call();
@@ -129,13 +130,14 @@ class VoiceSendButton extends StatelessWidget {
             actions: actions,
             child: InkWell(
               borderRadius: borderRadius ?? BorderRadius.circular(diameter),
-              onTap: () => onToggle?.call(!(state == VoiceState.listening || state == VoiceState.recording)),
+              onTap: () => onToggle?.call(!(state == VoiceState.listening ||
+                  state == VoiceState.recording)),
               child: Focus(autofocus: false, child: child),
             ),
           ),
         );
     }
-}
+  }
 
   IconData _iconFor(VoiceState s) {
     switch (s) {

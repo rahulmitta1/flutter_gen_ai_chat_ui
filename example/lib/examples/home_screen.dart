@@ -33,6 +33,19 @@ class ExamplesHomeScreen extends StatelessWidget {
               delegate: SliverChildListDelegate([
                 _buildModernExampleCard(
                   context,
+                  title: 'UI Gallery',
+                  description: 'New components: suggestions, results, voice UI',
+                  icon: Icons.widgets_outlined,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF2563EB), Color(0xFF06B6D4)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/ui-gallery',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
                   title: 'Basic',
                   description:
                       'Simple ChatGPT-style interface with essential features',
