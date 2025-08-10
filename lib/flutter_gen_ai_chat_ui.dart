@@ -45,3 +45,7 @@ export 'src/widgets/result/result_card.dart';
 export 'src/widgets/result/key_value_list.dart';
 export 'src/widgets/result/callout.dart';
 export 'src/widgets/result/data_table_lite.dart';
+// Voice UI wrappers (UI-only)
+export 'src/widgets/voice/voice_send_button.dart';
+export 'src/widgets/voice/voice_status_bar.dart';
+export 'src/widgets/voice/transcript_chip.dart';
