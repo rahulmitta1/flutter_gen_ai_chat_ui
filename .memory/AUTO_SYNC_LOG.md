@@ -135,3 +135,25 @@ dc0192e feat(voice-ui): polish VoiceSendButton (long-press PTT, size tokens, min
 1162035 chore: auto-update development context
 Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json
 
+
+## Auto-Sync: 2025-08-10 19:12:25
+Branch: feature/ui-ux-surfaces-and-tests
+Recent commits:
+a6e4c32 docs(example): add UI Gallery route showcasing suggestions, autocomplete, result renderers, and voice UI (UI-only)
+18ff7e8 chore: auto-update development context
+a43a5b9 feat(voice-ui): keyboard shortcuts via ActivateIntent; broaden PTT press handling; tests passing
+3919d2f chore: auto-update development context
+dc0192e feat(voice-ui): polish VoiceSendButton (long-press PTT, size tokens, min tap target) with tests
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,example/lib/examples/home_screen.dart,example/lib/examples/ui_gallery.dart,example/lib/main.dart,lib/src/widgets/voice/voice_send_button.dart
+
+
+## Auto-Sync: 2025-08-10 19:12:35
+Branch: feature/ui-ux-surfaces-and-tests
+Recent commits:
+a6e4c32 docs(example): add UI Gallery route showcasing suggestions, autocomplete, result renderers, and voice UI (UI-only)
+18ff7e8 chore: auto-update development context
+a43a5b9 feat(voice-ui): keyboard shortcuts via ActivateIntent; broaden PTT press handling; tests passing
+3919d2f chore: auto-update development context
+dc0192e feat(voice-ui): polish VoiceSendButton (long-press PTT, size tokens, min tap target) with tests
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,example/lib/examples/home_screen.dart,example/lib/examples/ui_gallery.dart,example/lib/main.dart,lib/src/widgets/voice/voice_send_button.dart
+
