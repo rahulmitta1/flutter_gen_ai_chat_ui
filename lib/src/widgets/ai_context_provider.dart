@@ -77,6 +77,7 @@ class _AiContextProviderState extends State<AiContextProvider>
   late AiContextController _controller;
   bool _isExternalController = false;
   StreamSubscription<AiContextEvent>? _eventSubscription;
+  bool _didSetupContexts = false;
 
   @override
   void initState() {
@@ -91,12 +92,6 @@ class _AiContextProviderState extends State<AiContextProvider>
       _isExternalController = false;
     }
 
-    // Set up automatic context providers
-    _setupAutomaticContext();
-    
-    // Set up custom context providers
-    _setupCustomContextProviders();
-    
     // Listen to lifecycle changes
     WidgetsBinding.instance.addObserver(this);
     
@@ -109,7 +104,15 @@ class _AiContextProviderState extends State<AiContextProvider>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _updateNavigationContext();
+    // Perform initial setup that requires BuildContext only once
+    if (!_didSetupContexts) {
+      _setupAutomaticContext();
+      _setupCustomContextProviders();
+      _didSetupContexts = true;
+    } else {
+      // Keep navigation context up to date on dependency changes
+      _updateNavigationContext();
+    }
   }
 
   @override
