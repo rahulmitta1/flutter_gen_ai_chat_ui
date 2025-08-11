@@ -507,6 +507,81 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               ),
               body: Column(
                 children: [
+                  // Quick context & action controls
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        FilledButton.icon(
+                          icon: const Icon(Icons.add_shopping_cart),
+                          label: const Text('Add cart item'),
+                          onPressed: () {
+                            final current = _shoppingCart.value;
+                            final newItem = CartItem(
+                              id: DateTime.now().millisecondsSinceEpoch.toString(),
+                              name: 'USB-C Cable',
+                              price: 9.99,
+                              quantity: 1,
+                              category: 'Accessories',
+                            );
+                            _shoppingCart.value = current.addItem(newItem);
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.discount),
+                          label: const Text('Apply member discount'),
+                          onPressed: () async {
+                            final hook = AiActionHook.of(context);
+                            await hook.executeAction('apply_member_discount', {
+                              'membershipLevel': _userProfile.value.membershipLevel,
+                            });
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.shopping_cart),
+                          label: const Text('Cart summary'),
+                          onPressed: () async {
+                            final hook = AiActionHook.of(context);
+                            await hook.executeAction('get_cart_summary', {});
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.recommend),
+                          label: const Text('Recommendations'),
+                          onPressed: () async {
+                            final hook = AiActionHook.of(context);
+                            await hook.executeAction('recommend_products', {
+                              'userId': _userProfile.value.id,
+                              'limit': 3,
+                            });
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.history),
+                          label: const Text('Order history'),
+                          onPressed: () async {
+                            final hook = AiActionHook.of(context);
+                            await hook.executeAction('get_order_history', {
+                              'userId': _userProfile.value.id,
+                              'limit': 5,
+                            });
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.star),
+                          label: const Text('Toggle Gold/Silver'),
+                          onPressed: () {
+                            final level = _userProfile.value.membershipLevel.toLowerCase() == 'gold'
+                                ? 'Silver'
+                                : 'Gold';
+                            _userProfile.value = _userProfile.value.copyWith(membershipLevel: level);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   // User info header
                   Container(
                     width: double.infinity,
@@ -592,6 +667,43 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                         decoration: InputDecoration(
                           hintText: 'Ask about products, orders, discounts...',
                           border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Simple context inspector footer
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('What AI sees', style: Theme.of(context).textTheme.titleSmall),
+                            const SizedBox(height: 8),
+                            ValueListenableBuilder<UserProfile>(
+                              valueListenable: _userProfile,
+                              builder: (context, profile, _) => Text(
+                                'User: ${profile.name} • Level: ${profile.membershipLevel} • Spent: \$${profile.totalSpent}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            ValueListenableBuilder<ShoppingCart>(
+                              valueListenable: _shoppingCart,
+                              builder: (context, cart, _) => Text(
+                                'Cart: ${cart.items.length} items • Total: \$${cart.total.toStringAsFixed(2)}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            ValueListenableBuilder<String>(
+                              valueListenable: _currentPage,
+                              builder: (context, page, _) => Text(
+                                'Page: $page',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

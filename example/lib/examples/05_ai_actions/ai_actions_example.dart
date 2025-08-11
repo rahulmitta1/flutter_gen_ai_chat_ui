@@ -7,6 +7,7 @@ import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 
 import '../../action_examples/calculator_action.dart';
 import '../../action_examples/weather_action.dart';
+import '../../widgets/action_console.dart';
 
 class AiActionsExample extends StatefulWidget {
   const AiActionsExample({super.key});
@@ -410,27 +411,94 @@ class _AiActionsExampleState extends State<AiActionsExample> {
                 ),
               ],
             ),
-            body: AiChatWidget(
-              currentUser: _currentUser,
-              aiUser: _aiUser,
-              controller: _controller,
-              onSendMessage: _handleSendMessage,
-              welcomeMessageConfig: WelcomeMessageConfig(
-                title: 'AI Actions Demo',
-                questionsSectionTitle: 'Try these examples:',
-              ),
-              exampleQuestions: const [
-                ExampleQuestion(question: 'Calculate 25 * 8'),
-                ExampleQuestion(question: 'What\'s the square root of 144?'),
-                ExampleQuestion(question: 'Get weather for London'),
-                ExampleQuestion(question: 'Convert 100 meters to feet'),
-              ],
-              inputOptions: const InputOptions(
-                decoration: InputDecoration(
-                  hintText: 'Ask me to calculate, get weather, or convert units...',
-                  border: OutlineInputBorder(),
+            body: Column(
+              children: [
+                // Quick actions row
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.calculate),
+                        label: const Text('Add 25 + 8'),
+                        onPressed: () async {
+                          final hook = AiActionHook.of(context);
+                          await hook.executeAction('calculate', {
+                            'a': 25,
+                            'b': 8,
+                            'operation': 'add',
+                          });
+                        },
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.functions),
+                        label: const Text('sqrt(144)'),
+                        onPressed: () async {
+                          final hook = AiActionHook.of(context);
+                          await hook.executeAction('advanced_math', {
+                            'value': 144,
+                            'function': 'sqrt',
+                          });
+                        },
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.cloud),
+                        label: const Text('Weather: London'),
+                        onPressed: () async {
+                          final hook = AiActionHook.of(context);
+                          await hook.executeAction('get_current_weather', {
+                            'location': 'London, UK',
+                            'units': 'celsius',
+                          });
+                        },
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.swap_horiz),
+                        label: const Text('100 m -> ft'),
+                        onPressed: () async {
+                          final hook = AiActionHook.of(context);
+                          await hook.executeAction('convert_units', {
+                            'value': 100,
+                            'from_unit': 'meters',
+                            'to_unit': 'feet',
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: AiChatWidget(
+                    currentUser: _currentUser,
+                    aiUser: _aiUser,
+                    controller: _controller,
+                    onSendMessage: _handleSendMessage,
+                    welcomeMessageConfig: WelcomeMessageConfig(
+                      title: 'AI Actions Demo',
+                      questionsSectionTitle: 'Try these examples:',
+                    ),
+                    exampleQuestions: const [
+                      ExampleQuestion(question: 'Calculate 25 * 8'),
+                      ExampleQuestion(question: 'What\'s the square root of 144?'),
+                      ExampleQuestion(question: 'Get weather for London'),
+                      ExampleQuestion(question: 'Convert 100 meters to feet'),
+                    ],
+                    inputOptions: const InputOptions(
+                      decoration: InputDecoration(
+                        hintText: 'Ask me to calculate, get weather, or convert units...',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+                // Live console
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: ActionConsole(),
+                ),
+              ],
             ),
           );
         },
