@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
@@ -20,64 +19,61 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
   late ChatMessagesController _controller;
   late ChatUser _currentUser;
   late ChatUser _aiUser;
-  late StreamSubscription<ActionEvent> _actionSubscription;
-  
+
   // Application state that AI can observe
   late ValueNotifier<UserProfile> _userProfile;
   late ValueNotifier<ShoppingCart> _shoppingCart;
   late ValueNotifier<String> _currentPage;
   late ValueNotifier<Map<String, dynamic>> _preferences;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = ChatMessagesController();
-    _currentUser = ChatUser(id: '1', firstName: 'John Doe');
-    _aiUser = ChatUser(id: '2', firstName: 'AI Assistant');
-    
+    _currentUser = const ChatUser(id: '1', firstName: 'John Doe');
+    _aiUser = const ChatUser(id: '2', firstName: 'AI Assistant');
+
     // Initialize application state
-    _userProfile = ValueNotifier(UserProfile(
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      membershipLevel: 'Gold',
-      totalSpent: 1250.50,
-      favoriteCategories: ['Electronics', 'Books'],
-      recentPurchases: [
-        'iPhone 15 Pro',
-        'MacBook Air M2',
-        'The Great Gatsby',
-      ],
-    ,
-      customProperties: {'id': messageId},
+    _userProfile = ValueNotifier(
+      const UserProfile(
+        id: '1',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        membershipLevel: 'Gold',
+        totalSpent: 1250.50,
+        favoriteCategories: ['Electronics', 'Books'],
+        recentPurchases: [
+          'iPhone 15 Pro',
+          'MacBook Air M2',
+          'The Great Gatsby',
+        ],
+      ),
     );
-    _controller.addMessage(aiMessage);
-    
-    _shoppingCart = ValueNotifier(ShoppingCart(
-      items: [
-        CartItem(
-          id: '1',
-          name: 'Wireless Headphones',
-          price: 199.99,
-          quantity: 1,
-          category: 'Electronics',
-        ),
-        CartItem(
-          id: '2',
-          name: 'Programming Book',
-          price: 45.99,
-          quantity: 2,
-          category: 'Books',
-        ),
-      ],
-    ,
-      customProperties: {'id': messageId},
+
+    _shoppingCart = ValueNotifier(
+      const ShoppingCart(
+        items: [
+          CartItem(
+            id: '1',
+            name: 'Wireless Headphones',
+            price: 199.99,
+            quantity: 1,
+            category: 'Electronics',
+          ),
+          CartItem(
+            id: '2',
+            name: 'Programming Book',
+            price: 45.99,
+            quantity: 2,
+            category: 'Books',
+          ),
+        ],
+      ),
     );
-    _controller.addMessage(aiMessage);
-    
+
     _currentPage = ValueNotifier('product_catalog');
-    
+
     _preferences = ValueNotifier({
       'currency': 'USD',
       'language': 'en',
@@ -85,11 +81,13 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       'darkMode': false,
       'autoSave': true,
     });
-    
+
     // Add welcome message
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.addMessage(ChatMessage(
-        text: 'Hello John! I can see you\'re browsing our electronics section and have some items in your cart. '
+      _controller.addMessage(
+        ChatMessage(
+          text:
+              'Hello John! I can see you\'re browsing our electronics section and have some items in your cart. '
               'I\'m here to help with product recommendations, order management, and any questions you might have. '
               'As a Gold member, you qualify for free shipping on orders over \$100!\n\n'
               'Try asking me:\n'
@@ -97,18 +95,15 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               '• "Recommend similar products"\n'
               '• "Apply my member discount"\n'
               '• "Check my order history"',
-        user: _aiUser,
-        createdAt: DateTime.now(),
-      ,
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+          user: _aiUser,
+          createdAt: DateTime.now(),
+        ),
+      );
     });
   }
 
   @override
   void dispose() {
-    _actionSubscription.cancel();
     _controller.dispose();
     _userProfile.dispose();
     _shoppingCart.dispose();
@@ -181,7 +176,6 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       text: 'Let me check your current cart...',
       user: _aiUser,
       createdAt: DateTime.now(),
-    ,
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
@@ -197,21 +191,18 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                            'As a ${_userProfile.value.membershipLevel} member, you qualify for free shipping! '
                            'Would you like me to apply your member discount or recommend related items?';
         
-        _controller.updateMessage(aiMessage.copyWith(message: responseText,
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: responseText),
+        );
       } else {
-        _controller.updateMessage(aiMessage.copyWith(message: 'Sorry, I couldn\'t access your cart right now. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: 'Sorry, I couldn\'t access your cart right now. Please try again.'),
+        );
       }
     } catch (e) {
-      _controller.updateMessage(aiMessage.copyWith(message: 'I encountered an error checking your cart. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+      _controller.updateMessage(
+        aiMessage.copyWith(text: 'I encountered an error checking your cart. Please try again.'),
+      );
     }
   }
 
@@ -221,7 +212,6 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       text: 'Let me find some great recommendations based on your preferences...',
       user: _aiUser,
       createdAt: DateTime.now(),
-    ,
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
@@ -239,21 +229,18 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                            'These products are popular with other ${_userProfile.value.membershipLevel} members who bought similar items. '
                            'Would you like to add any of these to your cart?';
         
-        _controller.updateMessage(aiMessage.copyWith(message: responseText,
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: responseText),
+        );
       } else {
-        _controller.updateMessage(aiMessage.copyWith(message: 'I couldn\'t generate recommendations right now. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: 'I couldn\'t generate recommendations right now. Please try again.'),
+        );
       }
     } catch (e) {
-      _controller.updateMessage(aiMessage.copyWith(message: 'I encountered an error finding recommendations. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+      _controller.updateMessage(
+        aiMessage.copyWith(text: 'I encountered an error finding recommendations. Please try again.'),
+      );
     }
   }
 
@@ -263,7 +250,6 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       text: 'Let me apply your member discount...',
       user: _aiUser,
       createdAt: DateTime.now(),
-    ,
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
@@ -280,10 +266,9 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                            'Your new total: **\$${discountData['newTotal']}** (was \$${discountData['originalTotal']})\n\n'
                            'Plus you get free shipping! Ready to checkout?';
         
-        _controller.updateMessage(aiMessage.copyWith(message: responseText,
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: responseText),
+        );
         
         // Update cart with discount applied
         final updatedCart = _shoppingCart.value.copyWith(
@@ -292,16 +277,14 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
         );
         _shoppingCart.value = updatedCart;
       } else {
-        _controller.updateMessage(aiMessage.copyWith(message: 'I couldn\'t apply the discount right now. Please contact customer service.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: 'I couldn\'t apply the discount right now. Please contact customer service.'),
+        );
       }
     } catch (e) {
-      _controller.updateMessage(aiMessage.copyWith(message: 'I encountered an error applying the discount. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+      _controller.updateMessage(
+        aiMessage.copyWith(text: 'I encountered an error applying the discount. Please try again.'),
+      );
     }
   }
 
@@ -311,7 +294,6 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       text: 'Let me look up your recent order history...',
       user: _aiUser,
       createdAt: DateTime.now(),
-    ,
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
@@ -329,21 +311,18 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                            'Total spent this year: **\$${_userProfile.value.totalSpent}**\n\n'
                            'Would you like to reorder any of these items or see similar products?';
         
-        _controller.updateMessage(aiMessage.copyWith(message: responseText,
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: responseText),
+        );
       } else {
-        _controller.updateMessage(aiMessage.copyWith(message: 'I couldn\'t access your order history right now. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+        _controller.updateMessage(
+          aiMessage.copyWith(text: 'I couldn\'t access your order history right now. Please try again.'),
+        );
       }
     } catch (e) {
-      _controller.updateMessage(aiMessage.copyWith(message: 'I encountered an error checking your order history. Please try again.',
-      customProperties: {'id': messageId},
-    );
-    _controller.addMessage(aiMessage);
+      _controller.updateMessage(
+        aiMessage.copyWith(text: 'I encountered an error checking your order history. Please try again.'),
+      );
     }
   }
 
@@ -372,14 +351,13 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
     
     response += 'How else can I help you today?';
     
-    _controller.addMessage(ChatMessage(
-      text: response,
-      user: _aiUser,
-      createdAt: DateTime.now(),
-    ,
-      customProperties: {'id': messageId},
+    _controller.addMessage(
+      ChatMessage(
+        text: response,
+        user: _aiUser,
+        createdAt: DateTime.now(),
+      ),
     );
-    _controller.addMessage(aiMessage);
   }
 
   @override

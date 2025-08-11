@@ -13,7 +13,10 @@ class WeatherActions {
           name: 'location',
           description: 'The city and state/country (e.g., "San Francisco, CA")',
           required: true,
-          validator: (value) => value != null && value.toString().trim().isNotEmpty,
+          validator: (value) =>
+              (value == null || value.toString().trim().isEmpty)
+                  ? 'location is required'
+                  : null,
         ),
         ActionParameter.string(
           name: 'units',
@@ -135,7 +138,10 @@ class WeatherActions {
           name: 'conditions',
           description: 'Weather conditions to alert for (rain, snow, storm, etc.)',
           required: true,
-          validator: (value) => value is List && value.isNotEmpty,
+          validator: (value) =>
+              (value is List && value.isNotEmpty)
+                  ? null
+                  : 'conditions must be a non-empty list',
         ),
         ActionParameter.number(
           name: 'temperature_threshold',

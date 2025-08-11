@@ -1,28 +1,26 @@
 # Current Status
 
-## Auto-Updated: 2025-08-10 20:36:22
+## Auto-Updated: 2025-08-11 11:01:13
 
 ## Project Info
 - **Directory**: flutter_gen_ai_chat_ui
 - **Type**: flutter
-- **Last Activity**: 2025-08-10 20:36:22
+- **Last Activity**: 2025-08-11 11:01:13
 
 ## Git Context
 Branch: feature/ui-ux-surfaces-and-tests
-Recent commits:
-a82e75f chore: auto-update development context
-89d8413 feat(core): restore test-expected APIs for ActionParameter/AiAction and add compat ActionController events + clearActions; fix example gallery DataTableLite args; default ActionConfirmationConfig values
-Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json
+Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json,lib/src/controllers/action_controller.dart,lib/src/models/ai_action.dart
 
 ## Auto-Detected Activity
 
+- Development server running
 - Unstaged changes detected
-- Recently modified: ./lib/src/models/ai_action.dart
-./.dart_tool/flutter_build/dart_plugin_registrant.dart
-./lib/src/controllers/action_controller.dart
+- Recently modified: ./example/lib/action_examples/weather_action.dart
+./example/lib/examples/ui_gallery.dart
+./example/lib/examples/06_context_aware/context_aware_example.dart
 
 ## Session Context
 - **Working Directory**: `/Users/hooshyar/Desktop/development/packages/dila-packages/flutter_gen_ai_chat_ui`
 - **Auto-sync Active**: ✅
-- **Last Sync**: 2025-08-10 20:36:22
+- **Last Sync**: 2025-08-11 11:01:13
 

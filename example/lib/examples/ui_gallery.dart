@@ -26,8 +26,8 @@ class _UiGalleryScreenState extends State<UiGalleryScreen> {
         'kv': (ctx, data) =>
             const KeyValueList(items: {'Status': 'OK', 'Count': '42'}),
         'table': (ctx, data) => const DataTableLite(
-          headers: ['Name', 'Age'],
-          data: [
+          columns: ['Name', 'Age'],
+          rows: [
             ['Alice', '30'],
             ['Bob', '25'],
           ],
