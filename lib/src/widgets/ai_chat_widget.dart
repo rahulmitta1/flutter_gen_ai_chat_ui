@@ -148,8 +148,7 @@ class AiChatWidget extends StatefulWidget {
 
 class _AiChatWidgetState extends State<AiChatWidget>
     with TickerProviderStateMixin {
-  final ScrollController _scrollController = ScrollController();
-  bool _showScrollToBottom = false;
+  late ScrollController _effectiveScrollController;
   late AnimationController _animationController;
   late TextEditingController _textController;
   late FocusNode _inputFocusNode;
@@ -159,7 +158,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    _effectiveScrollController = widget.scrollController ?? ScrollController();
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -233,17 +232,6 @@ class _AiChatWidgetState extends State<AiChatWidget>
     }
   }
 
-  void _scrollListener() {
-    if (_scrollController.hasClients) {
-      final shouldShowButton =
-          _scrollController.position.pixels > 100; // Show after scrolling 100px
-      if (shouldShowButton != _showScrollToBottom) {
-        setState(() {
-          _showScrollToBottom = shouldShowButton;
-        });
-      }
-    }
-  }
 
   void _handleSend(final ChatMessage message) {
     // Hide welcome message first, just like in example questions
@@ -339,8 +327,11 @@ class _AiChatWidgetState extends State<AiChatWidget>
                               inputOptions:
                                   widget.inputOptions ?? const InputOptions(),
                               typingUsers: _getEffectiveTypingUsers(),
-                              messageListOptions: widget.messageListOptions ??
-                                  const MessageListOptions(),
+                              messageListOptions: (widget.messageListOptions ??
+                                      const MessageListOptions())
+                                  .copyWith(
+                                scrollController: _effectiveScrollController,
+                              ),
                               readOnly: widget.readOnly,
                               quickReplyOptions: widget.quickReplyOptions ??
                                   const QuickReplyOptions(),
@@ -735,7 +726,10 @@ class _AiChatWidgetState extends State<AiChatWidget>
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    // Only dispose scroll controller if we created it
+    if (widget.scrollController == null) {
+      _effectiveScrollController.dispose();
+    }
     _animationController.dispose();
 
     // Remove text controller listener to prevent memory leaks
