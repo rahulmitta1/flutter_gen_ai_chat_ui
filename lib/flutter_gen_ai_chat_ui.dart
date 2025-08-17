@@ -35,8 +35,11 @@ export 'src/models/chat_thread.dart';
 export 'src/models/ai_suggestion.dart';
 export 'src/models/ai_agent.dart';
 
-// Theme
+// Theme (Basic)
 export 'src/theme/custom_theme_extension.dart';
+
+// Advanced Theme System (50+ properties with gradients, animations, platform variants)
+export 'src/theme/advanced_theme_system.dart';
 
 // Utils
 export 'src/utils/color_extensions.dart';
