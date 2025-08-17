@@ -146,6 +146,19 @@ class ExamplesHomeScreen extends StatelessWidget {
                 ),
                 _buildModernExampleCard(
                   context,
+                  title: 'Simple AI Actions',
+                  description: 'Streamlined AI actions with clean integration patterns',
+                  icon: Icons.auto_awesome,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF10B981)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/simple-ai-actions',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
                   title: 'Context Aware',
                   description:
                       'AI with application state awareness and smart actions',
@@ -156,6 +169,20 @@ class ExamplesHomeScreen extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                   routeName: '/context-aware',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'CopilotKit Features',
+                  description:
+                      'Complete CopilotKit-inspired features: multi-chat, AI text input, agent orchestration',
+                  icon: Icons.rocket_launch_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDB2777), Color(0xFFFF6B6B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/advanced-features',
                   isDark: isDark,
                 ),
               ]),

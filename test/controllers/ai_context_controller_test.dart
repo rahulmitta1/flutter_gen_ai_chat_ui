@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
@@ -161,8 +162,8 @@ void main() {
         final formatted = controller.getContextForPrompt();
         
         expect(formatted, isA<Map<String, dynamic>>());
-        expect(formatted, containsKey('user_profile'));
-        expect(formatted, containsKey('app_state'));
+        expect(formatted.containsKey('user_profile'), isTrue);
+        expect(formatted.containsKey('app_state'), isTrue);
       });
 
       test('should include all context data fields', () {

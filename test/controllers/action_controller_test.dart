@@ -27,16 +27,16 @@ void main() {
         final action = _createTestAction();
         controller.registerAction(action);
         
-        final result = controller.unregisterAction('test_action');
+        controller.unregisterAction('test_action');
         
-        expect(result, isTrue);
         expect(controller.actions, isNot(contains('test_action')));
       });
 
-      test('should return false when unregistering non-existent action', () {
-        final result = controller.unregisterAction('non_existent');
+      test('should handle unregistering non-existent action', () {
+        // Should not throw exception
+        controller.unregisterAction('non_existent');
         
-        expect(result, isFalse);
+        expect(controller.actions, isEmpty);
       });
 
       test('should clear all actions', () {

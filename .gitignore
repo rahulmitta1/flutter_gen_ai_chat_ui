@@ -16,6 +16,9 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Git files
+.gitignore
+
 # VS Code related
 .vscode/
 
@@ -94,3 +97,5 @@ example/.packages
 example/.flutter-plugins
 example/.flutter-plugins-dependencies
 example/pubspec.lock
+.memory/
+

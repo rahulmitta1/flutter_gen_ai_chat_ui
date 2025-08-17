@@ -82,8 +82,8 @@ void main() {
         expect(schema['parameters']['type'], equals('object'));
         
         final properties = schema['parameters']['properties'] as Map<String, dynamic>;
-        expect(properties, containsKey('a'));
-        expect(properties, containsKey('operation'));
+        expect(properties.containsKey('a'), isTrue);
+        expect(properties.containsKey('operation'), isTrue);
         
         final aParam = properties['a'] as Map<String, dynamic>;
         expect(aParam['type'], equals('number'));

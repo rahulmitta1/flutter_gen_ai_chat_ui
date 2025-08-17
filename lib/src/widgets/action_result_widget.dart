@@ -8,19 +8,19 @@ import 'ai_action_provider.dart';
 class ActionResultConfig {
   /// Whether to show action execution in chat messages
   final bool showInMessages;
-  
+
   /// Whether to show action parameters in the UI
   final bool showParameters;
-  
+
   /// Whether to show execution duration
   final bool showDuration;
-  
+
   /// Custom status icons
   final Map<ActionStatus, IconData>? statusIcons;
-  
+
   /// Custom status colors
   final Map<ActionStatus, Color>? statusColors;
-  
+
   /// Animation duration for status changes
   final Duration animationDuration;
 
@@ -38,10 +38,10 @@ class ActionResultConfig {
 class ActionResultWidget extends StatefulWidget {
   /// ID of the execution to display
   final String executionId;
-  
+
   /// Configuration for display
   final ActionResultConfig? config;
-  
+
   /// Custom widget builder for different states
   final Widget Function(
     BuildContext context,
@@ -62,7 +62,7 @@ class ActionResultWidget extends StatefulWidget {
 
 class _ActionResultWidgetState extends State<ActionResultWidget>
     with TickerProviderStateMixin {
-  late ActionController _controller;
+  ActionController? _controller;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -70,13 +70,13 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AiActionProvider.of(context);
-    
+
     _animationController = AnimationController(
-      duration: widget.config?.animationDuration ?? const Duration(milliseconds: 300),
+      duration:
+          widget.config?.animationDuration ?? const Duration(milliseconds: 300),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -84,7 +84,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _scaleAnimation = Tween<double>(
       begin: 0.8,
       end: 1.0,
@@ -92,8 +92,22 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
       parent: _animationController,
       curve: Curves.easeOutBack,
     ));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Access inherited widgets here, not in initState
+    if (!mounted) return;
     
-    _animationController.forward();
+    final controller = AiActionProvider.of(context);
+    if (_controller != controller) {
+      _controller = controller;
+      // Start animation after getting controller
+      if (_animationController.status == AnimationStatus.dismissed) {
+        _animationController.forward();
+      }
+    }
   }
 
   @override
@@ -104,16 +118,21 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
 
   @override
   Widget build(BuildContext context) {
+    final controller = _controller;
+    if (controller == null) {
+      return const SizedBox.shrink();
+    }
+
     return AnimatedBuilder(
-      animation: _controller,
+      animation: controller,
       builder: (context, child) {
-        final execution = _controller.getExecution(widget.executionId);
+        final execution = controller.getExecution(widget.executionId);
         if (execution == null) {
           return const SizedBox.shrink();
         }
 
         final config = widget.config ?? const ActionResultConfig();
-        
+
         // Use custom builder if provided
         if (widget.builder != null) {
           return FadeTransition(
@@ -143,7 +162,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
   ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     // If action has custom render function, use it
     if (execution.action.render != null) {
       return execution.action.render!(
@@ -177,9 +196,11 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
                     ),
                   ),
                 ),
-                if (config.showDuration && execution.status != ActionStatus.idle)
+                if (config.showDuration &&
+                    execution.status != ActionStatus.idle)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(12),
@@ -191,7 +212,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
                   ),
               ],
             ),
-            
+
             // Action description
             if (execution.action.description.isNotEmpty) ...[
               const SizedBox(height: 4),
@@ -202,13 +223,13 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
                 ),
               ),
             ],
-            
+
             // Parameters (if enabled and available)
             if (config.showParameters && execution.parameters.isNotEmpty) ...[
               const SizedBox(height: 8),
               _buildParametersSection(context, execution.parameters, theme),
             ],
-            
+
             // Status-specific content
             ..._buildStatusContent(context, execution, config, theme),
           ],
@@ -217,7 +238,8 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
     );
   }
 
-  Widget _buildStatusIcon(ActionStatus status, ActionResultConfig config, ThemeData theme) {
+  Widget _buildStatusIcon(
+      ActionStatus status, ActionResultConfig config, ThemeData theme) {
     final defaultIcons = {
       ActionStatus.idle: Icons.radio_button_unchecked,
       ActionStatus.executing: Icons.hourglass_empty,
@@ -226,7 +248,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
       ActionStatus.waitingForConfirmation: Icons.help,
       ActionStatus.cancelled: Icons.cancel,
     };
-    
+
     final defaultColors = {
       ActionStatus.idle: theme.colorScheme.onSurfaceVariant,
       ActionStatus.executing: theme.colorScheme.primary,
@@ -240,7 +262,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
     final color = config.statusColors?[status] ?? defaultColors[status]!;
 
     Widget iconWidget = Icon(icon, color: color, size: 20);
-    
+
     // Add animation for executing status
     if (status == ActionStatus.executing) {
       iconWidget = AnimatedBuilder(
@@ -287,7 +309,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
             ],
           ),
         ];
-        
+
       case ActionStatus.waitingForConfirmation:
         return [
           const SizedBox(height: 8),
@@ -317,7 +339,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
             ),
           ),
         ];
-        
+
       case ActionStatus.completed:
         if (execution.result?.data != null) {
           return [
@@ -344,7 +366,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
             ],
           ),
         ];
-        
+
       case ActionStatus.failed:
         return [
           const SizedBox(height: 8),
@@ -375,7 +397,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
             ),
           ),
         ];
-        
+
       case ActionStatus.cancelled:
         return [
           const SizedBox(height: 8),
@@ -396,7 +418,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
             ],
           ),
         ];
-        
+
       default:
         return [];
     }

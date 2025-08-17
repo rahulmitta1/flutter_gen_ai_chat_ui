@@ -32,7 +32,8 @@ class ActionConsole extends StatelessWidget {
                     ),
                     const Spacer(),
                     Tooltip(
-                      message: 'Shows live action executions (auto-clears after a few seconds)',
+                      message:
+                          'Shows live action executions (auto-clears after a few seconds)',
                       child: Icon(
                         Icons.info_outline,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -45,10 +46,9 @@ class ActionConsole extends StatelessWidget {
                 if (!hasExecutions)
                   Text(
                     'No actions running.',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   )
                 else
                   ListView.separated(
@@ -69,5 +69,3 @@ class ActionConsole extends StatelessWidget {
     );
   }
 }
-
-

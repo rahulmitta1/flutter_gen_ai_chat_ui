@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/ai_action.dart';
 import '../models/ai_context.dart';
+import '../utils/action_error_handler.dart';
 import 'ai_context_controller.dart';
 
 /// Event types for action execution
@@ -200,14 +201,13 @@ class ActionController extends ChangeNotifier {
     final executionId =
         '${action.name}_${DateTime.now().millisecondsSinceEpoch}';
 
-    // Validate parameters
-    final validationErrors = action.validateParameters(parameters);
+    // Validate parameters using centralized error handler
+    final validationErrors = ActionErrorHandler.validateActionParameters(
+      action.parameters,
+      parameters,
+    );
     if (validationErrors.isNotEmpty) {
-      final errorMsg =
-          'Parameter validation failed: ${validationErrors.values.join(', ')}';
-      dev.log('Error: $errorMsg');
-      return ActionResult.createFailure(
-          errorMsg, {'validationErrors': validationErrors});
+      return ActionErrorHandler.createValidationFailure(validationErrors);
     }
 
     // Fill in default values
@@ -313,9 +313,12 @@ class ActionController extends ChangeNotifier {
 
       return _completeExecution(execution, result, status);
     } catch (e, stackTrace) {
-      dev.log('Action execution error: $e', error: e, stackTrace: stackTrace);
-
-      final result = ActionResult.createFailure('Unexpected error: $e');
+      final result = ActionErrorHandler.handleActionError(
+        action.name,
+        e,
+        stackTrace,
+      );
+      
       _emitEvent(ActionEvent(
         type: ActionEventType.failed,
         actionName: action.name,
@@ -343,15 +346,20 @@ class ActionController extends ChangeNotifier {
       execution.completer.complete(result);
     }
 
-    // Remove from active executions after a delay to allow UI to show completion
-    Timer(const Duration(seconds: 5), () {
+    // Remove from active executions after a shorter delay for better memory management
+    Timer(const Duration(seconds: 2), () {
       _executions.remove(execution.id);
-      notifyListeners();
+      if (mounted) {  // Check if controller is still mounted
+        notifyListeners();
+      }
     });
 
     notifyListeners();
     return result;
   }
+
+  /// Whether the controller is still mounted/active
+  bool mounted = true;
 
   /// Cancel a running execution
   bool cancelExecution(String executionId) {
@@ -397,6 +405,9 @@ class ActionController extends ChangeNotifier {
     _actions.clear();
     notifyListeners();
   }
+
+  /// Get all registered actions
+  List<AiAction> get registeredActions => _actions.values.toList();
 
   /// Emit an action event
   void _emitEvent(ActionEvent event) {
@@ -524,7 +535,17 @@ class ActionController extends ChangeNotifier {
 
   @override
   void dispose() {
+    mounted = false;
     _eventController.close();
+    
+    // Cancel all running executions
+    for (final execution in _executions.values) {
+      if (execution.isActive) {
+        cancelExecution(execution.id);
+      }
+    }
+    _executions.clear();
+    
     super.dispose();
   }
 }

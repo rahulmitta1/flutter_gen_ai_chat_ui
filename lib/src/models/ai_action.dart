@@ -37,6 +37,9 @@ enum ActionParameterType {
 
   /// Array parameter (List<dynamic>)
   array,
+  
+  /// Array of objects parameter (List<Map<String, dynamic>>) - CopilotKit compatibility
+  objectArray,
 }
 
 /// Definition of an action parameter
@@ -64,6 +67,9 @@ class ActionParameter {
 
   /// For array parameters: the expected item type (optional)
   final ActionParameterType? itemType;
+  
+  /// For object and object[] parameters: nested parameter attributes (CopilotKit compatibility)
+  final List<ActionParameter>? attributes;
 
   const ActionParameter({
     required this.name,
@@ -74,6 +80,7 @@ class ActionParameter {
     this.validator,
     this.enumValues,
     this.itemType,
+    this.attributes,
   });
 
   /// Creates a string parameter
@@ -164,6 +171,44 @@ class ActionParameter {
         validator: validator,
         itemType: itemType,
       );
+      
+  /// Creates an object array parameter with nested attributes (CopilotKit compatibility)
+  static ActionParameter objectArray({
+    required String name,
+    required String description,
+    required List<ActionParameter> attributes,
+    bool required = false,
+    List<Map<String, dynamic>>? defaultValue,
+    String? Function(dynamic value)? validator,
+  }) =>
+      ActionParameter(
+        name: name,
+        type: ActionParameterType.objectArray,
+        description: description,
+        attributes: attributes,
+        required: required,
+        defaultValue: defaultValue,
+        validator: validator,
+      );
+      
+  /// Creates an object parameter with nested attributes
+  static ActionParameter objectWithAttributes({
+    required String name,
+    required String description,
+    required List<ActionParameter> attributes,
+    bool required = false,
+    Map<String, dynamic>? defaultValue,
+    String? Function(dynamic value)? validator,
+  }) =>
+      ActionParameter(
+        name: name,
+        type: ActionParameterType.object,
+        description: description,
+        attributes: attributes,
+        required: required,
+        defaultValue: defaultValue,
+        validator: validator,
+      );
 
   /// Validates a value against this parameter definition.
   /// Returns null when valid, or an error message when invalid.
@@ -215,11 +260,20 @@ class ActionParameter {
             case ActionParameterType.array:
               badType = value.any((e) => e is! List);
               break;
+            case ActionParameterType.objectArray:
+              badType = value.any((e) => e is! List);
+              break;
           }
           if (badType) {
             final itemTypeName = itemType!.toString().split('.').last;
             return 'All items in $name must be $itemTypeName';
           }
+        }
+        break;
+      case ActionParameterType.objectArray:
+        if (value is! List) return '$name must be an array of objects';
+        if (value.any((e) => e is! Map<String, dynamic>)) {
+          return '$name must contain only objects';
         }
         break;
     }
@@ -264,6 +318,8 @@ class ActionParameter {
           return 'object';
         case ActionParameterType.array:
           return 'array';
+        case ActionParameterType.objectArray:
+          return 'array'; // JSON Schema represents object arrays as arrays
       }
     }
 
@@ -276,6 +332,43 @@ class ActionParameter {
     if (type == ActionParameterType.array) {
       final inner = itemType ?? ActionParameterType.string;
       schema['items'] = {'type': typeString(inner)};
+    }
+    
+    // Handle object arrays with attributes (CopilotKit compatibility)
+    if (type == ActionParameterType.objectArray && attributes != null) {
+      final properties = <String, dynamic>{};
+      final required = <String>[];
+      
+      for (final attr in attributes!) {
+        properties[attr.name] = attr.toJsonSchema();
+        if (attr.required) {
+          required.add(attr.name);
+        }
+      }
+      
+      schema['items'] = {
+        'type': 'object',
+        'properties': properties,
+        if (required.isNotEmpty) 'required': required,
+      };
+    }
+    
+    // Handle object parameters with attributes
+    if (type == ActionParameterType.object && attributes != null) {
+      final properties = <String, dynamic>{};
+      final required = <String>[];
+      
+      for (final attr in attributes!) {
+        properties[attr.name] = attr.toJsonSchema();
+        if (attr.required) {
+          required.add(attr.name);
+        }
+      }
+      
+      schema['properties'] = properties;
+      if (required.isNotEmpty) {
+        schema['required'] = required;
+      }
     }
 
     return schema;
@@ -414,13 +507,9 @@ class AiAction {
 
     for (final param in parameters) {
       final value = params[param.name];
-      if (!param.isValid(value)) {
-        if (param.required && (value == null || value == '')) {
-          errors[param.name] = 'Parameter "${param.name}" is required';
-        } else if (value != null) {
-          errors[param.name] =
-              'Parameter "${param.name}" has invalid type or value';
-        }
+      final error = param.validate(value);
+      if (error != null) {
+        errors[param.name] = error;
       }
     }
 
@@ -441,21 +530,9 @@ class AiAction {
   }
 
   /// Converts action definition to JSON (useful for AI function calling)
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'description': description,
-        'parameters': {
-          'type': 'object',
-          'properties': {
-            for (final param in parameters) param.name: param.toJson(),
-          },
-          'required':
-              parameters.where((p) => p.required).map((p) => p.name).toList(),
-        },
-        if (metadata != null) 'metadata': metadata,
-      };
+  Map<String, dynamic> toJson() => toFunctionCallingSchema();
 
-  /// Function calling schema matching tests/compat expectations
+  /// Function calling schema for AI services (OpenAI, Anthropic, etc.)
   Map<String, dynamic> toFunctionCallingSchema() => {
         'name': name,
         'description': description,
@@ -467,5 +544,6 @@ class AiAction {
           'required':
               parameters.where((p) => p.required).map((p) => p.name).toList(),
         },
+        if (metadata != null) 'metadata': metadata,
       };
 }

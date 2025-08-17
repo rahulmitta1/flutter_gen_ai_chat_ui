@@ -114,7 +114,7 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
 
   void _handleSendMessage(ChatMessage message) {
     _controller.addMessage(message);
-    
+
     // Simulate AI processing with context awareness
     _processAIResponse(message.text);
   }
@@ -122,10 +122,10 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
   /// Simulates AI processing that's aware of application context
   void _processAIResponse(String userMessage) {
     final lowerMessage = userMessage.toLowerCase();
-    
+
     Timer(const Duration(milliseconds: 800), () async {
       final actionHook = AiActionHook.of(context);
-      
+
       // Let AI decide what to do based on context and message
       if (_shouldCheckCart(lowerMessage)) {
         await _handleCartInquiry(actionHook);
@@ -143,31 +143,31 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
   }
 
   bool _shouldCheckCart(String message) {
-    return message.contains('cart') || 
-           message.contains('basket') ||
-           message.contains('items') ||
-           message.contains('what do i have');
+    return message.contains('cart') ||
+        message.contains('basket') ||
+        message.contains('items') ||
+        message.contains('what do i have');
   }
 
   bool _shouldRecommendProducts(String message) {
-    return message.contains('recommend') || 
-           message.contains('suggest') ||
-           message.contains('similar') ||
-           message.contains('other products');
+    return message.contains('recommend') ||
+        message.contains('suggest') ||
+        message.contains('similar') ||
+        message.contains('other products');
   }
 
   bool _shouldApplyDiscount(String message) {
     return message.contains('discount') ||
-           message.contains('coupon') ||
-           message.contains('member') ||
-           message.contains('save money');
+        message.contains('coupon') ||
+        message.contains('member') ||
+        message.contains('save money');
   }
 
   bool _shouldCheckOrderHistory(String message) {
     return message.contains('order') ||
-           message.contains('purchase') ||
-           message.contains('history') ||
-           message.contains('bought before');
+        message.contains('purchase') ||
+        message.contains('history') ||
+        message.contains('bought before');
   }
 
   Future<void> _handleCartInquiry(AiActionHook actionHook) async {
@@ -179,29 +179,33 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
-    
+
     try {
       final result = await actionHook.executeAction('get_cart_summary', {});
-      
+
       if (result.success) {
         final cartData = result.data as Map<String, dynamic>;
-        final responseText = 'Here\'s what\'s in your cart:\n\n'
-                           '${cartData['itemsSummary']}\n\n'
-                           '**Total: \$${cartData['total']}**\n\n'
-                           'As a ${_userProfile.value.membershipLevel} member, you qualify for free shipping! '
-                           'Would you like me to apply your member discount or recommend related items?';
-        
-        _controller.updateMessage(
-          aiMessage.copyWith(text: responseText),
-        );
+        final responseText =
+            'Here\'s what\'s in your cart:\n\n'
+            '${cartData['itemsSummary']}\n\n'
+            '**Total: \$${cartData['total']}**\n\n'
+            'As a ${_userProfile.value.membershipLevel} member, you qualify for free shipping! '
+            'Would you like me to apply your member discount or recommend related items?';
+
+        _controller.updateMessage(aiMessage.copyWith(text: responseText));
       } else {
         _controller.updateMessage(
-          aiMessage.copyWith(text: 'Sorry, I couldn\'t access your cart right now. Please try again.'),
+          aiMessage.copyWith(
+            text:
+                'Sorry, I couldn\'t access your cart right now. Please try again.',
+          ),
         );
       }
     } catch (e) {
       _controller.updateMessage(
-        aiMessage.copyWith(text: 'I encountered an error checking your cart. Please try again.'),
+        aiMessage.copyWith(
+          text: 'I encountered an error checking your cart. Please try again.',
+        ),
       );
     }
   }
@@ -209,37 +213,43 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
   Future<void> _handleProductRecommendation(AiActionHook actionHook) async {
     final messageId = 'ctx_${DateTime.now().millisecondsSinceEpoch}';
     final aiMessage = ChatMessage(
-      text: 'Let me find some great recommendations based on your preferences...',
+      text:
+          'Let me find some great recommendations based on your preferences...',
       user: _aiUser,
       createdAt: DateTime.now(),
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
-    
+
     try {
       final result = await actionHook.executeAction('recommend_products', {
         'userId': _userProfile.value.id,
         'limit': 3,
       });
-      
+
       if (result.success) {
         final recommendations = result.data as Map<String, dynamic>;
-        final responseText = 'Based on your purchase history and current cart, here are my top recommendations:\n\n'
-                           '${recommendations['recommendations']}\n\n'
-                           'These products are popular with other ${_userProfile.value.membershipLevel} members who bought similar items. '
-                           'Would you like to add any of these to your cart?';
-        
-        _controller.updateMessage(
-          aiMessage.copyWith(text: responseText),
-        );
+        final responseText =
+            'Based on your purchase history and current cart, here are my top recommendations:\n\n'
+            '${recommendations['recommendations']}\n\n'
+            'These products are popular with other ${_userProfile.value.membershipLevel} members who bought similar items. '
+            'Would you like to add any of these to your cart?';
+
+        _controller.updateMessage(aiMessage.copyWith(text: responseText));
       } else {
         _controller.updateMessage(
-          aiMessage.copyWith(text: 'I couldn\'t generate recommendations right now. Please try again.'),
+          aiMessage.copyWith(
+            text:
+                'I couldn\'t generate recommendations right now. Please try again.',
+          ),
         );
       }
     } catch (e) {
       _controller.updateMessage(
-        aiMessage.copyWith(text: 'I encountered an error finding recommendations. Please try again.'),
+        aiMessage.copyWith(
+          text:
+              'I encountered an error finding recommendations. Please try again.',
+        ),
       );
     }
   }
@@ -253,23 +263,22 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
-    
+
     try {
       final result = await actionHook.executeAction('apply_member_discount', {
         'membershipLevel': _userProfile.value.membershipLevel,
       });
-      
+
       if (result.success) {
         final discountData = result.data as Map<String, dynamic>;
-        final responseText = 'Great news! I\'ve applied your ${_userProfile.value.membershipLevel} member discount:\n\n'
-                           '**${discountData['discountPercentage']}% off** = **-\$${discountData['discountAmount']}**\n\n'
-                           'Your new total: **\$${discountData['newTotal']}** (was \$${discountData['originalTotal']})\n\n'
-                           'Plus you get free shipping! Ready to checkout?';
-        
-        _controller.updateMessage(
-          aiMessage.copyWith(text: responseText),
-        );
-        
+        final responseText =
+            'Great news! I\'ve applied your ${_userProfile.value.membershipLevel} member discount:\n\n'
+            '**${discountData['discountPercentage']}% off** = **-\$${discountData['discountAmount']}**\n\n'
+            'Your new total: **\$${discountData['newTotal']}** (was \$${discountData['originalTotal']})\n\n'
+            'Plus you get free shipping! Ready to checkout?';
+
+        _controller.updateMessage(aiMessage.copyWith(text: responseText));
+
         // Update cart with discount applied
         final updatedCart = _shoppingCart.value.copyWith(
           discountApplied: discountData['discountAmount'],
@@ -278,12 +287,18 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
         _shoppingCart.value = updatedCart;
       } else {
         _controller.updateMessage(
-          aiMessage.copyWith(text: 'I couldn\'t apply the discount right now. Please contact customer service.'),
+          aiMessage.copyWith(
+            text:
+                'I couldn\'t apply the discount right now. Please contact customer service.',
+          ),
         );
       }
     } catch (e) {
       _controller.updateMessage(
-        aiMessage.copyWith(text: 'I encountered an error applying the discount. Please try again.'),
+        aiMessage.copyWith(
+          text:
+              'I encountered an error applying the discount. Please try again.',
+        ),
       );
     }
   }
@@ -297,66 +312,76 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
       customProperties: {'id': messageId},
     );
     _controller.addMessage(aiMessage);
-    
+
     try {
       final result = await actionHook.executeAction('get_order_history', {
         'userId': _userProfile.value.id,
         'limit': 5,
       });
-      
+
       if (result.success) {
         final historyData = result.data as Map<String, dynamic>;
-        final responseText = 'Here are your recent purchases:\n\n'
-                           '${historyData['orderHistory']}\n\n'
-                           'Total spent this year: **\$${_userProfile.value.totalSpent}**\n\n'
-                           'Would you like to reorder any of these items or see similar products?';
-        
-        _controller.updateMessage(
-          aiMessage.copyWith(text: responseText),
-        );
+        final responseText =
+            'Here are your recent purchases:\n\n'
+            '${historyData['orderHistory']}\n\n'
+            'Total spent this year: **\$${_userProfile.value.totalSpent}**\n\n'
+            'Would you like to reorder any of these items or see similar products?';
+
+        _controller.updateMessage(aiMessage.copyWith(text: responseText));
       } else {
         _controller.updateMessage(
-          aiMessage.copyWith(text: 'I couldn\'t access your order history right now. Please try again.'),
+          aiMessage.copyWith(
+            text:
+                'I couldn\'t access your order history right now. Please try again.',
+          ),
         );
       }
     } catch (e) {
       _controller.updateMessage(
-        aiMessage.copyWith(text: 'I encountered an error checking your order history. Please try again.'),
+        aiMessage.copyWith(
+          text:
+              'I encountered an error checking your order history. Please try again.',
+        ),
       );
     }
   }
 
-  Future<void> _handleGeneralResponse(AiActionHook actionHook, String userMessage) async {
+  Future<void> _handleGeneralResponse(
+    AiActionHook actionHook,
+    String userMessage,
+  ) async {
     // Get enhanced prompt with context
     final enhancedPrompt = actionHook.getEnhancedPrompt(
       'User message: $userMessage',
-      contextTypes: [AiContextType.userProfile, AiContextType.applicationState, AiContextType.navigationContext],
+      contextTypes: [
+        AiContextType.userProfile,
+        AiContextType.applicationState,
+        AiContextType.navigationContext,
+      ],
       contextPriorities: [AiContextPriority.high, AiContextPriority.critical],
       includeActions: true,
     );
-    
+
     dev.log('Enhanced prompt with context: $enhancedPrompt');
-    
+
     // Simulate AI response based on context
     String response = 'I understand you\'re asking about "$userMessage". ';
-    
+
     // Add context-aware insights
     if (_shoppingCart.value.items.isNotEmpty) {
-      response += 'I can see you have ${_shoppingCart.value.items.length} items in your cart. ';
+      response +=
+          'I can see you have ${_shoppingCart.value.items.length} items in your cart. ';
     }
-    
+
     if (_userProfile.value.membershipLevel == 'Gold') {
-      response += 'As a Gold member, you have access to exclusive discounts and free shipping. ';
+      response +=
+          'As a Gold member, you have access to exclusive discounts and free shipping. ';
     }
-    
+
     response += 'How else can I help you today?';
-    
+
     _controller.addMessage(
-      ChatMessage(
-        text: response,
-        user: _aiUser,
-        createdAt: DateTime.now(),
-      ),
+      ChatMessage(text: response, user: _aiUser, createdAt: DateTime.now()),
     );
   }
 
@@ -395,7 +420,7 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
           builder: (context) {
             // Set up context watchers
             final contextHook = AiContextHook.of(context);
-            
+
             // Watch user profile changes
             contextHook.watchNotifier<UserProfile>(
               contextId: 'user_profile',
@@ -404,13 +429,13 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               type: AiContextType.userProfile,
               priority: AiContextPriority.high,
               categories: ['user', 'profile', 'membership'],
-              serializer: (profile) => 
-                'User: ${profile.name} (${profile.email}), '
-                'Membership: ${profile.membershipLevel}, '
-                'Total Spent: \$${profile.totalSpent}, '
-                'Favorite Categories: ${profile.favoriteCategories.join(', ')}',
+              serializer: (profile) =>
+                  'User: ${profile.name} (${profile.email}), '
+                  'Membership: ${profile.membershipLevel}, '
+                  'Total Spent: \$${profile.totalSpent}, '
+                  'Favorite Categories: ${profile.favoriteCategories.join(', ')}',
             );
-            
+
             // Watch shopping cart changes
             contextHook.watchNotifier<ShoppingCart>(
               contextId: 'shopping_cart',
@@ -419,12 +444,12 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               type: AiContextType.applicationState,
               priority: AiContextPriority.critical,
               categories: ['cart', 'shopping', 'ecommerce'],
-              serializer: (cart) => 
-                'Cart: ${cart.items.length} items, '
-                'Total: \$${cart.total}, '
-                'Items: ${cart.items.map((i) => '${i.name} (\$${i.price})').join(', ')}',
+              serializer: (cart) =>
+                  'Cart: ${cart.items.length} items, '
+                  'Total: \$${cart.total}, '
+                  'Items: ${cart.items.map((i) => '${i.name} (\$${i.price})').join(', ')}',
             );
-            
+
             // Watch current page navigation
             contextHook.watchNotifier<String>(
               contextId: 'current_page',
@@ -434,7 +459,7 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               priority: AiContextPriority.high,
               categories: ['navigation', 'page'],
             );
-            
+
             // Watch user preferences
             contextHook.watchNotifier<Map<String, dynamic>>(
               contextId: 'user_preferences',
@@ -443,13 +468,13 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               type: AiContextType.userProfile,
               priority: AiContextPriority.normal,
               categories: ['preferences', 'settings'],
-              serializer: (prefs) => 
-                'Preferences: Currency=${prefs['currency']}, '
-                'Language=${prefs['language']}, '
-                'Notifications=${prefs['notifications']}, '
-                'Dark Mode=${prefs['darkMode']}',
+              serializer: (prefs) =>
+                  'Preferences: Currency=${prefs['currency']}, '
+                  'Language=${prefs['language']}, '
+                  'Notifications=${prefs['notifications']}, '
+                  'Dark Mode=${prefs['darkMode']}',
             );
-            
+
             return Scaffold(
               appBar: AppBar(
                 title: const Text('Context-Aware AI Chat'),
@@ -505,210 +530,246 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                   ),
                 ],
               ),
-              body: Column(
-                children: [
-                  // Quick context & action controls
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        FilledButton.icon(
-                          icon: const Icon(Icons.add_shopping_cart),
-                          label: const Text('Add cart item'),
-                          onPressed: () {
-                            final current = _shoppingCart.value;
-                            final newItem = CartItem(
-                              id: DateTime.now().millisecondsSinceEpoch.toString(),
-                              name: 'USB-C Cable',
-                              price: 9.99,
-                              quantity: 1,
-                              category: 'Accessories',
-                            );
-                            _shoppingCart.value = current.addItem(newItem);
-                          },
-                        ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.discount),
-                          label: const Text('Apply member discount'),
-                          onPressed: () async {
-                            final hook = AiActionHook.of(context);
-                            await hook.executeAction('apply_member_discount', {
-                              'membershipLevel': _userProfile.value.membershipLevel,
-                            });
-                          },
-                        ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.shopping_cart),
-                          label: const Text('Cart summary'),
-                          onPressed: () async {
-                            final hook = AiActionHook.of(context);
-                            await hook.executeAction('get_cart_summary', {});
-                          },
-                        ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.recommend),
-                          label: const Text('Recommendations'),
-                          onPressed: () async {
-                            final hook = AiActionHook.of(context);
-                            await hook.executeAction('recommend_products', {
-                              'userId': _userProfile.value.id,
-                              'limit': 3,
-                            });
-                          },
-                        ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.history),
-                          label: const Text('Order history'),
-                          onPressed: () async {
-                            final hook = AiActionHook.of(context);
-                            await hook.executeAction('get_order_history', {
-                              'userId': _userProfile.value.id,
-                              'limit': 5,
-                            });
-                          },
-                        ),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.star),
-                          label: const Text('Toggle Gold/Silver'),
-                          onPressed: () {
-                            final level = _userProfile.value.membershipLevel.toLowerCase() == 'gold'
-                                ? 'Silver'
-                                : 'Gold';
-                            _userProfile.value = _userProfile.value.copyWith(membershipLevel: level);
-                          },
-                        ),
-                      ],
+              body: AiActionProvider(
+                config: AiActionConfig(
+                  actions: ContextAwareActions.getAllActions(),
+                  debug: true,
+                ),
+                child: Column(
+                  children: [
+                    // Quick context & action controls
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton.icon(
+                            icon: const Icon(Icons.add_shopping_cart),
+                            label: const Text('Add cart item'),
+                            onPressed: () {
+                              final current = _shoppingCart.value;
+                              final newItem = CartItem(
+                                id: DateTime.now().millisecondsSinceEpoch
+                                    .toString(),
+                                name: 'USB-C Cable',
+                                price: 9.99,
+                                quantity: 1,
+                                category: 'Accessories',
+                              );
+                              _shoppingCart.value = current.addItem(newItem);
+                            },
+                          ),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.discount),
+                            label: const Text('Apply member discount'),
+                            onPressed: () async {
+                              final hook = AiActionHook.of(context);
+                              await hook
+                                  .executeAction('apply_member_discount', {
+                                    'membershipLevel':
+                                        _userProfile.value.membershipLevel,
+                                  });
+                            },
+                          ),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.shopping_cart),
+                            label: const Text('Cart summary'),
+                            onPressed: () async {
+                              final hook = AiActionHook.of(context);
+                              await hook.executeAction('get_cart_summary', {});
+                            },
+                          ),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.recommend),
+                            label: const Text('Recommendations'),
+                            onPressed: () async {
+                              final hook = AiActionHook.of(context);
+                              await hook.executeAction('recommend_products', {
+                                'userId': _userProfile.value.id,
+                                'limit': 3,
+                              });
+                            },
+                          ),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.history),
+                            label: const Text('Order history'),
+                            onPressed: () async {
+                              final hook = AiActionHook.of(context);
+                              await hook.executeAction('get_order_history', {
+                                'userId': _userProfile.value.id,
+                                'limit': 5,
+                              });
+                            },
+                          ),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.star),
+                            label: const Text('Toggle Gold/Silver'),
+                            onPressed: () {
+                              final level =
+                                  _userProfile.value.membershipLevel
+                                          .toLowerCase() ==
+                                      'gold'
+                                  ? 'Silver'
+                                  : 'Gold';
+                              _userProfile.value = _userProfile.value.copyWith(
+                                membershipLevel: level,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // User info header
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    child: ValueListenableBuilder<UserProfile>(
-                      valueListenable: _userProfile,
-                      builder: (context, profile, _) {
-                        return Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              child: Text(
-                                profile.name.substring(0, 1),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.bold,
+                    // User info header
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: ValueListenableBuilder<UserProfile>(
+                        valueListenable: _userProfile,
+                        builder: (context, profile, _) {
+                          return Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                                child: Text(
+                                  profile.name.substring(0, 1),
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    profile.name,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      profile.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${profile.membershipLevel} Member • \$${profile.totalSpent} spent',
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ],
+                                    Text(
+                                      '${profile.membershipLevel} Member • \$${profile.totalSpent} spent',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            ValueListenableBuilder<ShoppingCart>(
-                              valueListenable: _shoppingCart,
-                              builder: (context, cart, _) {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    'Cart: \$${cart.total.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSecondary,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
+                              ValueListenableBuilder<ShoppingCart>(
+                                valueListenable: _shoppingCart,
+                                builder: (context, cart, _) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  
-                  // Chat interface
-                  Expanded(
-                    child: AiChatWidget(
-                      currentUser: _currentUser,
-                      aiUser: _aiUser,
-                      controller: _controller,
-                      onSendMessage: _handleSendMessage,
-                      welcomeMessageConfig: WelcomeMessageConfig(
-                        title: 'Smart Shopping Assistant',
-                        questionsSectionTitle: 'Try asking me:',
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.secondary,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      'Cart: \$${cart.total.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                      exampleQuestions: const [
-                        ExampleQuestion(question: 'What\'s in my cart?'),
-                        ExampleQuestion(question: 'Recommend similar products'),
-                        ExampleQuestion(question: 'Apply my member discount'),
-                        ExampleQuestion(question: 'Show my order history'),
-                      ],
-                      inputOptions: const InputOptions(
-                        decoration: InputDecoration(
-                          hintText: 'Ask about products, orders, discounts...',
-                          border: OutlineInputBorder(),
+                    ),
+
+                    // Chat interface
+                    Expanded(
+                      child: AiChatWidget(
+                        currentUser: _currentUser,
+                        aiUser: _aiUser,
+                        controller: _controller,
+                        onSendMessage: _handleSendMessage,
+                        welcomeMessageConfig: WelcomeMessageConfig(
+                          title: 'Smart Shopping Assistant',
+                          questionsSectionTitle: 'Try asking me:',
+                        ),
+                        exampleQuestions: const [
+                          ExampleQuestion(question: 'What\'s in my cart?'),
+                          ExampleQuestion(
+                            question: 'Recommend similar products',
+                          ),
+                          ExampleQuestion(question: 'Apply my member discount'),
+                          ExampleQuestion(question: 'Show my order history'),
+                        ],
+                        inputOptions: const InputOptions(
+                          decoration: InputDecoration(
+                            hintText:
+                                'Ask about products, orders, discounts...',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // Simple context inspector footer
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('What AI sees', style: Theme.of(context).textTheme.titleSmall),
-                            const SizedBox(height: 8),
-                            ValueListenableBuilder<UserProfile>(
-                              valueListenable: _userProfile,
-                              builder: (context, profile, _) => Text(
-                                'User: ${profile.name} • Level: ${profile.membershipLevel} • Spent: \$${profile.totalSpent}',
-                                style: Theme.of(context).textTheme.bodySmall,
+                    // Simple context inspector footer
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'What AI sees',
+                                style: Theme.of(context).textTheme.titleSmall,
                               ),
-                            ),
-                            ValueListenableBuilder<ShoppingCart>(
-                              valueListenable: _shoppingCart,
-                              builder: (context, cart, _) => Text(
-                                'Cart: ${cart.items.length} items • Total: \$${cart.total.toStringAsFixed(2)}',
-                                style: Theme.of(context).textTheme.bodySmall,
+                              const SizedBox(height: 8),
+                              ValueListenableBuilder<UserProfile>(
+                                valueListenable: _userProfile,
+                                builder: (context, profile, _) => Text(
+                                  'User: ${profile.name} • Level: ${profile.membershipLevel} • Spent: \$${profile.totalSpent}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
                               ),
-                            ),
-                            ValueListenableBuilder<String>(
-                              valueListenable: _currentPage,
-                              builder: (context, page, _) => Text(
-                                'Page: $page',
-                                style: Theme.of(context).textTheme.bodySmall,
+                              ValueListenableBuilder<ShoppingCart>(
+                                valueListenable: _shoppingCart,
+                                builder: (context, cart, _) => Text(
+                                  'Cart: ${cart.items.length} items • Total: \$${cart.total.toStringAsFixed(2)}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
                               ),
-                            ),
-                          ],
+                              ValueListenableBuilder<String>(
+                                valueListenable: _currentPage,
+                                builder: (context, page, _) => Text(
+                                  'Page: $page',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -733,19 +794,28 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
                   if (cart.items.isEmpty)
                     const Text('Your cart is empty')
                   else
-                    ...cart.items.map((item) => ListTile(
-                          title: Text(item.name),
-                          subtitle: Text('Qty: ${item.quantity}'),
-                          trailing: Text('\$${item.totalPrice.toStringAsFixed(2)}'),
-                        )),
+                    ...cart.items.map(
+                      (item) => ListTile(
+                        title: Text(item.name),
+                        subtitle: Text('Qty: ${item.quantity}'),
+                        trailing: Text(
+                          '\$${item.totalPrice.toStringAsFixed(2)}',
+                        ),
+                      ),
+                    ),
                   if (cart.items.isNotEmpty) ...[
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('\$${cart.total.toStringAsFixed(2)}', 
-                             style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Total:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '\$${cart.total.toStringAsFixed(2)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                   ],
@@ -766,7 +836,7 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
 
   void _showContextInfo(BuildContext context, AiContextHook contextHook) {
     final contextData = contextHook.contextData;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -780,38 +850,40 @@ class _ContextAwareExampleState extends State<ContextAwareExample> {
               children: [
                 Text('Active Context Items: ${contextData.length}'),
                 const SizedBox(height: 16),
-                ...contextData.values.map((context) => Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                ...contextData.values.map(
+                  (context) => Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            context.description,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Type: ${context.type.toString().split('.').last}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          Text(
+                            'Priority: ${context.priority.toString().split('.').last}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          if (context.categories.isNotEmpty)
                             Text(
-                              context.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              context.description,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Type: ${context.type.toString().split('.').last}',
+                              'Categories: ${context.categories.join(', ')}',
                               style: const TextStyle(fontSize: 10),
                             ),
-                            Text(
-                              'Priority: ${context.priority.toString().split('.').last}',
-                              style: const TextStyle(fontSize: 10),
-                            ),
-                            if (context.categories.isNotEmpty)
-                              Text(
-                                'Categories: ${context.categories.join(', ')}',
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                          ],
-                        ),
+                        ],
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

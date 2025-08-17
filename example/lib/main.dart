@@ -10,6 +10,9 @@ import 'examples/03_advanced/scroll_behavior_example.dart';
 import 'examples/04_file_attachments/file_attachments_example.dart';
 import 'examples/05_ai_actions/ai_actions_example.dart';
 import 'examples/06_context_aware/context_aware_example.dart';
+import 'examples/07_advanced_features/advanced_features_example.dart';
+import 'examples/08_essential_copilot/essential_copilot_example.dart';
+import 'examples/simple_ai_actions_example.dart';
 import 'examples/real_file_upload_example.dart';
 import 'examples/ui_gallery.dart';
 
@@ -59,7 +62,10 @@ class ExampleApp extends StatelessWidget {
               '/scroll-behavior': (context) => const ScrollBehaviorExample(),
               '/file-attachments': (context) => const FileAttachmentsExample(),
               '/ai-actions': (context) => const AiActionsExample(),
+              '/simple-ai-actions': (context) => const SimpleAiActionsExample(),
               '/context-aware': (context) => const ContextAwareExample(),
+              '/advanced-features': (context) => const AdvancedFeaturesExample(),
+              '/essential-copilot': (context) => const EssentialCopilotExample(),
               '/real-file-upload': (context) => const RealFileUploadExample(),
               '/ui-gallery': (context) => const UiGalleryScreen(),
             },
