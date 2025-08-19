@@ -12,6 +12,7 @@ import 'examples/05_ai_actions/ai_actions_example.dart';
 import 'examples/06_context_aware/context_aware_example.dart';
 import 'examples/07_advanced_features/advanced_features_example.dart';
 import 'examples/08_essential_copilot/essential_copilot_example.dart';
+import 'examples/09_advanced_theme_system/advanced_theme_showcase.dart';
 import 'examples/simple_ai_actions_example.dart';
 import 'examples/real_file_upload_example.dart';
 import 'examples/ui_gallery.dart';
@@ -66,6 +67,7 @@ class ExampleApp extends StatelessWidget {
               '/context-aware': (context) => const ContextAwareExample(),
               '/advanced-features': (context) => const AdvancedFeaturesExample(),
               '/essential-copilot': (context) => const EssentialCopilotExample(),
+              '/advanced-theme-showcase': (context) => const AdvancedThemeShowcase(),
               '/real-file-upload': (context) => const RealFileUploadExample(),
               '/ui-gallery': (context) => const UiGalleryScreen(),
             },

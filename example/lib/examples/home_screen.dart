@@ -185,6 +185,20 @@ class ExamplesHomeScreen extends StatelessWidget {
                   routeName: '/advanced-features',
                   isDark: isDark,
                 ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Advanced Theme System',
+                  description:
+                      '50+ theme properties, gradient backgrounds, platform optimizations, ChatGPT/Claude/Gemini styles',
+                  icon: Icons.palette_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/advanced-theme-showcase',
+                  isDark: isDark,
+                ),
               ]),
             ),
           ),

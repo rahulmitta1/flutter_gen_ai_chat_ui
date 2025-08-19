@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_streaming_text_markdown/flutter_streaming_text_markdown.dart';
 
 import '../controllers/chat_messages_controller.dart';
 import '../models/chat/models.dart';
@@ -51,7 +51,6 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   late ScrollController _scrollController;
   bool _showScrollToBottom = false;
   Timer? _scrollDebounce;
-  bool _isNearEdge = false;
 
   @override
   void initState() {
@@ -128,39 +127,29 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       bool shouldLoadMore;
       if (paginationConfig.reverseOrder) {
         // In reverse mode: Check if we're near the top
-        if (paginationConfig.distanceToTriggerLoadPixels > 0) {
-          shouldLoadMore = maxScroll > 0 &&
-              (maxScroll - position) <=
-                  paginationConfig.distanceToTriggerLoadPixels;
-        } else {
-          shouldLoadMore = maxScroll > 0 &&
-              (maxScroll - position) / maxScroll <=
-                  (1.0 - paginationConfig.scrollThreshold);
-        }
+        shouldLoadMore = _scrollController.position.pixels <
+            paginationConfig.distanceToTriggerLoadPixels;
       } else {
-        // In chronological mode: Check if we're near the top
-        if (paginationConfig.distanceToTriggerLoadPixels > 0) {
-          shouldLoadMore =
-              position <= paginationConfig.distanceToTriggerLoadPixels;
-        } else {
-          shouldLoadMore = maxScroll > 0 &&
-              position / maxScroll <= paginationConfig.scrollThreshold;
-        }
+        // Normal mode: Check if we're near the bottom
+        shouldLoadMore =
+            (maxScroll - _scrollController.position.pixels) <
+                paginationConfig.distanceToTriggerLoadPixels;
       }
 
-      // If we should load more and weren't previously near the edge,
-      // call the load more callback
-      if (shouldLoadMore && !_isNearEdge) {
-        _isNearEdge = true;
-        // Provide haptic feedback if enabled
-        if (paginationConfig.enableHapticFeedback) {
-          HapticFeedback.lightImpact();
-        }
+      if (shouldLoadMore &&
+          !widget.messageListOptions.isLoadingMore &&
+          widget.messageListOptions.hasMoreMessages) {
         widget.messageListOptions.onLoadMore?.call();
-      } else if (!shouldLoadMore && _isNearEdge) {
-        _isNearEdge = false;
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollDebounce?.cancel();
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -660,91 +649,56 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
     // Handle markdown and non-markdown text
     if (message.isMarkdown) {
-      // For Markdown content, we need a different approach
-      // Create a properly styled markdown widget
-      final markdownWidget = Markdown(
-        key: ValueKey('markdown_${message.text.hashCode}'),
-        data: message.text,
-        selectable: false,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        onTapLink: (text, href, title) async {
-          // First try the custom handler if provided
-          if (widget.messageOptions.onTapLink != null) {
-            widget.messageOptions.onTapLink!(text, href, title);
-          } else if (href != null) {
-            // Default behavior: launch URL automatically
-            final uri = Uri.tryParse(href);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            }
-          }
-        },
-        styleSheet: widget.messageOptions.markdownStyleSheet ??
-            MarkdownStyleSheet(
-              p: textStyle,
-              code: TextStyle(
-                fontFamily: 'monospace',
-                backgroundColor: (isDark ? Colors.black : Colors.grey[200])
-                    ?.withOpacityCompat(0.3),
-              ),
-              codeblockDecoration: BoxDecoration(
-                color: (isDark ? Colors.black : Colors.grey[200])
-                    ?.withOpacityCompat(0.3),
-                borderRadius: BorderRadius.circular(4),
-              ),
+      // First, allow a custom markdown builder override
+      final effectiveStyleSheet = widget.messageOptions.markdownStyleSheet ??
+          MarkdownStyleSheet(
+            p: textStyle,
+            code: TextStyle(
+              fontFamily: 'monospace',
+              backgroundColor: (isDark ? Colors.black : Colors.grey[200])
+                  ?.withOpacityCompat(0.3),
             ),
-        imageBuilder: widget.messageOptions.enableImageTaps
-            ? null // Use default imageBuilder which allows taps
-            : (uri, title, alt) {
-                // Custom imageBuilder that blocks taps
-                return GestureDetector(
-                  onTap: widget.messageOptions.onImageTap != null
-                      ? () => widget.messageOptions.onImageTap!(
-                            uri.toString(),
-                            title,
-                            alt,
-                          )
-                      : null,
-                  child: Image.network(
-                    uri.toString(),
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.broken_image,
-                              color: Colors.grey[600],
-                            ),
-                            if (alt != null)
-                              Text(
-                                alt,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-      );
+            codeblockDecoration: BoxDecoration(
+              color: (isDark ? Colors.black : Colors.grey[200])
+                  ?.withOpacityCompat(0.3),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          );
 
-      textWidget = markdownWidget;
-    } else {
-      // For regular text messages
-      textWidget = Text(
+      final customMarkdown = widget.messageOptions.markdownBuilder?.call(
+        context,
         message.text,
+        effectiveStyleSheet,
+        isCurrentUser,
+      );
+      if (customMarkdown != null) {
+        return customMarkdown;
+      }
+
+      // Default: stream markdown using StreamingText
+      textWidget = StreamingText(
+        text: message.text,
         style: textStyle,
+        typingSpeed: const Duration(milliseconds: 30),
+        markdownEnabled: true,
+      );
+    } else {
+      // Non-markdown: allow custom text builder override
+      final customText = widget.messageOptions.textBuilder?.call(
+        context,
+        message.text,
+        textStyle,
+        isCurrentUser,
+      );
+      if (customText != null) {
+        return customText;
+      }
+      // Default: stream plain text
+      textWidget = StreamingText(
+        text: message.text,
+        style: textStyle,
+        typingSpeed: const Duration(milliseconds: 30),
+        markdownEnabled: false,
       );
     }
 
@@ -992,15 +946,6 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             ),
           ),
         );
-  }
-
-  @override
-  void dispose() {
-    _scrollDebounce?.cancel();
-    if (widget.messageListOptions.scrollController == null) {
-      _scrollController.dispose();
-    }
-    super.dispose();
   }
 }
 
