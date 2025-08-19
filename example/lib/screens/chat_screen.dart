@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'dart:math';
 
 import '../models/app_state.dart';
-import '../services/mock_ai_service.dart';
+import '../services/mock_ai_service.dart' as example_mock;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -27,7 +27,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen>
     with SingleTickerProviderStateMixin {
   final _chatController = ChatMessagesController();
-  final _mockAiService = MockAiService();
+  final _mockAiService = example_mock.MockAiService();
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(id: 'ai123', firstName: 'Dila');
   final _random = Random();

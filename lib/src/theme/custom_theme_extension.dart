@@ -80,4 +80,65 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
           Color.lerp(sendButtonIconColor, other.sendButtonIconColor, t),
     );
   }
+
+  // ---- Minimal presets building upon ColorScheme to avoid bloat ----
+
+  static CustomThemeExtension modern(ColorScheme scheme) =>
+      CustomThemeExtension(
+        chatBackground: scheme.surface,
+        messageBubbleColor: scheme.surfaceContainerLow,
+        userBubbleColor: scheme.primaryContainer,
+        messageTextColor: scheme.onSurface,
+        inputBackgroundColor: scheme.surfaceContainerHighest,
+        inputBorderColor: scheme.outlineVariant,
+        inputTextColor: scheme.onSurface,
+        hintTextColor: scheme.onSurfaceVariant,
+        backToBottomButtonColor: scheme.secondary,
+        sendButtonColor: scheme.primary,
+        sendButtonIconColor: scheme.onPrimary,
+      );
+
+  static CustomThemeExtension minimal(ColorScheme scheme) =>
+      CustomThemeExtension(
+        chatBackground: scheme.surface,
+        messageBubbleColor: scheme.surface,
+        userBubbleColor: scheme.surface,
+        messageTextColor: scheme.onSurface,
+        inputBackgroundColor: scheme.surface,
+        inputBorderColor: scheme.outlineVariant,
+        inputTextColor: scheme.onSurface,
+        hintTextColor: scheme.onSurfaceVariant,
+        backToBottomButtonColor: scheme.secondary,
+        sendButtonColor: scheme.primary,
+        sendButtonIconColor: scheme.onPrimary,
+      );
+
+  // Merge helper to attach extension to an existing ThemeData
+  static ThemeData withCustomTheme(ThemeData base, CustomThemeExtension ext) {
+    // ThemeData.extensions is a Map<Type, ThemeExtension>. Overwriting a key
+    // replaces the extension for that type. To allow multiple variants, apps
+    // should consolidate into a single extension via copyWith.
+    final map = Map<Type, ThemeExtension<dynamic>>.from(base.extensions);
+    final current = map[CustomThemeExtension] as CustomThemeExtension?;
+    map[CustomThemeExtension] = current == null
+        ? ext
+        : current.copyWith(
+            chatBackground: ext.chatBackground ?? current.chatBackground,
+            messageBubbleColor:
+                ext.messageBubbleColor ?? current.messageBubbleColor,
+            userBubbleColor: ext.userBubbleColor ?? current.userBubbleColor,
+            messageTextColor: ext.messageTextColor ?? current.messageTextColor,
+            inputBackgroundColor:
+                ext.inputBackgroundColor ?? current.inputBackgroundColor,
+            inputBorderColor: ext.inputBorderColor ?? current.inputBorderColor,
+            inputTextColor: ext.inputTextColor ?? current.inputTextColor,
+            hintTextColor: ext.hintTextColor ?? current.hintTextColor,
+            backToBottomButtonColor:
+                ext.backToBottomButtonColor ?? current.backToBottomButtonColor,
+            sendButtonColor: ext.sendButtonColor ?? current.sendButtonColor,
+            sendButtonIconColor:
+                ext.sendButtonIconColor ?? current.sendButtonIconColor,
+          );
+    return base.copyWith(extensions: map.values.toList());
+  }
 }

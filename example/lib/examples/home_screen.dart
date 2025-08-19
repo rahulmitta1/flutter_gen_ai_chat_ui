@@ -13,16 +13,19 @@ class ExamplesHomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0f0f0f) : const Color(0xFFFAFAFA),
+      backgroundColor: isDark
+          ? const Color(0xFF0f0f0f)
+          : const Color(0xFFFAFAFA),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: _buildModernHeader(context, appState, isDark),
           ),
           SliverPadding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
@@ -31,6 +34,19 @@ class ExamplesHomeScreen extends StatelessWidget {
                 childAspectRatio: 0.85,
               ),
               delegate: SliverChildListDelegate([
+                _buildModernExampleCard(
+                  context,
+                  title: 'UI Gallery',
+                  description: 'New components: suggestions, results, voice UI',
+                  icon: Icons.widgets_outlined,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF2563EB), Color(0xFF06B6D4)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/ui-gallery',
+                  isDark: isDark,
+                ),
                 _buildModernExampleCard(
                   context,
                   title: 'Basic',
@@ -114,22 +130,96 @@ class ExamplesHomeScreen extends StatelessWidget {
                   routeName: '/scroll-behavior',
                   isDark: isDark,
                 ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'AI Actions',
+                  description:
+                      'Function calling with parameter validation and UI rendering',
+                  icon: Icons.functions_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF9333EA), Color(0xFFC084FC)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/ai-actions',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Simple AI Actions',
+                  description: 'Streamlined AI actions with clean integration patterns',
+                  icon: Icons.auto_awesome,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF10B981)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/simple-ai-actions',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Context Aware',
+                  description:
+                      'AI with application state awareness and smart actions',
+                  icon: Icons.psychology_alt_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0EA5E9), Color(0xFF3B82F6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/context-aware',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'CopilotKit Features',
+                  description:
+                      'Complete CopilotKit-inspired features: multi-chat, AI text input, agent orchestration',
+                  icon: Icons.rocket_launch_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDB2777), Color(0xFFFF6B6B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/advanced-features',
+                  isDark: isDark,
+                ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Advanced Theme System',
+                  description:
+                      '50+ theme properties, gradient backgrounds, platform optimizations, ChatGPT/Claude/Gemini styles',
+                  icon: Icons.palette_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/advanced-theme-showcase',
+                  isDark: isDark,
+                ),
               ]),
             ),
           ),
-          SliverToBoxAdapter(
-            child: _buildFooter(context, isDark),
-          ),
+          SliverToBoxAdapter(child: _buildFooter(context, isDark)),
         ],
       ),
     );
   }
 
   Widget _buildModernHeader(
-      BuildContext context, AppState appState, bool isDark) {
+    BuildContext context,
+    AppState appState,
+    bool isDark,
+  ) {
     return Container(
       padding: EdgeInsets.fromLTRB(
-          24.0, MediaQuery.of(context).padding.top + 16.0, 24.0, 32.0),
+        24.0,
+        MediaQuery.of(context).padding.top + 16.0,
+        24.0,
+        32.0,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDark
@@ -162,7 +252,9 @@ class ExamplesHomeScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
@@ -184,12 +276,11 @@ class ExamplesHomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Gen AI Chat UI',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge
+                      style: Theme.of(context).textTheme.headlineLarge
                           ?.copyWith(
-                            color:
-                                isDark ? Colors.white : const Color(0xFF1F2937),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1F2937),
                             fontWeight: FontWeight.w800,
                             fontSize: 32,
                             letterSpacing: -0.5,
@@ -199,11 +290,11 @@ class ExamplesHomeScreen extends StatelessWidget {
                     Text(
                       'Interactive Examples Gallery',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: isDark
-                                ? Colors.white.withOpacity(0.7)
-                                : const Color(0xFF64748B),
-                            fontWeight: FontWeight.w500,
-                          ),
+                        color: isDark
+                            ? Colors.white.withOpacity(0.7)
+                            : const Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -229,8 +320,9 @@ class ExamplesHomeScreen extends StatelessWidget {
                       size: 24,
                     ),
                   ),
-                  tooltip:
-                      isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',
+                  tooltip: isDark
+                      ? 'Switch to Light Theme'
+                      : 'Switch to Dark Theme',
                 ),
               ),
             ],
@@ -239,11 +331,11 @@ class ExamplesHomeScreen extends StatelessWidget {
           Text(
             'Explore powerful AI chat interfaces with streaming responses, markdown support, file attachments, and more. Each example demonstrates different capabilities of the Flutter Gen AI Chat UI package.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isDark
-                      ? Colors.white.withOpacity(0.8)
-                      : const Color(0xFF64748B),
-                  height: 1.6,
-                ),
+              color: isDark
+                  ? Colors.white.withOpacity(0.8)
+                  : const Color(0xFF64748B),
+              height: 1.6,
+            ),
           ),
         ],
       ),
@@ -305,11 +397,7 @@ class ExamplesHomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: Icon(icon, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 14),
 
@@ -317,10 +405,10 @@ class ExamplesHomeScreen extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
+                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -331,12 +419,12 @@ class ExamplesHomeScreen extends StatelessWidget {
                   child: Text(
                     description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: isDark
-                              ? Colors.white.withOpacity(0.8)
-                              : const Color(0xFF64748B),
-                          height: 1.5,
-                          fontSize: 14,
-                        ),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.8)
+                          : const Color(0xFF64748B),
+                      height: 1.5,
+                      fontSize: 14,
+                    ),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -382,20 +470,20 @@ class ExamplesHomeScreen extends StatelessWidget {
           Text(
             'Flutter Gen AI Chat UI',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: isDark ? Colors.white : const Color(0xFF1F2937),
-                  fontWeight: FontWeight.w600,
-                ),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Build powerful AI chat interfaces with streaming responses,\nmarkdown support, and customizable themes.',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isDark
-                      ? Colors.white.withOpacity(0.7)
-                      : const Color(0xFF64748B),
-                  height: 1.5,
-                ),
+              color: isDark
+                  ? Colors.white.withOpacity(0.7)
+                  : const Color(0xFF64748B),
+              height: 1.5,
+            ),
           ),
         ],
       ),

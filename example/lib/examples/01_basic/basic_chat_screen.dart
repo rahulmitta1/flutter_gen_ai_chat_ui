@@ -3,7 +3,7 @@ import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_state.dart';
-import '../../services/ai_service.dart';
+import '../../services/ai_service.dart' as example_ai;
 
 /// A basic example showing the minimal implementation of Flutter Gen AI Chat UI.
 /// This example demonstrates essential features with clean, well-documented code.
@@ -19,7 +19,7 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   final _chatController = ChatMessagesController();
 
   // Mock AI service
-  final _aiService = AiService();
+  final _aiService = example_ai.AiService();
 
   // Define users for the chat
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');

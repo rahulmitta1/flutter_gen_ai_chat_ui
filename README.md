@@ -20,6 +20,7 @@ A modern, high-performance Flutter chat UI kit for building beautiful messaging 
 - [Quick Start](#basic-usage)
 - [Live Examples](#-live-examples)
 - [Configuration Options](#configuration-options)
+- [AI Actions System](#-ai-actions-system)
 - [Advanced Features](#advanced-features)
 - [Showcase](#-showcase)
 
@@ -56,6 +57,15 @@ A modern, high-performance Flutter chat UI kit for building beautiful messaging 
 - 💬 Persistent example questions for better user experience
 - 🔄 AI typing indicators like modern chatbot interfaces
 - 📜 Streaming markdown rendering for code and rich content
+
+### 🚀 **NEW: AI Actions System** 
+- ⚡ **Function Calling Support** - AI can execute predefined actions with parameters
+- 🎨 **Generative UI** - Actions render custom widgets showing execution status
+- ✋ **Human-in-the-Loop** - Automatic confirmation dialogs for sensitive operations
+- 📊 **Real-time Status** - Live updates of action execution progress with animations
+- 🛡️ **Type-Safe Parameters** - Full validation system with custom validators
+- 🎯 **Event Streaming** - Track action lifecycle with comprehensive event system
+- 🔧 **Error Handling** - Rich error management with user-friendly feedback
 
 ### UI Components
 - 💬 Customizable message bubbles with modern design options
@@ -435,6 +445,311 @@ AiChatWidget(
   },
 )
 ```
+
+## 🚀 AI Actions System
+
+**Transform your chat into a powerful AI agent platform!** The AI Actions System allows your AI to execute real functions, display rich results, and maintain human oversight - taking your chat beyond simple text exchanges.
+
+### ⚡ Quick Start with AI Actions
+
+```dart
+import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
+
+class MyAiChat extends StatefulWidget {
+  @override
+  _MyAiChatState createState() => _MyAiChatState();
+}
+
+class _MyAiChatState extends State<MyAiChat> {
+  late ChatMessagesController _controller;
+  
+  @override
+  Widget build(BuildContext context) {
+    return AiActionProvider(
+      config: AiActionConfig(
+        actions: [
+          // Define what your AI can do
+          AiAction(
+            name: 'calculate',
+            description: 'Perform mathematical calculations',
+            parameters: [
+              ActionParameter.number(name: 'a', description: 'First number', required: true),
+              ActionParameter.number(name: 'b', description: 'Second number', required: true),
+              ActionParameter.string(
+                name: 'operation', 
+                description: 'Math operation',
+                required: true,
+                enumValues: ['add', 'subtract', 'multiply', 'divide']
+              ),
+            ],
+            handler: (params) async {
+              final a = params['a'] as num;
+              final b = params['b'] as num;
+              final op = params['operation'] as String;
+              
+              double result;
+              switch (op) {
+                case 'add': result = a + b; break;
+                case 'subtract': result = a - b; break;
+                case 'multiply': result = a * b; break;
+                case 'divide': result = a / b; break;
+                default: throw 'Unknown operation';
+              }
+              
+              return ActionResult.createSuccess({
+                'result': result,
+                'equation': '$a $op $b = $result'
+              });
+            },
+            // Custom UI for results
+            render: (context, status, params, {result, error}) {
+              if (status == ActionStatus.completed && result?.data != null) {
+                return Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      result!.data['equation'],
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
+      child: AiChatWidget(
+        // Your existing chat configuration
+        currentUser: currentUser,
+        aiUser: aiUser,
+        controller: _controller,
+        onSendMessage: _handleMessage,
+      ),
+    );
+  }
+  
+  void _handleMessage(ChatMessage message) {
+    // Add user message
+    _controller.addMessage(message);
+    
+    // Simulate AI deciding to use an action
+    if (message.text.contains('calculate')) {
+      _executeCalculation(message.text);
+    }
+  }
+  
+  void _executeCalculation(String userMessage) async {
+    final actionHook = AiActionHook.of(context);
+    
+    // AI parses user message and calls action
+    final result = await actionHook.executeAction('calculate', {
+      'a': 15,
+      'b': 3,
+      'operation': 'multiply'
+    });
+    
+    // Add AI response with result
+    _controller.addMessage(ChatMessage(
+      text: result.success ? 
+        'I calculated that for you: ${result.data['equation']}' : 
+        'Sorry, calculation failed: ${result.error}',
+      user: aiUser,
+    ));
+  }
+}
+```
+
+### 🎨 Action Features
+
+#### **1. Function Calling with Validation**
+```dart
+AiAction(
+  name: 'send_email',
+  description: 'Send an email to a contact',
+  parameters: [
+    ActionParameter.string(
+      name: 'to',
+      description: 'Recipient email address',
+      required: true,
+      validator: (email) => email.contains('@'),  // Custom validation
+    ),
+    ActionParameter.string(
+      name: 'subject',
+      description: 'Email subject',
+      required: true,
+    ),
+    ActionParameter.string(
+      name: 'priority',
+      description: 'Email priority level',
+      enumValues: ['low', 'normal', 'high'],  // Constrained options
+      defaultValue: 'normal',
+    ),
+  ],
+  handler: (params) async {
+    // Your email sending logic
+    await sendEmailService(params);
+    return ActionResult.createSuccess({'sent': true});
+  },
+)
+```
+
+#### **2. Human-in-the-Loop Confirmations**
+```dart
+AiAction(
+  name: 'delete_file',
+  description: 'Delete a file from storage',
+  parameters: [...],
+  confirmationConfig: ActionConfirmationConfig(
+    title: 'Delete File',
+    message: 'This action cannot be undone. Continue?',
+    required: true,  // Always ask for confirmation
+  ),
+  handler: (params) async {
+    // Only executed after user confirms
+    await deleteFile(params['filename']);
+    return ActionResult.createSuccess();
+  },
+)
+```
+
+#### **3. Real-time Status Updates**
+```dart
+AiAction(
+  name: 'generate_report',
+  description: 'Generate a comprehensive report',
+  render: (context, status, params, {result, error}) {
+    switch (status) {
+      case ActionStatus.executing:
+        return Card(
+          child: Row(children: [
+            CircularProgressIndicator(),
+            Text('Generating report...'),
+          ]),
+        );
+      case ActionStatus.completed:
+        return ReportWidget(data: result!.data);
+      case ActionStatus.failed:
+        return ErrorWidget(error: error!);
+      default:
+        return SizedBox.shrink();
+    }
+  },
+  handler: (params) async {
+    // Long-running operation with progress updates
+    return await generateComplexReport(params);
+  },
+)
+```
+
+#### **4. Event Streaming & Monitoring**
+```dart
+class MyAiChat extends StatefulWidget {
+  @override
+  _MyAiChatState createState() => _MyAiChatState();
+}
+
+class _MyAiChatState extends State<MyAiChat> {
+  late StreamSubscription<ActionEvent> _actionSubscription;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Listen to all action events
+    _actionSubscription = AiActionProvider.of(context).events.listen((event) {
+      switch (event.type) {
+        case ActionEventType.started:
+          print('Action ${event.actionName} started');
+          break;
+        case ActionEventType.completed:
+          print('Action ${event.actionName} completed: ${event.result?.data}');
+          break;
+        case ActionEventType.failed:
+          print('Action ${event.actionName} failed: ${event.error}');
+          break;
+      }
+    });
+  }
+  
+  @override
+  void dispose() {
+    _actionSubscription.cancel();
+    super.dispose();
+  }
+}
+```
+
+### 💡 Integration with AI Providers
+
+#### **OpenAI Function Calling**
+```dart
+// Convert actions to OpenAI function format
+final actionHook = AiActionHook.of(context);
+final functions = actionHook.getActionsForFunctionCalling();
+
+// Send to OpenAI with functions
+final response = await openAI.createChatCompletion(
+  messages: messages,
+  functions: functions,
+  functionCall: 'auto',
+);
+
+// Execute function if AI wants to call one
+if (response.functionCall != null) {
+  final result = await actionHook.handleFunctionCall(
+    response.functionCall.name,
+    json.decode(response.functionCall.arguments),
+  );
+}
+```
+
+#### **Custom AI Integration**
+```dart
+void _processAIMessage(String userMessage) async {
+  // Your AI logic decides which action to call
+  if (_shouldCalculate(userMessage)) {
+    final actionHook = AiActionHook.of(context);
+    
+    // Extract parameters from user message
+    final params = _parseCalculationParams(userMessage);
+    
+    // Execute action
+    final result = await actionHook.executeAction('calculate', params);
+    
+    // Show result in chat
+    _controller.addMessage(ChatMessage(
+      text: 'Result: ${result.data}',
+      user: aiUser,
+    ));
+  }
+}
+```
+
+### 🛡️ Security & Best Practices
+
+- **Parameter Validation**: All inputs are validated before execution
+- **User Confirmation**: Sensitive actions require explicit user approval  
+- **Error Isolation**: Failed actions don't crash your app
+- **Timeout Protection**: Long-running actions can be cancelled
+- **Type Safety**: Full Dart type checking for all parameters
+- **Event Auditing**: Complete log of all action executions
+
+### 📚 Examples Included
+
+The package includes complete working examples:
+- **Weather Actions** - API calls with rich UI display
+- **Calculator Actions** - Mathematical operations with validation
+- **Unit Converter** - Type conversions with error handling
+- **AI Integration** - Pattern matching and function calling
+
+Run the example app to see AI Actions in action:
+```bash
+cd example/
+flutter run
+```
+
+---
 
 ## 🎯 Showcase
 

@@ -7,7 +7,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../models/app_state.dart';
-import '../services/ai_service.dart';
+import '../services/ai_service.dart' as comprehensive_ai;
 import '../widgets/settings_sheet.dart';
 
 /// Main chat screen for the comprehensive example
@@ -21,7 +21,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen>
     with SingleTickerProviderStateMixin {
   final _chatController = ChatMessagesController();
-  final _aiService = AiService();
+  final _aiService = comprehensive_ai.AiService();
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(id: 'ai123', firstName: 'Insight AI');
   final _random = Random();
