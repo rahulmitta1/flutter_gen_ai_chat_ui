@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_streaming_text_markdown/flutter_streaming_text_markdown.dart';
 
 import '../controllers/chat_messages_controller.dart';
@@ -675,13 +676,82 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         return customMarkdown;
       }
 
-      // Default: stream markdown using StreamingText
-      textWidget = StreamingText(
-        text: message.text,
-        style: textStyle,
-        typingSpeed: const Duration(milliseconds: 30),
-        markdownEnabled: true,
-      );
+      final needsInteractiveMarkdown =
+          widget.messageOptions.onTapLink != null ||
+              widget.messageOptions.onImageTap != null ||
+              widget.messageOptions.enableImageTaps;
+
+      if (needsInteractiveMarkdown) {
+        // Preserve interactive Markdown behavior
+        textWidget = Markdown(
+          key: ValueKey('markdown_${message.text.hashCode}'),
+          data: message.text,
+          selectable: false,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          onTapLink: (text, href, title) async {
+            if (widget.messageOptions.onTapLink != null) {
+              widget.messageOptions.onTapLink!(text, href, title);
+            } else if (href != null) {
+              final uri = Uri.tryParse(href);
+              if (uri != null && await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            }
+          },
+          styleSheet: effectiveStyleSheet,
+          imageBuilder: widget.messageOptions.enableImageTaps
+              ? null
+              : (uri, title, alt) {
+                  return GestureDetector(
+                    onTap: widget.messageOptions.onImageTap != null
+                        ? () => widget.messageOptions.onImageTap!(
+                              uri.toString(),
+                              title,
+                              alt,
+                            )
+                        : null,
+                    child: Image.network(
+                      uri.toString(),
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.broken_image,
+                                color: Colors.grey[600],
+                              ),
+                              if (alt != null)
+                                Text(
+                                  alt,
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+        );
+      } else {
+        // Default: stream markdown using StreamingText
+        textWidget = StreamingText(
+          text: message.text,
+          style: textStyle,
+          typingSpeed: const Duration(milliseconds: 30),
+          markdownEnabled: true,
+        );
+      }
     } else {
       // Non-markdown: allow custom text builder override
       final customText = widget.messageOptions.textBuilder?.call(
