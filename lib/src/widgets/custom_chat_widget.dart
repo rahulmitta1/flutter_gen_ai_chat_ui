@@ -332,6 +332,26 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           letterSpacing: 0.2,
         ));
 
+	///need to add this to check username size
+    final usernameTextSize = measureText(message.user.name,
+        style: const TextStyle(
+          fontSize: 15,
+          height: 1.5,
+          letterSpacing: 0.2,
+        ));
+        
+       	///need to add this to check time stamp size
+    final timeTextSize = measureText(widget.messageOptions.timeFormat != null
+        ? widget.messageOptions
+        .timeFormat!(message.createdAt)
+        : _defaultTimestampFormat(
+        message.createdAt),
+        style: const TextStyle(
+          fontSize: 15,
+          height: 1.5,
+          letterSpacing: 0.2,
+        ));
+        
     // Get effective decoration from MessageOptions
     final effectiveDecoration = widget.messageOptions.effectiveDecoration;
     final theme = Theme.of(context);
@@ -369,10 +389,9 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
     final defaultMaxWidth = MediaQuery.of(context).size.width * 0.75;
     // Use different widths for user vs AI messages
-    final maxWidth = isUser
-        ? bubbleStyle.userBubbleMaxWidth ??
-            (textSize.width < defaultMaxWidth
-                ? (115 + textSize.width)
+    final maxWidth = isUser ? bubbleStyle.userBubbleMaxWidth ??
+            (textSize.width < defaultMaxWidth 
+                ? (115 + max(textSize.width,max(usernameTextSize.width,timeTextSize.width)))
                 : defaultMaxWidth)
         : bubbleStyle.aiBubbleMaxWidth ??
             MediaQuery.of(context).size.width * 0.88;
