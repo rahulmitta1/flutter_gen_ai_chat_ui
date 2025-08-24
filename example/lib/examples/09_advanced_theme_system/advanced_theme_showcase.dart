@@ -780,7 +780,7 @@ class ThemeOption {
 
   MessageOptions get messageOptions => MessageOptions(
     bubbleStyle: bubbleStyle,
-    effectiveDecoration: gradient != null ? BoxDecoration(
+    decoration: gradient != null ? BoxDecoration(
       gradient: gradient,
       borderRadius: BorderRadius.circular(20),
       boxShadow: boxShadow,

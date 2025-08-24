@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -391,7 +392,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     // Use different widths for user vs AI messages
     final maxWidth = isUser ? bubbleStyle.userBubbleMaxWidth ??
             (textSize.width < defaultMaxWidth 
-                ? (115 + max(textSize.width,max(usernameTextSize.width,timeTextSize.width)))
+                ? (115 + max(textSize.width,max(usernameTextSize.width,timeTextSize.width))).toDouble()
                 : defaultMaxWidth)
         : bubbleStyle.aiBubbleMaxWidth ??
             MediaQuery.of(context).size.width * 0.88;
