@@ -652,6 +652,10 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isCurrentUser = message.user.id == widget.currentUser.id;
 
+    // Check if this message should show streaming animation
+    final isStreaming = message.customProperties?['isStreaming'] as bool? ?? false;
+    final shouldAnimate = isStreaming;
+
     // Get appropriate text color from message options
     final textStyle = TextStyle(
       color: isCurrentUser
@@ -763,13 +767,23 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                   );
                 },
         );
-      } else {
-        // Default: stream markdown using StreamingText
+      } else if (shouldAnimate) {
+        // Stream markdown using StreamingText only for active streaming messages
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
           typingSpeed: const Duration(milliseconds: 30),
           markdownEnabled: true,
+        );
+      } else {
+        // Static markdown for completed messages
+        textWidget = Markdown(
+          key: ValueKey('static_markdown_${message.text.hashCode}'),
+          data: message.text,
+          selectable: false,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          styleSheet: effectiveStyleSheet,
         );
       }
     } else {
@@ -783,13 +797,22 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       if (customText != null) {
         return customText;
       }
-      // Default: stream plain text
-      textWidget = StreamingText(
-        text: message.text,
-        style: textStyle,
-        typingSpeed: const Duration(milliseconds: 30),
-        markdownEnabled: false,
-      );
+      // Handle streaming vs static plain text
+      if (shouldAnimate) {
+        // Stream plain text only for active streaming messages
+        textWidget = StreamingText(
+          text: message.text,
+          style: textStyle,
+          typingSpeed: const Duration(milliseconds: 30),
+          markdownEnabled: false,
+        );
+      } else {
+        // Static plain text for completed messages
+        textWidget = Text(
+          message.text,
+          style: textStyle,
+        );
+      }
     }
 
     // Display media attachments if present
