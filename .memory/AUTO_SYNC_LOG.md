@@ -177,3 +177,10 @@ c183487 fix(chat_ui): preserve interactive Markdown fallback; default to streami
 8aa35e3 chore: auto-update development context
 Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,lib/src/widgets/custom_chat_widget.dart
 
+
+## Auto-Sync: 2025-08-24 21:28:50
+Branch: main
+Recent commits:
+b0ba2db Merge PR #21: Fix chat bubble width overflow for short messages
+Changed files: .gitignore,.memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/DECISIONS.md,.memory/NEXT_STEPS.md,.memory/PROJECT_CONTEXT.md,.memory/README.md,.memory/SESSION_LOG.md,.memory/TOOLS_CONTEXT.md,.memory/auto-sync.sh
+
