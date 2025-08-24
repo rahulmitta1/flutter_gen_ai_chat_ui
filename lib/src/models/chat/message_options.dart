@@ -238,6 +238,28 @@ class MessageOptions {
   /// Provides the image URL, title, and alt text
   final void Function(String url, String? title, String? alt)? onImageTap;
 
+  /// Custom builder for plain text content inside the bubble
+  ///
+  /// Allows overriding how non-markdown message text is rendered while keeping
+  /// the default bubble layout intact.
+  final Widget Function(
+    BuildContext context,
+    String text,
+    TextStyle effectiveTextStyle,
+    bool isUser,
+  )? textBuilder;
+
+  /// Custom builder for markdown content inside the bubble
+  ///
+  /// Allows overriding how markdown message content is rendered while keeping
+  /// the default bubble layout intact.
+  final Widget Function(
+    BuildContext context,
+    String text,
+    MarkdownStyleSheet effectiveStyleSheet,
+    bool isUser,
+  )? markdownBuilder;
+
   /// Custom builder for message bubbles
   /// 
   /// This builder allows for complete replacement of the default message bubble.
@@ -287,6 +309,8 @@ class MessageOptions {
     this.onMediaTap,
     this.enableImageTaps = false,
     this.onImageTap,
+    this.textBuilder,
+    this.markdownBuilder,
     this.customBubbleBuilder,
   });
 
@@ -316,6 +340,8 @@ class MessageOptions {
     void Function(ChatMedia)? onMediaTap,
     bool? enableImageTaps,
     void Function(String url, String? title, String? alt)? onImageTap,
+    Widget Function(BuildContext, String, TextStyle, bool)? textBuilder,
+    Widget Function(BuildContext, String, MarkdownStyleSheet, bool)? markdownBuilder,
     Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder,
   }) =>
       MessageOptions(
@@ -343,6 +369,9 @@ class MessageOptions {
         aiTextColor: aiTextColor ?? this.aiTextColor,
         onMediaTap: onMediaTap ?? this.onMediaTap,
         enableImageTaps: enableImageTaps ?? this.enableImageTaps,
+        onImageTap: onImageTap ?? this.onImageTap,
+        textBuilder: textBuilder ?? this.textBuilder,
+        markdownBuilder: markdownBuilder ?? this.markdownBuilder,
         customBubbleBuilder: customBubbleBuilder ?? this.customBubbleBuilder,
       );
 

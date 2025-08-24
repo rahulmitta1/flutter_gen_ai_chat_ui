@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../../models/app_state.dart';
-import '../../services/ai_service.dart';
+import '../../services/ai_service.dart' as example_ai;
 import 'widgets/advanced_settings_drawer.dart';
 import 'theme/advanced_theme.dart';
 
@@ -23,7 +23,7 @@ class _AdvancedChatScreenState extends State<AdvancedChatScreen> {
   final _chatController = ChatMessagesController();
 
   // Service to generate AI responses
-  final _aiService = AiService();
+  final _aiService = example_ai.AiService();
 
   // User definitions with avatars
   final _currentUser = ChatUser(

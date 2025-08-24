@@ -54,4 +54,26 @@ class ChatUser {
   @override
   int get hashCode =>
       id.hashCode ^ name.hashCode ^ avatar.hashCode ^ role.hashCode;
+
+  /// Serialization support for thread persistence
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      'customProperties': customProperties,
+      'role': role,
+    };
+  }
+
+  /// Deserialization support for thread persistence
+  factory ChatUser.fromJson(Map<String, dynamic> json) {
+    return ChatUser(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      avatar: json['avatar'] as String?,
+      customProperties: json['customProperties'] as Map<String, dynamic>?,
+      role: json['role'] as String?,
+    );
+  }
 }

@@ -16,6 +16,9 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Git files
+.gitignore
+
 # VS Code related
 .vscode/
 
@@ -29,13 +32,14 @@ build/
 .flutter-plugins-dependencies
 .packages
 
-# Logs and documentation
+# Logs and documentation (keep only essential)
 *.log
 !doc/changes.log
 logger.txt
+
+# Temporary documentation files (not needed in git)
 context.md
 files_list.md
-CLAUDE.md
 
 # Cursor editor
 .cursor/
@@ -46,4 +50,52 @@ CLAUDE.md
 # Test coverage
 coverage/
 .test_coverage.dart
+lcov.info
 doc/ui
+
+# IDE and development artifacts
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Generated files
+**/*.g.dart
+**/*.freezed.dart
+**/*.config.dart
+**/*.mocks.dart
+
+# Firebase
+firebase-debug.log
+.firebase/
+.firebaserc
+
+# Environment files
+.env
+.env.local
+
+# Build artifacts
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/ephemeral/
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/macos/Flutter/ephemeral/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Example app specific
+example/build/
+example/.dart_tool/
+example/.packages
+example/.flutter-plugins
+example/.flutter-plugins-dependencies
+example/pubspec.lock
+.memory/
+
