@@ -463,3 +463,10 @@ Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progre
 Branch: main
 Changed files: .memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json
 
+
+## Auto-Sync: 2025-08-30 21:10:53
+Branch: main
+Recent commits:
+e1fb9d7 update project files and streamline examples
+Changed files: .gitignore,.memory/AUTO_SYNC_LOG.md,.memory/CURRENT_STATUS.md,.memory/progress.json,DESIGN_SYSTEM_GUIDE.md,example/lib/actions/context_aware_actions.dart,example/lib/agents/specialized_agents.dart,example/lib/examples/01_basic/basic_chat_screen.dart,example/lib/examples/02_intermediate/intermediate_chat_screen.dart,example/lib/examples/03_advanced/advanced_chat_screen.dart
+
