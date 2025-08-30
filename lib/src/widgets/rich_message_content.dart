@@ -47,8 +47,8 @@ class RichMessageContent extends StatelessWidget {
     BuildContext context,
     EditableTextState editableTextState,
   ) {
-    return AdaptiveTextSelectionToolbar.selectableRegion(
-      selectableRegionState: editableTextState,
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
       buttonItems: [
         // Copy button
         ContextMenuButtonItem(
