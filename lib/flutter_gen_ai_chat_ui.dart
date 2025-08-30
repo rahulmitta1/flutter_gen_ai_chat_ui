@@ -6,10 +6,10 @@ library;
 export 'src/controllers/chat_messages_controller.dart';
 export 'src/controllers/action_controller.dart';
 export 'src/controllers/ai_context_controller.dart';
-// Essential CopilotKit-inspired controllers (prioritized)
+// Essential AI chat controllers (prioritized)
 export 'src/controllers/readable_context_controller.dart';
 export 'src/controllers/context_aware_chat_controller.dart';
-// Advanced CopilotKit-inspired controllers  
+// Advanced AI chat controllers  
 export 'src/controllers/headless_chat_controller.dart';
 export 'src/controllers/ai_text_input_controller.dart';
 export 'src/controllers/agent_orchestrator.dart';
@@ -30,7 +30,7 @@ export 'src/models/file_upload_options.dart';
 export 'src/models/input_options.dart';
 export 'src/models/models.dart';
 export 'src/models/welcome_message_config.dart';
-// Advanced CopilotKit-inspired models
+// Advanced AI models
 export 'src/models/chat_thread.dart';
 export 'src/models/ai_suggestion.dart';
 export 'src/models/ai_agent.dart';
@@ -52,7 +52,7 @@ export 'src/widgets/ai_chat_widget.dart';
 export 'src/widgets/chat_input.dart';
 export 'src/widgets/ai_action_provider.dart';
 export 'src/widgets/ai_context_provider.dart';
-export 'src/widgets/copilot_textarea.dart';  // Essential CopilotKit component
+export 'src/widgets/copilot_textarea.dart';  // Essential AI text component
 export 'src/widgets/custom_chat_widget.dart';
 export 'src/widgets/glassmorphic_container.dart';
 export 'src/widgets/loading_widget.dart';
@@ -69,5 +69,5 @@ export 'src/widgets/voice/voice_send_button.dart';
 export 'src/widgets/voice/voice_status_bar.dart';
 export 'src/widgets/voice/transcript_chip.dart';
 
-// Advanced CopilotKit-inspired agent implementations
+// Advanced AI agent implementations
 export 'src/agents/example_agents.dart';

@@ -185,7 +185,7 @@ class ChatInput extends StatelessWidget {
     }
 
     // Default rendering without container customization
-    Widget result = Padding(
+    Widget result = Container(
       // Use app direction consistently for margin resolution
       padding: options.margin?.resolve(appDirection) ?? EdgeInsets.zero,
       child: inputContent,
@@ -223,7 +223,7 @@ class ChatInput extends StatelessWidget {
         }
       },
       child: Material(
-        color: options.materialColor,
+        color: options.materialColor ?? Colors.transparent,
         elevation: options.materialElevation ?? 0.0,
         shape: options.materialShape,
         shadowColor: Colors.transparent,

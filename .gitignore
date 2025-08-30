@@ -99,3 +99,6 @@ example/.flutter-plugins-dependencies
 example/pubspec.lock
 .memory/
 
+.playwright-mcp
+.memory
+.memory/*

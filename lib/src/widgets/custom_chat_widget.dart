@@ -133,9 +133,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             paginationConfig.distanceToTriggerLoadPixels;
       } else {
         // Normal mode: Check if we're near the bottom
-        shouldLoadMore =
-            (maxScroll - _scrollController.position.pixels) <
-                paginationConfig.distanceToTriggerLoadPixels;
+        shouldLoadMore = (maxScroll - _scrollController.position.pixels) <
+            paginationConfig.distanceToTriggerLoadPixels;
       }
 
       if (shouldLoadMore &&
@@ -150,13 +149,18 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   void dispose() {
     _scrollDebounce?.cancel();
     _scrollController.removeListener(_handleScroll);
-    _scrollController.dispose();
+
+    // Only dispose the scroll controller if we created it ourselves
+    // If it was provided via messageListOptions.scrollController, don't dispose it
+    if (widget.messageListOptions.scrollController == null) {
+      _scrollController.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
+    return Container(
       child: Stack(
         children: [
           Column(
@@ -307,7 +311,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   }
 
   /// Builds the default message bubble with all standard styling and features.
-  /// 
+  ///
   /// This method contains the original bubble building logic and is used as
   /// the fallback when no custom bubble builder is provided, or as the default
   /// bubble passed to custom bubble builders.
@@ -333,26 +337,25 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           letterSpacing: 0.2,
         ));
 
-	///need to add this to check username size
+    ///need to add this to check username size
     final usernameTextSize = measureText(message.user.name,
         style: const TextStyle(
           fontSize: 15,
           height: 1.5,
           letterSpacing: 0.2,
         ));
-        
-       	///need to add this to check time stamp size
-    final timeTextSize = measureText(widget.messageOptions.timeFormat != null
-        ? widget.messageOptions
-        .timeFormat!(message.createdAt)
-        : _defaultTimestampFormat(
-        message.createdAt),
+
+    ///need to add this to check time stamp size
+    final timeTextSize = measureText(
+        widget.messageOptions.timeFormat != null
+            ? widget.messageOptions.timeFormat!(message.createdAt)
+            : _defaultTimestampFormat(message.createdAt),
         style: const TextStyle(
           fontSize: 15,
           height: 1.5,
           letterSpacing: 0.2,
         ));
-        
+
     // Get effective decoration from MessageOptions
     final effectiveDecoration = widget.messageOptions.effectiveDecoration;
     final theme = Theme.of(context);
@@ -390,9 +393,13 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
     final defaultMaxWidth = MediaQuery.of(context).size.width * 0.75;
     // Use different widths for user vs AI messages
-    final maxWidth = isUser ? bubbleStyle.userBubbleMaxWidth ??
-            (textSize.width < defaultMaxWidth 
-                ? (115 + max(textSize.width,max(usernameTextSize.width,timeTextSize.width))).toDouble()
+    final maxWidth = isUser
+        ? bubbleStyle.userBubbleMaxWidth ??
+            (textSize.width < defaultMaxWidth
+                ? (115 +
+                        max(textSize.width,
+                            max(usernameTextSize.width, timeTextSize.width)))
+                    .toDouble()
                 : defaultMaxWidth)
         : bubbleStyle.aiBubbleMaxWidth ??
             MediaQuery.of(context).size.width * 0.88;
@@ -653,7 +660,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     final isCurrentUser = message.user.id == widget.currentUser.id;
 
     // Check if this message should show streaming animation
-    final isStreaming = message.customProperties?['isStreaming'] as bool? ?? false;
+    final isStreaming =
+        message.customProperties?['isStreaming'] as bool? ?? false;
     final shouldAnimate = isStreaming;
 
     // Get appropriate text color from message options

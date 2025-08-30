@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
@@ -155,6 +153,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
   bool _isComposing = false;
   VoidCallback? _textControllerListener;
 
+
   @override
   void initState() {
     super.initState();
@@ -232,7 +231,6 @@ class _AiChatWidgetState extends State<AiChatWidget>
     }
   }
 
-
   void _handleSend(final ChatMessage message) {
     // Hide welcome message first, just like in example questions
     if (widget.controller.showWelcomeMessage) {
@@ -279,242 +277,107 @@ class _AiChatWidgetState extends State<AiChatWidget>
   @override
   Widget build(final BuildContext context) => ListenableBuilder(
         listenable: widget.controller,
-        builder: (final context, final child) => Material(
-          color: Colors.transparent,
-          child: SizedBox(
-            width: widget.maxWidth ?? double.infinity,
-            height: double.infinity,
-            // padding: widget.padding ?? const EdgeInsets.all(8),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Show persistent example questions if enabled and welcome message is hidden
-                    if (!widget.controller.showWelcomeMessage &&
-                        widget.persistentExampleQuestions &&
-                        widget.exampleQuestions.isNotEmpty) ...[
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.15,
-                        ),
-                        margin: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 4,
-                          bottom: 12,
-                        ),
-                        child: _buildPersistentExampleQuestions(context),
-                      ),
-                    ],
-                    Expanded(
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          // Add padding at the bottom to prevent content from being hidden behind input
-                          Padding(
-                            padding: EdgeInsets.only(
-                                bottom: !widget.readOnly ? 80 : 0),
-                            child: CustomChatWidget(
-                              controller: widget.controller,
-                              currentUser: widget.currentUser,
-                              messages:
-                                  widget.messages ?? widget.controller.messages,
-                              onSend: _handleSend,
-                              messageOptions: widget.messageOptions ??
-                                  const MessageOptions(),
-                              inputOptions:
-                                  widget.inputOptions ?? const InputOptions(),
-                              typingUsers: _getEffectiveTypingUsers(),
-                              messageListOptions: (widget.messageListOptions ??
-                                      const MessageListOptions())
-                                  .copyWith(
-                                scrollController: _effectiveScrollController,
-                              ),
-                              readOnly: widget.readOnly,
-                              quickReplyOptions: widget.quickReplyOptions ??
-                                  const QuickReplyOptions(),
-                              scrollToBottomOptions:
-                                  widget.scrollToBottomOptions ??
-                                      const ScrollToBottomOptions(),
-                              typingIndicator:
-                                  (widget.loadingConfig?.isLoading ?? false)
-                                      ? widget.loadingConfig?.loadingIndicator
-                                      : null,
-                            ),
-                          ),
-                          if ((widget.loadingConfig?.isLoading ?? false) &&
-                              (widget.loadingConfig?.showCenteredIndicator ??
-                                  false))
-                            Center(
-                              child: widget.loadingConfig?.loadingIndicator ??
-                                  const CircularProgressIndicator(),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                // Position welcome message as an overlay on top
-                if (widget.controller.showWelcomeMessage)
-                  Container(
-                    color: Colors.black.withOpacityCompat(0.03),
-                    child: Center(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: widget.welcomeMessageConfig?.builder?.call() ??
-                            _buildWelcomeMessage(context),
-                      ),
-                    ),
+        builder: (final context, final child) => Container(
+          width: widget.maxWidth,
+          constraints: widget.maxWidth != null
+              ? BoxConstraints(maxWidth: widget.maxWidth!)
+              : null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Show persistent example questions if enabled and welcome message is hidden
+              if (!widget.controller.showWelcomeMessage &&
+                  widget.persistentExampleQuestions &&
+                  widget.exampleQuestions.isNotEmpty) ...[
+                Container(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.15,
                   ),
-                if (!widget.readOnly)
-                  Positioned(
-                    left: widget.inputOptions?.positionedLeft ?? 0,
-                    right: widget.inputOptions?.positionedRight ?? 0,
-                    bottom: widget.inputOptions?.positionedBottom ?? 0.1,
-                    child: widget.inputOptions?.useOuterContainer == false
-                        ? _buildChatInput() // Render input directly without container
-                        : Material(
-                            elevation:
-                                widget.inputOptions?.materialElevation ?? 0,
-                            color: widget.inputOptions?.useScaffoldBackground ==
-                                    true
+                  margin: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 4,
+                    bottom: 12,
+                  ),
+                  child: _buildPersistentExampleQuestions(context),
+                ),
+              ],
+              Expanded(
+                child: CustomChatWidget(
+                    controller: widget.controller,
+                    currentUser: widget.currentUser,
+                    messages: widget.messages ?? widget.controller.messages,
+                    onSend: _handleSend,
+                    messageOptions:
+                        widget.messageOptions ?? const MessageOptions(),
+                    inputOptions: widget.inputOptions ?? const InputOptions(),
+                    typingUsers: _getEffectiveTypingUsers(),
+                    messageListOptions: (widget.messageListOptions ??
+                            const MessageListOptions())
+                        .copyWith(
+                      scrollController: _effectiveScrollController,
+                    ),
+                    readOnly: widget.readOnly,
+                    quickReplyOptions:
+                        widget.quickReplyOptions ?? const QuickReplyOptions(),
+                    scrollToBottomOptions: widget.scrollToBottomOptions ??
+                        const ScrollToBottomOptions(),
+                    typingIndicator: (widget.loadingConfig?.isLoading ?? false)
+                        ? widget.loadingConfig?.loadingIndicator
+                        : null,
+                  ),
+                ),
+              // Loading indicator overlay
+              if ((widget.loadingConfig?.isLoading ?? false) &&
+                  (widget.loadingConfig?.showCenteredIndicator ?? false))
+                Container(
+                  color: Colors.black26,
+                  child: Center(
+                    child: widget.loadingConfig?.loadingIndicator ??
+                        const CircularProgressIndicator(),
+                  ),
+                ),
+              // Input at bottom instead of positioned
+              if (!widget.readOnly)
+                (widget.inputOptions?.useOuterContainer == false)
+                    ? Container(
+                        // Bottom sheet style container
+                        width: double.infinity,
+                        decoration: widget.inputOptions?.containerDecoration,
+                        padding: EdgeInsets.only(
+                          left: widget.inputOptions?.padding?.left ?? 16,
+                          right: widget.inputOptions?.padding?.right ?? 16,
+                          top: widget.inputOptions?.padding?.top ?? 16,
+                          bottom: (widget.inputOptions?.padding?.bottom ?? 16) +
+                              MediaQuery.of(context).viewInsets.bottom +
+                              MediaQuery.of(context).padding.bottom,
+                        ),
+                        child: _buildChatInput(),
+                      )
+                    : Material(
+                        elevation: widget.inputOptions?.materialElevation ?? 0,
+                        color:
+                            widget.inputOptions?.useScaffoldBackground == true
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : widget.inputOptions?.materialColor,
-                            shape: widget.inputOptions?.materialShape ??
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(22),
-                                  side: BorderSide.none,
-                                ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Padding(
-                              padding: widget.inputOptions?.materialPadding ??
-                                  const EdgeInsets.all(8.0),
-                              child: _buildChatInput(),
+                        shape: widget.inputOptions?.materialShape ??
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                              side: BorderSide.none,
                             ),
-                          ),
-                  ),
-              ],
-            ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          padding: widget.inputOptions?.materialPadding ??
+                              const EdgeInsets.all(8.0),
+                          child: _buildChatInput(),
+                        ),
+                      ),
+            ],
           ),
         ),
       );
 
-  Widget _buildWelcomeMessage(final BuildContext context) {
-    debugPrint(
-        'AiChatWidget: Building welcome message with ${widget.exampleQuestions.length} questions');
-
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
-    final primaryColor = theme.primaryColor;
-    final screenSize = MediaQuery.of(context).size;
-
-    final welcomeConfig = widget.welcomeMessageConfig;
-    // Get the first question's config as a default, if available
-    final defaultQuestionConfig = widget.exampleQuestions.isNotEmpty
-        ? widget.exampleQuestions.first.config
-        : null;
-
-    // Log if no questions to display
-    if (widget.exampleQuestions.isEmpty) {
-      debugPrint(
-          'AiChatWidget: No example questions to display in welcome message');
-    }
-
-    return FadeTransition(
-      opacity: _animationController,
-      child: Container(
-        // Constrain width to prevent excessive horizontal stretching
-        width: math.min(500, screenSize.width * 0.9),
-        // Use margin to center the welcome message
-        margin: welcomeConfig?.containerMargin ??
-            const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-        padding: welcomeConfig?.containerPadding ?? const EdgeInsets.all(24),
-        decoration: welcomeConfig?.containerDecoration ??
-            BoxDecoration(
-              color: isDarkMode ? const Color(0xFF1E2026) : Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      Colors.black.withOpacityCompat(isDarkMode ? 0.3 : 0.08),
-                  blurRadius: 20,
-                  spreadRadius: -4,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-              border: Border.all(
-                color: primaryColor.withOpacityCompat(isDarkMode ? 0.2 : 0.15),
-                width: 1.5,
-              ),
-            ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              welcomeConfig?.title ?? widget.aiName,
-              style: welcomeConfig?.titleStyle ??
-                  TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.5,
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    height: 1.3,
-                  ),
-            ),
-            if (widget.exampleQuestions.isNotEmpty) ...[
-              const SizedBox(height: 20),
-              Container(
-                padding: welcomeConfig?.questionsSectionPadding ??
-                    const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                decoration: welcomeConfig?.questionsSectionDecoration ??
-                    BoxDecoration(
-                      color: primaryColor
-                          .withOpacityCompat(isDarkMode ? 0.15 : 0.08),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: primaryColor
-                            .withOpacityCompat(isDarkMode ? 0.3 : 0.2),
-                      ),
-                    ),
-                child: Text(
-                  welcomeConfig?.questionsSectionTitle ??
-                      'Try asking one of these questions:',
-                  style: welcomeConfig?.questionsSectionTitleStyle ??
-                      TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: isDarkMode ? Colors.white : Colors.black87,
-                      ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              ...widget.exampleQuestions.map(
-                (question) {
-                  // Get the question's config or use the default
-                  final effectiveConfig =
-                      question.config ?? defaultQuestionConfig;
-                  return _buildExampleQuestion(
-                    question,
-                    effectiveConfig ?? const ExampleQuestionConfig(),
-                    isDarkMode,
-                    primaryColor,
-                  );
-                },
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+  // Welcome message is now handled in CustomChatWidget as part of the message list
 
   Widget _buildExampleQuestion(
     final ExampleQuestion question,

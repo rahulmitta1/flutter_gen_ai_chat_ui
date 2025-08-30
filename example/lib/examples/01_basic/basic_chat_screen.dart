@@ -105,15 +105,38 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
       // Small delay to make the transition smoother
       await Future.delayed(const Duration(milliseconds: 200));
 
-      // Add the AI response to the chat
+      // Add the AI response to the chat with streaming enabled
+      final messageId = 'ai_${DateTime.now().millisecondsSinceEpoch}';
       _chatController.addMessage(
         ChatMessage(
           text: response.text,
           user: _aiUser,
           createdAt: DateTime.now(),
           isMarkdown: response.isMarkdown,
+          customProperties: {
+            'id': messageId,
+            'isStreaming': true, // Enable streaming animation
+          },
         ),
       );
+
+      // Simulate streaming completion after animation
+      Future.delayed(Duration(milliseconds: response.text.length * 35), () {
+        if (mounted) {
+          _chatController.updateMessage(
+            ChatMessage(
+              text: response.text,
+              user: _aiUser,
+              createdAt: DateTime.now(),
+              isMarkdown: response.isMarkdown,
+              customProperties: {
+                'id': messageId,
+                'isStreaming': false, // Mark as complete
+              },
+            ),
+          );
+        }
+      });
     } catch (error) {
       // Reset loading state on error
       setState(() => _isLoading = false);

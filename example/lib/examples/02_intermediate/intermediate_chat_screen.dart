@@ -58,67 +58,58 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
     // Add the user message first
     _chatController.addMessage(message);
 
-    // Reset streaming state
+    // Set loading state immediately to show loading widget
     setState(() {
       _isGenerating = true;
     });
 
-    // Simulate AI processing time
-    await Future.delayed(const Duration(milliseconds: 300));
-
     if (_useStreaming) {
-      // Create an empty message to update incrementally with a stable ID
+      // Simulate AI processing time with loading widget visible
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // Generate complete response text first
+      final fullResponse = _generateResponse(message.text);
+      
+      // Create message ID for tracking
       final messageId = 'ai_${DateTime.now().millisecondsSinceEpoch}';
-      final aiMessage = ChatMessage(
-        text: '',
-        user: _aiUser,
-        createdAt: DateTime.now(),
-        isMarkdown: true,
-        customProperties: {
-          'id': messageId,
-          'isStreaming': true,
-        },
+      final messageCreatedAt = DateTime.now();
+
+      // Add the message with complete text - let flutter_streaming_text_markdown handle the animation
+      _chatController.addMessage(
+        ChatMessage(
+          text: fullResponse,
+          user: _aiUser,
+          createdAt: messageCreatedAt,
+          isMarkdown: true,
+          customProperties: {
+            'id': messageId,
+            'isStreaming': true, // Mark as streaming so the package handles the animation
+          },
+        ),
       );
 
-      // Add the empty message to the chat
-      _chatController.addMessage(aiMessage);
-
-      // Wait a bit longer for the UI to settle and scroll properly
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Generate a response word by word
-      final words = _generateResponse(message.text).split(' ');
-      String accumulatedText = '';
-
-      for (var i = 0; i < words.length; i++) {
-        // Simulate typing latency
-        await Future.delayed(const Duration(milliseconds: 80));
-
-        // Append the next word
-        accumulatedText = accumulatedText + (i > 0 ? ' ' : '') + words[i];
-
-        // Update the message with the same ID to ensure proper streaming
-        final isLastWord = i >= words.length - 1;
+      // Simulate the time it would take to stream (for loading state)
+      await Future.delayed(Duration(milliseconds: fullResponse.length * 25));
+      
+      // Mark streaming as complete - check if widget is still mounted
+      if (mounted) {
         _chatController.updateMessage(
           ChatMessage(
-            text: accumulatedText,
+            text: fullResponse,
             user: _aiUser,
-            createdAt: aiMessage.createdAt, // Keep the same creation time
+            createdAt: messageCreatedAt,
             isMarkdown: true,
             customProperties: {
-              'id': messageId, // Use the same ID
-              'isStreaming': !isLastWord, // Mark as not streaming on last word
+              'id': messageId,
+              'isStreaming': false, // Mark as complete
             },
           ),
         );
-
-        // Add a longer delay to ensure proper scroll positioning
-        // This prevents rapid updates that confuse the scroll controller
-        if (i < words.length - 1) {
-          await Future.delayed(const Duration(milliseconds: 20));
-        }
       }
     } else {
+      // Simulate AI processing time (loading state already set above)
+      await Future.delayed(const Duration(milliseconds: 800));
+
       // Just add the complete response
       final response = _generateResponse(message.text);
 
@@ -132,7 +123,9 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
       );
     }
 
-    setState(() => _isGenerating = false);
+    if (mounted) {
+      setState(() => _isGenerating = false);
+    }
   }
 
   // Generate a Claude-style response based on the user's input
@@ -267,9 +260,9 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
                 : null,
           ),
 
-          // Enable streaming markdown rendering
+          // Enable streaming markdown rendering  
           enableMarkdownStreaming: _useStreaming,
-          streamingDuration: const Duration(milliseconds: 30),
+          streamingDuration: const Duration(milliseconds: 35), // Claude-style natural typing speed
 
           // Configure scroll behavior for smooth streaming experience
           scrollBehaviorConfig: const ScrollBehaviorConfig(
@@ -495,6 +488,7 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 32,
@@ -512,7 +506,7 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(
+          Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(

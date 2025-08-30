@@ -92,12 +92,14 @@ class ChatMessagesController extends ChangeNotifier {
 
   /// Add this property at the top of the class with other properties
   DateTime _lastScrollTime = DateTime.now();
-  int _scrollDebounceMs = 500; // Default debounce time
+  int _scrollDebounceMs = 800; // Increased default debounce time to reduce frequency
   String?
       _lastScrollOperation; // Track the last scroll operation to prevent conflicts
 
   /// Sets the scroll controller for auto-scrolling
   void setScrollController(ScrollController controller) {
+    if (!_mounted) return;
+    
     // Remove the old listener if it exists
     if (_scrollController != null && _scrollListener != null) {
       _scrollController!.removeListener(_scrollListener!);
@@ -341,8 +343,7 @@ void addAgentMessage(ChatMessage message) {
     // Apply debounce for scrolling to prevent jitter
     final now = DateTime.now();
     if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
-      debugPrint('SCROLL AFTER RENDER DEBOUNCED: Too soon after last scroll');
-      return;
+      return; // Removed debug print to reduce log spam
     }
 
     // Set this as the current operation
@@ -497,7 +498,7 @@ void addAgentMessage(ChatMessage message) {
 
   /// Scrolls to a specific message by ID with improved position calculation
   void scrollToMessage(String messageId) {
-    if (_scrollController?.hasClients != true) return;
+    if (!_mounted || _scrollController?.hasClients != true) return;
 
     // Don't interrupt user's manual scrolling
     if (_isManuallyScrolling) {
@@ -575,7 +576,7 @@ void addAgentMessage(ChatMessage message) {
     Duration? duration,
     Curve? curve,
   ]) {
-    if (_scrollController?.hasClients != true) return;
+    if (!_mounted || _scrollController?.hasClients != true) return;
 
     // Don't interrupt user's manual scrolling
     if (_isManuallyScrolling) {
@@ -586,10 +587,9 @@ void addAgentMessage(ChatMessage message) {
     // Apply debounce for scrollToBottom to prevent jitter
     // (less strict than for force scroll)
     final now = DateTime.now();
-    const minInterval = 200; // ms
+    const minInterval = 400; // ms - increased from 200ms to reduce frequency
     if (now.difference(_lastScrollTime).inMilliseconds < minInterval) {
-      debugPrint('SCROLL TO BOTTOM DEBOUNCED: Too soon after last scroll');
-      return;
+      return; // Removed debug print to reduce log spam
     }
     _lastScrollTime = now;
 
@@ -977,7 +977,7 @@ void addAgentMessage(ChatMessage message) {
   /// Scrolls to a specific message directly with maximum reliability
   /// This is a more direct approach for ensuring the first message is visible
   void forceScrollToTop() {
-    if (_scrollController?.hasClients != true) return;
+    if (!_mounted || _scrollController?.hasClients != true) return;
 
     try {
       // Force scroll to the very top first (0.0)
@@ -990,13 +990,12 @@ void addAgentMessage(ChatMessage message) {
 
   /// Find first message in a response chain and force scroll to it with extra reliability
   void forceScrollToFirstMessageInChain(String responseId) {
-    if (_scrollController?.hasClients != true) return;
+    if (!_mounted || _scrollController?.hasClients != true) return;
 
     // Implement debounce for scrolling to prevent jitter
     final now = DateTime.now();
     if (now.difference(_lastScrollTime).inMilliseconds < _scrollDebounceMs) {
-      debugPrint('SCROLL DEBOUNCED: Too soon after last scroll');
-      return;
+      return; // Removed debug print to reduce log spam
     }
     _lastScrollTime = now;
 

@@ -83,13 +83,41 @@ class MessageAttachment extends StatelessWidget {
             return Container(
               width: 200,
               height: 150,
-              color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                      : null,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                      strokeWidth: 2,
+                      color: Theme.of(context).primaryColor,
+                      backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Loading image...',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if (loadingProgress.expectedTotalBytes != null)
+                      Text(
+                        '${((loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!) * 100).toInt()}%',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                        ),
+                      ),
+                  ],
                 ),
               ),
             );
@@ -134,6 +162,39 @@ class MessageAttachment extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: 250,
                 height: 150,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    width: 250,
+                    height: 150,
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                            strokeWidth: 2,
+                            color: Theme.of(context).primaryColor,
+                            backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Loading thumbnail...',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     width: 250,
