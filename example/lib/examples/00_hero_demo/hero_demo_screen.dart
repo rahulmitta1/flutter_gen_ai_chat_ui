@@ -79,10 +79,6 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       vsync: this,
     );
     
-    _featureCalloutController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
     
     // Add welcome message
     _chatController.addMessage(
@@ -144,7 +140,6 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
   void _startAutoDemo() {
     if (!_isAutoDemoMode) return;
     
-    _featureCalloutController.repeat(reverse: true);
     _demoController.forward();
     
     _runCurrentDemoPhase();
@@ -664,7 +659,6 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     _autoAdvanceTimer?.cancel();
     _autoRestartTimer?.cancel();
     _demoController.dispose();
-    _featureCalloutController.dispose();
     _chatController.dispose();
     super.dispose();
   }

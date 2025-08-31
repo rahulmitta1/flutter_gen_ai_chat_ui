@@ -28,6 +28,12 @@ class CustomChatWidget extends StatefulWidget {
   final ScrollToBottomOptions scrollToBottomOptions;
   final ChatMessagesController? controller;
 
+  /// Streaming animation configuration
+  final Duration streamingTypingSpeed;
+  final bool streamingEnabled;
+  final Duration streamingFadeInDuration;
+  final Curve streamingFadeInCurve;
+
   /// Custom widget to display instead of the default typing indicator
   final Widget? typingIndicator;
 
@@ -53,6 +59,10 @@ class CustomChatWidget extends StatefulWidget {
     this.controller,
     this.welcomeMessageConfig,
     this.exampleQuestions = const [],
+    this.streamingTypingSpeed = const Duration(milliseconds: 28),
+    this.streamingEnabled = true,
+    this.streamingFadeInDuration = const Duration(milliseconds: 260),
+    this.streamingFadeInCurve = Curves.easeInOut,
   });
 
   @override
@@ -702,7 +712,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     // Check if this message should show streaming animation
     final isStreaming =
         message.customProperties?['isStreaming'] as bool? ?? false;
-    final shouldAnimate = isStreaming;
+    final shouldAnimate = isStreaming && widget.streamingEnabled;
 
     // Get appropriate text color from message options
     final textStyle = TextStyle(
@@ -820,11 +830,11 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
-          typingSpeed: const Duration(milliseconds: 28),
+          typingSpeed: widget.streamingTypingSpeed,
           markdownEnabled: true,
           fadeInEnabled: true,
-          fadeInDuration: const Duration(milliseconds: 260),
-          fadeInCurve: Curves.easeInOut,
+          fadeInDuration: widget.streamingFadeInDuration,
+          fadeInCurve: widget.streamingFadeInCurve,
         );
       } else {
         // Static markdown for completed messages
@@ -854,11 +864,11 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
-          typingSpeed: const Duration(milliseconds: 28),
+          typingSpeed: widget.streamingTypingSpeed,
           markdownEnabled: false,
           fadeInEnabled: true,
-          fadeInDuration: const Duration(milliseconds: 260),
-          fadeInCurve: Curves.easeInOut,
+          fadeInDuration: widget.streamingFadeInDuration,
+          fadeInCurve: widget.streamingFadeInCurve,
         );
       } else {
         // Static plain text for completed messages
