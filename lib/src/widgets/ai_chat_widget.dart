@@ -325,6 +325,8 @@ class _AiChatWidgetState extends State<AiChatWidget>
                     typingIndicator: (widget.loadingConfig?.isLoading ?? false)
                         ? widget.loadingConfig?.loadingIndicator
                         : null,
+                    welcomeMessageConfig: widget.welcomeMessageConfig,
+                    exampleQuestions: widget.exampleQuestions,
                   ),
                 ),
               // Loading indicator overlay

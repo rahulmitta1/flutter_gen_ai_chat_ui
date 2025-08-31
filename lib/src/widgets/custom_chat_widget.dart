@@ -4,12 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_streaming_text_markdown/flutter_streaming_text_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/chat_messages_controller.dart';
 import '../models/chat/models.dart';
+import '../models/example_question.dart';
 import '../models/input_options.dart';
+import '../models/welcome_message_config.dart';
 import '../utils/color_extensions.dart';
 import 'message_attachment.dart';
 
@@ -29,6 +31,12 @@ class CustomChatWidget extends StatefulWidget {
   /// Custom widget to display instead of the default typing indicator
   final Widget? typingIndicator;
 
+  /// Configuration for the welcome message
+  final WelcomeMessageConfig? welcomeMessageConfig;
+
+  /// Example questions to show in the welcome message
+  final List<ExampleQuestion> exampleQuestions;
+
   const CustomChatWidget({
     super.key,
     required this.currentUser,
@@ -43,6 +51,8 @@ class CustomChatWidget extends StatefulWidget {
     required this.scrollToBottomOptions,
     this.typingIndicator,
     this.controller,
+    this.welcomeMessageConfig,
+    this.exampleQuestions = const [],
   });
 
   @override
@@ -53,6 +63,14 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   late ScrollController _scrollController;
   bool _showScrollToBottom = false;
   Timer? _scrollDebounce;
+
+  /// Check if welcome message should be shown
+  bool _shouldShowWelcomeMessage() {
+    return widget.controller?.showWelcomeMessage == true &&
+        (widget.welcomeMessageConfig != null ||
+            widget.exampleQuestions.isNotEmpty) &&
+        widget.messages.isEmpty;  // Only show if there are no messages
+  }
 
   @override
   void initState() {
@@ -212,7 +230,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       itemCount: widget.messages.length +
           (widget.typingUsers?.isNotEmpty == true ? 1 : 0) +
           (loadingWidget != null ? 1 : 0) +
-          (noMoreMessagesWidget != null ? 1 : 0),
+          (noMoreMessagesWidget != null ? 1 : 0) +
+          (_shouldShowWelcomeMessage() ? 1 : 0),
       cacheExtent: paginationConfig.cacheExtent,
       itemBuilder: (context, index) {
         // In reverse mode (newest at bottom), we want to show the loading indicator at index 0 (bottom of screen)
@@ -241,6 +260,16 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                       (widget.typingUsers?.isNotEmpty == true ? 0 : 0)) {
             return noMoreMessagesWidget;
           }
+
+          // Handle welcome message at the top (highest index) in reverse mode
+          if (_shouldShowWelcomeMessage() &&
+              index ==
+                  widget.messages.length +
+                      (widget.typingUsers?.isNotEmpty == true ? 0 : 0) +
+                      (loadingWidget != null ? 1 : 0) +
+                      (noMoreMessagesWidget != null ? 1 : 0)) {
+            return _buildWelcomeMessage();
+          }
         } else {
           // In chronological mode (oldest at bottom)
           // Pagination indicators at the beginning
@@ -258,10 +287,21 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             return _buildTypingIndicator();
           }
 
+          // Handle welcome message in chronological mode - after pagination but before messages
+          final welcomeOffset = _shouldShowWelcomeMessage() ? 1 : 0;
+          final paginationOffset =
+              (loadingWidget != null || noMoreMessagesWidget != null) ? 1 : 0;
+
+          if (_shouldShowWelcomeMessage() && index == paginationOffset) {
+            return _buildWelcomeMessage();
+          }
+
           // Adjust index for header items
-          if ((loadingWidget != null || noMoreMessagesWidget != null) &&
-              index > 0) {
-            index = index - 1;
+          if ((loadingWidget != null ||
+                  noMoreMessagesWidget != null ||
+                  _shouldShowWelcomeMessage()) &&
+              index > paginationOffset + welcomeOffset - 1) {
+            index = index - paginationOffset - welcomeOffset;
           }
         }
 
@@ -1067,6 +1107,186 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             ),
           ),
         );
+  }
+
+  /// Build the welcome message widget
+  Widget _buildWelcomeMessage() {
+    // If custom builder is provided, use it
+    if (widget.welcomeMessageConfig?.builder != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child: widget.welcomeMessageConfig!.builder!(),
+      );
+    }
+
+    // Otherwise, build default welcome message with title and example questions
+    return _buildDefaultWelcomeMessage();
+  }
+
+  /// Build default welcome message with title and example questions
+  Widget _buildDefaultWelcomeMessage() {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    return Container(
+      margin: widget.welcomeMessageConfig?.containerMargin ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: widget.welcomeMessageConfig?.containerPadding ??
+          const EdgeInsets.all(24),
+      decoration: widget.welcomeMessageConfig?.containerDecoration ??
+          BoxDecoration(
+            color: isDarkMode
+                ? const Color(0xFF1E2026).withOpacityCompat(0.9)
+                : Colors.white.withOpacityCompat(0.95),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacityCompat(isDarkMode ? 0.2 : 0.06),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+                spreadRadius: -5,
+              ),
+            ],
+            border: Border.all(
+              color: isDarkMode
+                  ? Colors.white.withOpacityCompat(0.1)
+                  : Colors.black.withOpacityCompat(0.05),
+              width: 0.5,
+            ),
+          ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title
+          if (widget.welcomeMessageConfig?.title != null) ...[
+            Text(
+              widget.welcomeMessageConfig!.title!,
+              style: widget.welcomeMessageConfig?.titleStyle ??
+                  TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          // Example questions
+          if (widget.exampleQuestions.isNotEmpty) ...[
+            Container(
+              padding: widget.welcomeMessageConfig?.questionsSectionPadding ??
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: widget.welcomeMessageConfig?.questionsSectionDecoration,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.welcomeMessageConfig?.questionsSectionTitle ??
+                        'Here are some questions you can ask:',
+                    style: widget.welcomeMessageConfig?.questionsSectionTitleStyle ??
+                        TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: isDarkMode ? Colors.white70 : Colors.black87,
+                        ),
+                  ),
+                  SizedBox(height: widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
+                  ...widget.exampleQuestions.map(
+                    (question) => _buildExampleQuestionInWelcome(question, isDarkMode),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Build an example question within the welcome message
+  Widget _buildExampleQuestionInWelcome(ExampleQuestion question, bool isDarkMode) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _handleExampleQuestionTap(question.question),
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: question.config?.containerPadding ?? 
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: question.config?.containerDecoration ??
+                BoxDecoration(
+                  color: primaryColor.withOpacityCompat(isDarkMode ? 0.12 : 0.06),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: primaryColor.withOpacityCompat(isDarkMode ? 0.3 : 0.15),
+                    width: 1,
+                  ),
+                ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  size: question.config?.iconSize ?? 18,
+                  color: question.config?.iconColor ??
+                      (isDarkMode
+                          ? Colors.white.withOpacityCompat(0.8)
+                          : primaryColor.withOpacityCompat(0.8)),
+                ),
+                SizedBox(width: question.config?.spacing ?? 12),
+                Expanded(
+                  child: Text(
+                    question.question,
+                    style: question.config?.textStyle ??
+                        TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: isDarkMode
+                              ? Colors.white.withOpacityCompat(0.9)
+                              : Colors.black.withOpacityCompat(0.8),
+                          height: 1.4,
+                        ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  question.config?.trailingIconData ?? Icons.arrow_forward_ios_rounded,
+                  size: question.config?.trailingIconSize ?? 16,
+                  color: question.config?.trailingIconColor ??
+                      (isDarkMode
+                          ? Colors.white.withOpacityCompat(0.5)
+                          : primaryColor.withOpacityCompat(0.5)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Handle example question tap in welcome message
+  void _handleExampleQuestionTap(String question) {
+    // Hide welcome message first
+    if (widget.controller?.showWelcomeMessage == true) {
+      widget.controller?.hideWelcomeMessage();
+    }
+
+    // Create and send the message
+    final message = ChatMessage(
+      text: question,
+      user: widget.currentUser,
+      createdAt: DateTime.now(),
+    );
+
+    // Call the onSend callback
+    widget.onSend(message);
   }
 }
 
