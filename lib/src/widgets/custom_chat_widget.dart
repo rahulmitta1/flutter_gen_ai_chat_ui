@@ -33,6 +33,7 @@ class CustomChatWidget extends StatefulWidget {
   final bool streamingEnabled;
   final Duration streamingFadeInDuration;
   final Curve streamingFadeInCurve;
+  final bool streamingFadeInEnabled;
 
   /// Custom widget to display instead of the default typing indicator
   final Widget? typingIndicator;
@@ -63,6 +64,7 @@ class CustomChatWidget extends StatefulWidget {
     this.streamingEnabled = true,
     this.streamingFadeInDuration = const Duration(milliseconds: 260),
     this.streamingFadeInCurve = Curves.easeInOut,
+    this.streamingFadeInEnabled = false,
   });
 
   @override
@@ -832,7 +834,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           style: textStyle,
           typingSpeed: widget.streamingTypingSpeed,
           markdownEnabled: true,
-          fadeInEnabled: true,
+          fadeInEnabled: widget.streamingFadeInEnabled,
           fadeInDuration: widget.streamingFadeInDuration,
           fadeInCurve: widget.streamingFadeInCurve,
         );
@@ -866,7 +868,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           style: textStyle,
           typingSpeed: widget.streamingTypingSpeed,
           markdownEnabled: false,
-          fadeInEnabled: true,
+          fadeInEnabled: widget.streamingFadeInEnabled,
           fadeInDuration: widget.streamingFadeInDuration,
           fadeInCurve: widget.streamingFadeInCurve,
         );

@@ -47,6 +47,10 @@ class AiChatWidget extends StatefulWidget {
     this.streamingDuration = const Duration(milliseconds: 30),
     this.markdownStyleSheet,
     this.aiName = 'AI',
+    // Streaming fade-in (optional, off by default for simplicity)
+    this.streamingFadeInDuration,
+    this.streamingFadeInCurve,
+    this.streamingFadeInEnabled,
 
     // Scroll behavior configuration
     this.scrollBehaviorConfig,
@@ -133,6 +137,12 @@ class AiChatWidget extends StatefulWidget {
 
   /// Style sheet for markdown rendering
   final MarkdownStyleSheet? markdownStyleSheet;
+
+  /// Optional fade-in configuration for streaming text
+  /// If not provided, fade-in is disabled for a simpler default.
+  final Duration? streamingFadeInDuration;
+  final Curve? streamingFadeInCurve;
+  final bool? streamingFadeInEnabled;
 
   /// Configuration for scroll behavior
   final ScrollBehaviorConfig? scrollBehaviorConfig;
@@ -330,6 +340,11 @@ class _AiChatWidgetState extends State<AiChatWidget>
                     // Pass streaming configuration down to the renderer
                     streamingTypingSpeed: widget.streamingDuration,
                     streamingEnabled: widget.enableMarkdownStreaming,
+                    streamingFadeInEnabled: widget.streamingFadeInEnabled ?? false,
+                    streamingFadeInDuration:
+                        widget.streamingFadeInDuration ?? const Duration(milliseconds: 260),
+                    streamingFadeInCurve:
+                        widget.streamingFadeInCurve ?? Curves.easeInOut,
                   ),
                 ),
               // Loading indicator overlay
