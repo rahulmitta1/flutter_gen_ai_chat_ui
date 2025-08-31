@@ -820,8 +820,11 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
-          typingSpeed: const Duration(milliseconds: 30),
+          typingSpeed: const Duration(milliseconds: 28),
           markdownEnabled: true,
+          fadeInEnabled: true,
+          fadeInDuration: const Duration(milliseconds: 260),
+          fadeInCurve: Curves.easeInOut,
         );
       } else {
         // Static markdown for completed messages
@@ -851,8 +854,11 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
-          typingSpeed: const Duration(milliseconds: 30),
+          typingSpeed: const Duration(milliseconds: 28),
           markdownEnabled: false,
+          fadeInEnabled: true,
+          fadeInDuration: const Duration(milliseconds: 260),
+          fadeInCurve: Curves.easeInOut,
         );
       } else {
         // Static plain text for completed messages

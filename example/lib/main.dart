@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'examples/home_screen.dart';
-// New streamlined examples
-import 'examples/01_basic/basic_chat_screen.dart';
+// New streamlined examples with Hero Demo
+import 'examples/00_hero_demo/hero_demo_screen.dart';
+import 'examples/01_basic/enhanced_basic_chat.dart';
 import 'examples/02_intermediate/intermediate_chat_screen.dart';
 import 'examples/03_complete/complete_showcase.dart';
 import 'examples/04_file_media_chat/file_media_chat.dart';
@@ -45,11 +46,12 @@ class ExampleApp extends StatelessWidget {
               textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
             ),
             themeMode: appState.themeMode,
-            // Define streamlined routes
-            initialRoute: '/',
+            // Define streamlined routes with Hero Demo
+            initialRoute: '/hero-demo', // Start with Hero Demo for immediate impact
             routes: {
               '/': (context) => const ExamplesHomeScreen(),
-              '/basic': (context) => const BasicChatScreen(),
+              '/hero-demo': (context) => const HeroDemoScreen(),
+              '/basic': (context) => const EnhancedBasicChat(),
               '/intermediate': (context) => const IntermediateChatScreen(),
               '/complete-showcase': (context) => const CompleteShowcase(),
               '/file-media-chat': (context) => const FileMediaChat(),
