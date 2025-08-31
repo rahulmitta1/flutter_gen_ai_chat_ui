@@ -51,6 +51,7 @@ class AiChatWidget extends StatefulWidget {
     this.streamingFadeInDuration,
     this.streamingFadeInCurve,
     this.streamingFadeInEnabled,
+    this.streamingWordByWord,
 
     // Scroll behavior configuration
     this.scrollBehaviorConfig,
@@ -143,6 +144,7 @@ class AiChatWidget extends StatefulWidget {
   final Duration? streamingFadeInDuration;
   final Curve? streamingFadeInCurve;
   final bool? streamingFadeInEnabled;
+  final bool? streamingWordByWord;
 
   /// Configuration for scroll behavior
   final ScrollBehaviorConfig? scrollBehaviorConfig;
@@ -345,6 +347,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
                         widget.streamingFadeInDuration ?? const Duration(milliseconds: 260),
                     streamingFadeInCurve:
                         widget.streamingFadeInCurve ?? Curves.easeInOut,
+                    streamingWordByWord: widget.streamingWordByWord ?? false,
                   ),
                 ),
               // Loading indicator overlay
