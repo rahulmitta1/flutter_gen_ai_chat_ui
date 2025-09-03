@@ -117,8 +117,8 @@ class TextAnalysisAgent extends AIAgent {
     final negativeWords = ['bad', 'terrible', 'awful', 'sad', 'angry', 'disappointed'];
     
     final textLower = text.toLowerCase();
-    int positiveCount = positiveWords.where((word) => textLower.contains(word)).length;
-    int negativeCount = negativeWords.where((word) => textLower.contains(word)).length;
+    final positiveCount = positiveWords.where(textLower.contains).length;
+    final negativeCount = negativeWords.where(textLower.contains).length;
     
     if (positiveCount > negativeCount) {
       return 'Sentiment Analysis: Positive sentiment detected (score: ${(0.6 + positiveCount * 0.1).toStringAsFixed(1)}/1.0)';

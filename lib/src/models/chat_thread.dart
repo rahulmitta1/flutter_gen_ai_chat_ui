@@ -41,7 +41,7 @@ class ChatThread {
     return {
       'id': id,
       'title': title,
-      'messages': [], // TODO: Implement ChatMessage serialization if needed
+      'messages': <Map<String, dynamic>>[], // Messages serialization not implemented yet
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'metadata': metadata,
@@ -54,7 +54,7 @@ class ChatThread {
       title: json['title'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
-      messages: [], // TODO: Implement ChatMessage deserialization if needed
+      messages: <ChatMessage>[], // Messages deserialization not implemented yet
       metadata: (json['metadata'] as Map<String, dynamic>?) ?? {},
     );
   }

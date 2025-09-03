@@ -132,7 +132,7 @@ class MockAiService extends AiService {
 
   @override
   Future<String> sendMessage(String message) async {
-    await Future.delayed(delay);
+    await Future<void>.delayed(delay);
     
     if (shouldFail) {
       throw const AiServiceException('Mock service error');
@@ -150,8 +150,8 @@ class MockAiService extends AiService {
     final response = _generateMockResponse(message);
     final words = response.split(' ');
 
-    for (int i = 0; i < words.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 100));
+    for (var i = 0; i < words.length; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       yield '${words[i]} ';
     }
   }
@@ -161,7 +161,7 @@ class MockAiService extends AiService {
     String message,
     List<AiAction> availableActions,
   ) async {
-    await Future.delayed(delay);
+    await Future<void>.delayed(delay);
     
     if (shouldFail) {
       throw const AiServiceException('Mock service error');
@@ -171,14 +171,14 @@ class MockAiService extends AiService {
     final lowerMessage = message.toLowerCase();
     
     if (lowerMessage.contains('calculate') || lowerMessage.contains('math')) {
-      return AiFunctionCallResult(
+      return const AiFunctionCallResult(
         functionCall: AiFunctionCall(
           name: 'basic_math',
           arguments: {'a': 10, 'b': 5, 'operation': 'add'},
         ),
       );
     } else if (lowerMessage.contains('weather')) {
-      return AiFunctionCallResult(
+      return const AiFunctionCallResult(
         functionCall: AiFunctionCall(
           name: 'get_weather',
           arguments: {'location': 'London'},
@@ -201,7 +201,7 @@ class MockAiService extends AiService {
     }
 
     // Simulate thinking
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     
     final lowerMessage = message.toLowerCase();
     
@@ -226,8 +226,8 @@ class MockAiService extends AiService {
       final response = _generateMockResponse(message);
       final words = response.split(' ');
 
-      for (int i = 0; i < words.length; i++) {
-        await Future.delayed(const Duration(milliseconds: 100));
+      for (var i = 0; i < words.length; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
         yield AiFunctionCallStreamResult(
           type: AiFunctionCallResultType.textChunk,
           textChunk: '${words[i]} ',

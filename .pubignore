@@ -1,80 +1,18 @@
-# Flutter package publishing ignores
-# See https://dart.dev/tools/pub/publishing#what-files-are-published
+# Development files to exclude from package
+.memory/
+DESIGN_SYSTEM_GUIDE.md  
+DEVELOPMENT_ROADMAP.md
+IMPROVEMENTS.md
+PROGRESS_SUMMARY.md
+doc/ROADMAP_UI.md
+.claude/
+example/integration_test/README.md
 
-# Build artifacts and caches
-build/
-build/**
-**/build/**
-**/*.dill
-**/*.dill.track.dill
-.dart_tool/
-**/.dart_tool/**
-.flutter-plugins
-.flutter-plugins-dependencies
-*.log
-**/*.log
-
-# Example app (exclude most of it)
-example/android/
-example/ios/
-example/web/
-example/windows/
-example/linux/
-example/macos/
-example/build/
-example/.dart_tool/
-example/pubspec.lock
-example/.flutter-plugins
-example/.flutter-plugins-dependencies
-example/flutter_*.log
-example/.metadata
-example/CHANGELOG.md
-example/README.md
-example/analysis_options.yaml
-
-# IDE files
-.idea/
-.vscode/
-*.iml
-.cursor/
-**/.cursor/
-
-# Development files
-files_list.md
-logger.txt
-context.md
-
-# Git related
+# Git and IDE files
 .git/
-.github/
-.gitignore
+.vscode/
+.idea/
+*.md.bak
 
-# Project files
-.metadata
-.packages
-pubspec.lock
-
-# Test and coverage files
-coverage/
-.test_coverage.dart
-test/goldens/
-test/visual/failures/
-test/visual/test/
-test/feature_verification/
-**/*.g.dart
-**/*.freezed.dart
-
-# Screenshots
-screenshots/
-
-# System files
-.DS_Store
-**/.DS_Store
-
-# Documentation (keep only what's needed)
-doc/
-!doc/CHANGELOG.md
-!doc/USAGE.md
-
-# Debug and analysis files
-devtools_options.yaml 
+# Development artifacts  
+devtools_options.yaml

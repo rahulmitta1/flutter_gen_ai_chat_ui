@@ -107,10 +107,23 @@ class ExamplesHomeScreen extends StatelessWidget {
                   routeName: '/file-media-chat',
                   isDark: isDark,
                 ),
+                _buildModernExampleCard(
+                  context,
+                  title: 'Welcome Message Bug',
+                  description:
+                      'Reproduces issue #22: Welcome message overlay bug for testing and debugging',
+                  icon: Icons.bug_report_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDC2626), Color(0xFFEF4444)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  routeName: '/welcome-bug',
+                  isDark: isDark,
+                ),
               ]),
             ),
           ),
-          SliverToBoxAdapter(child: _buildFooter(context, isDark)),
         ],
       ),
     );
@@ -196,7 +209,7 @@ class ExamplesHomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '6 Comprehensive Examples',
+                      'Some examples to see different features',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: isDark
                             ? Colors.white.withOpacity(0.7)
@@ -234,51 +247,6 @@ class ExamplesHomeScreen extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isDark 
-                  ? const Color(0xFF059669).withOpacity(0.1)
-                  : const Color(0xFF059669).withOpacity(0.05),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF059669).withOpacity(0.2),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.auto_fix_high_rounded,
-                  color: const Color(0xFF059669),
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Restructured from 13+ examples into 6 focused, comprehensive demonstrations',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: isDark
-                          ? Colors.white.withOpacity(0.9)
-                          : const Color(0xFF059669),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Each example now combines multiple features for a complete experience. From basic chat to advanced AI integration with intelligent responses, context awareness, and comprehensive file handling.',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: isDark
-                  ? Colors.white.withOpacity(0.8)
-                  : const Color(0xFF64748B),
-              height: 1.6,
-            ),
           ),
         ],
       ),
@@ -515,87 +483,6 @@ class ExamplesHomeScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context, bool isDark) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-              : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withOpacity(0.1)
-              : Colors.black.withOpacity(0.05),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF059669).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.check_circle_rounded,
-                  size: 24,
-                  color: const Color(0xFF059669),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Restructuring Complete',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: isDark ? Colors.white : const Color(0xFF1F2937),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'From 13+ scattered examples to 6 comprehensive demonstrations.\nCleaner, more focused, and easier to understand.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isDark
-                  ? Colors.white.withOpacity(0.7)
-                  : const Color(0xFF64748B),
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'Flutter Gen AI Chat UI v2.5.2',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

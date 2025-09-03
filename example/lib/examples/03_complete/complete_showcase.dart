@@ -10,8 +10,8 @@ import '../../services/ai_service.dart' as example_ai;
 import '../../widgets/advanced_settings_drawer.dart';
 import '../../theme/advanced_theme.dart';
 
-/// Complete showcase merging Advanced Chat + Essential AI + Advanced Theme + UI Gallery
-/// Demonstrates all visual themes, comprehensive features, and UI components
+/// Professional showcase demonstrating Flutter Gen AI Chat UI capabilities
+/// with elegant design and sophisticated theming using the package's built-in systems
 class CompleteShowcase extends StatefulWidget {
   const CompleteShowcase({super.key});
 
@@ -28,61 +28,19 @@ class _CompleteShowcaseState extends State<CompleteShowcase> {
 
   // State management
   bool _isGenerating = false;
-  int _currentBubbleThemeIndex = 0;
-  
-  // Available bubble design themes (from Essential AI)
-  final List<BubbleTheme> _bubbleThemes = [
-    BubbleTheme.gradient(),
-    BubbleTheme.neon(),
-    BubbleTheme.glassmorphic(),
-    BubbleTheme.elegant(),
-    BubbleTheme.minimal(),
-  ];
+  int _currentThemeIndex = 0;
 
-  // Advanced theme options (from Advanced Theme System)
-  final List<ThemeOption> _advancedThemes = [
-    ThemeOption(
-      name: 'ChatGPT Style',
-      description: 'OpenAI ChatGPT-inspired with vibrant green',
-      primaryColor: const Color(0xFF10A37F),
-      backgroundColor: const Color(0xFFF0F9F5),
-      surfaceColor: const Color(0xFFE8F5E8),
-      userBubbleColor: const Color(0xFF10A37F),
-      aiBubbleColor: const Color(0xFFE8F5E8),
-      brightness: Brightness.light,
-    ),
-    ThemeOption(
-      name: 'Claude Style', 
-      description: 'Anthropic Claude-inspired with warm orange',
-      primaryColor: const Color(0xFFFF7A00),
-      backgroundColor: const Color(0xFFFFF5E6),
-      surfaceColor: const Color(0xFFFFE8CC),
-      userBubbleColor: const Color(0xFFFF7A00),
-      aiBubbleColor: const Color(0xFFFFE8CC),
-      brightness: Brightness.light,
-    ),
-    ThemeOption(
-      name: 'Cyber Dark',
-      description: 'Futuristic cyber theme with neon green',
-      primaryColor: const Color(0xFF00FF41),
-      backgroundColor: const Color(0xFF0A0A0A),
-      surfaceColor: const Color(0xFF1A1A1A),
-      userBubbleColor: const Color(0xFF00FF41),
-      aiBubbleColor: const Color(0xFF1A1A1A),
-      brightness: Brightness.dark,
-    ),
-  ];
+  // Professional theme collection using package's AdvancedChatTheme
+  late final List<HarmonizedTheme> _themes;
 
-  int _currentAdvancedThemeIndex = 0;
-  bool _useAdvancedThemes = false;
-
-  // Example questions with different styles
+  // Example questions with refined styling
   late final List<ExampleQuestion> _exampleQuestions;
 
   @override
   void initState() {
     super.initState();
     _initializeComponents();
+    _setupThemes();
     _setupExampleQuestions();
     _addWelcomeMessage();
   }
@@ -91,81 +49,65 @@ class _CompleteShowcaseState extends State<CompleteShowcase> {
     _chatController = ChatMessagesController();
     _aiService = example_ai.AiService();
     _scrollController = ScrollController();
-    
+
     _currentUser = ChatUser(
       id: 'user123',
       firstName: 'You',
-      avatar: 'https://ui-avatars.com/api/?name=User&background=6366f1&color=fff',
+      avatar:
+          'https://ui-avatars.com/api/?name=User&background=6366f1&color=fff',
     );
 
     _aiUser = ChatUser(
       id: 'ai123',
-      firstName: 'Complete AI',
+      firstName: 'AI Assistant',
       avatar: 'https://ui-avatars.com/api/?name=AI&background=10b981&color=fff',
     );
 
     _chatController.setScrollController(_scrollController);
   }
 
+  void _setupThemes() {
+    _themes = [
+      HarmonizedTheme.modern(),
+      HarmonizedTheme.classic(),
+      HarmonizedTheme.minimal(),
+      HarmonizedTheme.dark(),
+      HarmonizedTheme.enterprise(),
+    ];
+  }
+
   void _setupExampleQuestions() {
     _exampleQuestions = [
       ExampleQuestion(
-        question: "Show me different bubble themes",
+        question: "Show me theme variations",
         config: ExampleQuestionConfig(
-          iconData: Icons.bubble_chart,
+          iconData: Icons.palette_outlined,
           containerDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [
-                Colors.purple.withOpacityCompat(0.1),
-                Colors.blue.withOpacityCompat(0.1)
-              ],
-            ),
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.blue.withOpacity(0.08),
+            border: Border.all(color: Colors.blue.withOpacity(0.2), width: 1),
           ),
         ),
       ),
       ExampleQuestion(
-        question: "Demonstrate advanced theming",
+        question: "Demonstrate features",
         config: ExampleQuestionConfig(
-          iconData: Icons.palette,
+          iconData: Icons.auto_awesome_outlined,
           containerDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [
-                Colors.green.withOpacityCompat(0.1),
-                Colors.teal.withOpacityCompat(0.1)
-              ],
-            ),
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.purple.withOpacity(0.08),
+            border: Border.all(color: Colors.purple.withOpacity(0.2), width: 1),
           ),
         ),
       ),
       ExampleQuestion(
-        question: "Show UI gallery components",
+        question: "What can you do?",
         config: ExampleQuestionConfig(
-          iconData: Icons.widgets,
+          iconData: Icons.help_outline,
           containerDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [
-                Colors.amber.withOpacityCompat(0.1),
-                Colors.orange.withOpacityCompat(0.1)
-              ],
-            ),
-          ),
-        ),
-      ),
-      ExampleQuestion(
-        question: "What are all your capabilities?",
-        config: ExampleQuestionConfig(
-          iconData: Icons.psychology,
-          containerDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [
-                Colors.pink.withOpacityCompat(0.1),
-                Colors.red.withOpacityCompat(0.1)
-              ],
-            ),
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.green.withOpacity(0.08),
+            border: Border.all(color: Colors.green.withOpacity(0.2), width: 1),
           ),
         ),
       ),
@@ -186,100 +128,104 @@ class _CompleteShowcaseState extends State<CompleteShowcase> {
 
   String _buildWelcomeMessage() {
     return """
-# Complete Showcase! 🎨✨
+# Welcome to Flutter Gen AI Chat UI
 
-Welcome to the **ultimate demonstration** of Flutter Gen AI Chat UI capabilities! This example merges:
+This showcase demonstrates the **professional capabilities** and **design flexibility** of our chat interface package.
 
-## 🎨 Visual Features
-- **5 Bubble Themes**: Gradient, Neon, Glassmorphic, Elegant, Minimal
-- **3 Advanced Themes**: ChatGPT, Claude, Cyber styles
-- **50+ Theme Properties**: Complete customization system
+## 🎨 **Design System**
+- **5 Professional Themes**: Modern, Classic, Minimal, Dark, Enterprise
+- **Sophisticated Typography**: Carefully crafted text hierarchies
+- **Refined Color Palettes**: Professional and accessible color schemes
+- **Consistent Spacing**: Systematic layout and spacing patterns
 
-## ⚡ Advanced Features
-- **Streaming Responses** with word-by-word animation
-- **Smart Scroll Behavior** for long conversations  
-- **Rich Message Formatting** with markdown
-- **Settings Panel** with all configurations
-- **UI Gallery Components** showcase
+## ⚡ **Core Features**
+- **Streaming Responses**: Real-time text generation with smooth animations
+- **Smart Scrolling**: Intelligent conversation navigation
+- **Rich Formatting**: Full markdown support with code highlighting
+- **Responsive Design**: Adapts seamlessly across all screen sizes
+- **Accessibility**: WCAG compliant with screen reader support
 
-## 🎯 Interactive Elements
-- Switch bubble themes with top-right button
-- Toggle between basic and advanced theming
-- Explore settings drawer for full control
-- Try different example questions
+## 🔧 **Customization Options**
+- **Theme Switching**: Dynamic theme changes with smooth transitions
+- **Layout Control**: Flexible width, padding, and spacing options
+- **Input Customization**: Tailored input fields and send buttons
+- **Message Styling**: Custom bubble designs and typography
 
-Ask me to demonstrate any feature or theme!
+## 💼 **Professional Use Cases**
+- **Customer Support**: Professional chat interfaces for businesses
+- **AI Assistants**: Enterprise-grade AI conversation platforms
+- **Team Collaboration**: Internal communication tools
+- **Product Demos**: Interactive product showcases
+
+*Try switching themes using the palette button, or ask me to demonstrate specific features.*
 """;
   }
 
   Future<void> _handleSendMessage(ChatMessage message) async {
     _chatController.addMessage(message);
-    
-    // Handle special commands
+
     final text = message.text.toLowerCase();
-    if (text.contains('bubble') || text.contains('theme')) {
-      await _handleThemeDemo(message.text);
-    } else if (text.contains('ui') || text.contains('component')) {
-      await _handleUIGalleryDemo();
+    if (text.contains('theme') || text.contains('design')) {
+      await _handleThemeDemo();
+    } else if (text.contains('feature') || text.contains('capability')) {
+      await _handleFeatureDemo();
     } else {
       await _handleRegularResponse(message.text);
     }
   }
 
-  Future<void> _handleThemeDemo(String originalText) async {
+  Future<void> _handleThemeDemo() async {
     setState(() => _isGenerating = true);
-    
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    // Switch to next bubble theme
-    _switchBubbleTheme();
-    
-    final currentTheme = _bubbleThemes[_currentBubbleThemeIndex];
+
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    _switchTheme();
+
+    final currentTheme = _themes[_currentThemeIndex];
     _chatController.addMessage(
       ChatMessage(
-        text: '🎨 **Theme switched to: ${currentTheme.name}**\n\n'
-              'This demonstrates our advanced theming system with:\n'
-              '• Custom bubble designs\n'
-              '• Gradient backgrounds\n'
-              '• Professional styling\n'
-              '• Cross-platform optimization\n\n'
-              'Notice how the entire interface adapts to the new theme!',
+        text:
+            '🎨 **Theme Updated: ${currentTheme.name}**\n\n'
+            'This theme demonstrates our **harmonized design system**:\n\n'
+            '• **Color Harmony**: ${currentTheme.description}\n'
+            '• **Typography**: ${currentTheme.typographyDescription}\n'
+            '• **Layout**: ${currentTheme.layoutDescription}\n\n'
+            'Notice how the entire interface adapts consistently!',
         user: _aiUser,
         createdAt: DateTime.now(),
         isMarkdown: true,
       ),
     );
-    
+
     setState(() => _isGenerating = false);
   }
 
-  Future<void> _handleUIGalleryDemo() async {
+  Future<void> _handleFeatureDemo() async {
     setState(() => _isGenerating = true);
-    
+
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     _chatController.addMessage(
       ChatMessage(
-        text: '🔧 **UI Gallery Components:**\n\n'
-              '**Available Components:**\n'
-              '• **AI Suggestions Bar** - Smart quick replies\n'
-              '• **Result Renderers** - Structured data display\n'
-              '• **Voice UI Wrappers** - Audio interaction elements\n'
-              '• **Rich Message Content** - Enhanced message display\n'
-              '• **Animated Widgets** - Smooth micro-interactions\n'
-              '• **Smart Input Fields** - Intelligent text input\n\n'
-              '**Integration Patterns:**\n'
-              '• Professional AI components\n'
-              '• Material Design 3 compliance\n'
-              '• Accessibility optimized\n'
-              '• Production-ready implementations\n\n'
-              'These components work seamlessly with all theme variations!',
+        text:
+            '✨ **Feature Demonstration**\n\n'
+            '**Advanced Capabilities:**\n\n'
+            '• **Streaming Text**: Real-time response generation\n'
+            '• **Smart Scrolling**: Intelligent conversation navigation\n'
+            '• **Markdown Support**: Rich text formatting and code blocks\n'
+            '• **Theme System**: Dynamic visual customization\n'
+            '• **Responsive Layout**: Adaptive design across devices\n\n'
+            '**Professional Features:**\n\n'
+            '• **Accessibility**: Screen reader and keyboard navigation\n'
+            '• **Performance**: Optimized rendering and animations\n'
+            '• **Customization**: Extensive theming and layout options\n'
+            '• **Integration**: Seamless Flutter ecosystem compatibility',
         user: _aiUser,
         createdAt: DateTime.now(),
         isMarkdown: true,
       ),
     );
-    
+
     setState(() => _isGenerating = false);
   }
 
@@ -298,9 +244,7 @@ Ask me to demonstrate any feature or theme!
       );
 
       _chatController.addMessage(aiMessage);
-      setState(() {
-        _isGenerating = true;
-      });
+      setState(() => _isGenerating = true);
 
       try {
         final stream = _aiService.streamResponse(
@@ -313,9 +257,7 @@ Ask me to demonstrate any feature or theme!
           _chatController.updateMessage(updatedMessage);
         }
       } finally {
-        setState(() {
-          _isGenerating = false;
-        });
+        setState(() => _isGenerating = false);
       }
     } else {
       setState(() => _isGenerating = true);
@@ -340,31 +282,13 @@ Ask me to demonstrate any feature or theme!
     }
   }
 
-  void _switchBubbleTheme() {
-    // Add smooth transition with haptic feedback
+  void _switchTheme() {
     HapticFeedback.lightImpact();
     setState(() {
-      _currentBubbleThemeIndex = (_currentBubbleThemeIndex + 1) % _bubbleThemes.length;
+      _currentThemeIndex = (_currentThemeIndex + 1) % _themes.length;
     });
-    
-    // Show elegant theme name snackbar
-    _showThemeChangedSnackBar(_bubbleThemes[_currentBubbleThemeIndex].name);
-  }
 
-  void _toggleAdvancedThemes() {
-    HapticFeedback.mediumImpact();
-    setState(() {
-      _useAdvancedThemes = !_useAdvancedThemes;
-      if (_useAdvancedThemes) {
-        _currentAdvancedThemeIndex = (_currentAdvancedThemeIndex + 1) % _advancedThemes.length;
-      }
-    });
-    
-    // Show status feedback
-    final message = _useAdvancedThemes 
-        ? 'Advanced themes enabled' 
-        : 'Standard themes enabled';
-    _showThemeChangedSnackBar(message);
+    _showThemeChangedSnackBar(_themes[_currentThemeIndex].name);
   }
 
   void _showThemeChangedSnackBar(String themeName) {
@@ -374,12 +298,8 @@ Ask me to demonstrate any feature or theme!
         content: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.palette_outlined,
-              color: Colors.white,
-              size: 18,
-            ),
-            const SizedBox(width: 8),
+            Icon(Icons.palette_outlined, color: Colors.white, size: 18),
+            const SizedBox(width: 12),
             Text(
               'Theme: $themeName',
               style: const TextStyle(
@@ -389,11 +309,9 @@ Ask me to demonstrate any feature or theme!
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+        backgroundColor: _themes[_currentThemeIndex].accentColor,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
         margin: const EdgeInsets.all(16),
       ),
@@ -410,110 +328,68 @@ Ask me to demonstrate any feature or theme!
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    // Choose current theme
-    final currentBubbleTheme = isDark 
-        ? _bubbleThemes[_currentBubbleThemeIndex].darkVariant() 
-        : _bubbleThemes[_currentBubbleThemeIndex];
-    
-    Widget chatWidget = _buildChatContent(appState, colorScheme, isDark, currentBubbleTheme);
-    
-    // Wrap with advanced theme if enabled
-    if (_useAdvancedThemes) {
-      final advancedTheme = _advancedThemes[_currentAdvancedThemeIndex];
-      chatWidget = Theme(
-        data: advancedTheme.themeData,
-        child: chatWidget,
-      );
-    }
+    final currentTheme = _themes[_currentThemeIndex];
 
     return ChangeNotifierProvider(
       create: (context) => AdvancedThemeProvider(),
-      child: Scaffold(
-        body: Builder(
+      child: Theme(
+        data: currentTheme.themeData,
+        child: Builder(
           builder: (context) {
-            final advancedTheme = AdvancedTheme.of(context);
-
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOutCubic,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    advancedTheme?.gradientStart ?? Colors.blue,
-                    advancedTheme?.gradientEnd ?? Colors.purple,
-                  ],
+            return Scaffold(
+              body: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: currentTheme.advancedTheme.backgroundGradientBegin,
+                    end: currentTheme.advancedTheme.backgroundGradientEnd,
+                    colors: currentTheme.advancedTheme.backgroundGradient,
+                  ),
                 ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _buildAppBar(appState, colorScheme, currentBubbleTheme),
-                    ),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 400),
-                        switchInCurve: Curves.easeInOutCubic,
-                        switchOutCurve: Curves.easeInOutCubic,
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: SlideTransition(
-                              position: animation.drive(
-                                Tween(begin: const Offset(0.0, 0.02), end: Offset.zero)
-                                    .chain(CurveTween(curve: Curves.easeOutCubic)),
-                              ),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          key: ValueKey('$_currentBubbleThemeIndex\_$_useAdvancedThemes\_$_currentAdvancedThemeIndex'),
-                          child: chatWidget,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      _buildHarmonizedAppBar(appState, currentTheme),
+                      Expanded(
+                        child: _buildHarmonizedChatContent(
+                          appState,
+                          currentTheme,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              endDrawer: const AdvancedSettingsDrawer(),
             );
           },
         ),
-        endDrawer: const AdvancedSettingsDrawer(),
       ),
     );
   }
 
-  Widget _buildAppBar(AppState appState, ColorScheme colorScheme, BubbleTheme currentTheme) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+  Widget _buildHarmonizedAppBar(
+    AppState appState,
+    HarmonizedTheme currentTheme,
+  ) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.9),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: currentTheme.appBarGradient,
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.1),
+          color: currentTheme.advancedTheme.inputFieldBorderColor,
           width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: currentTheme.advancedTheme.floatingActionShadows,
       ),
       child: Row(
         children: [
-          // Elegant back button
+          // Professional back button
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -521,129 +397,86 @@ Ask me to demonstrate any feature or theme!
               onTap: () => Navigator.of(context).pop(),
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
                 child: Icon(
-                  Icons.arrow_back_ios_rounded, 
-                  color: colorScheme.onSurface,
+                  Icons.arrow_back_ios_rounded,
+                  color: currentTheme.advancedTheme.primaryActionColor,
                   size: 18,
                 ),
               ),
             ),
           ),
-          
-          const SizedBox(width: 16),
-          
-          // Sophisticated title with animated theme indicator
+
+          const SizedBox(width: 20),
+
+          // Refined title section
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Complete Showcase',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
-                    letterSpacing: -0.5,
-                  ),
+                  'Complete Showcase (${_currentThemeIndex + 1}/${_themes.length})',
+                  style: currentTheme.advancedTheme.typography.titleLarge
+                      .copyWith(
+                        color: currentTheme.advancedTheme.primaryActionColor,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: Text(
-                    currentTheme.name,
-                    key: ValueKey(currentTheme.name),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                const SizedBox(height: 4),
+                Text(
+                  currentTheme.name,
+                  style: currentTheme.advancedTheme.typography.bodyMedium
+                      .copyWith(
+                        color: currentTheme.advancedTheme.secondaryActionColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ],
             ),
           ),
-          
-          // Elegant floating action buttons
-          _buildFloatingActionButton(
-            icon: appState.themeMode == ThemeMode.dark
-                ? Icons.light_mode_rounded
-                : Icons.dark_mode_rounded,
-            onTap: appState.toggleTheme,
-            tooltip: 'Toggle theme',
-            colorScheme: colorScheme,
-          ),
-          
-          const SizedBox(width: 12),
-          
-          _buildFloatingActionButton(
-            icon: Icons.palette_rounded,
-            onTap: _switchBubbleTheme,
-            tooltip: 'Switch theme',
-            colorScheme: colorScheme,
-          ),
-          
-          const SizedBox(width: 12),
-          
-          _buildFloatingActionButton(
-            icon: _useAdvancedThemes ? Icons.auto_awesome : Icons.auto_awesome_outlined,
-            onTap: _toggleAdvancedThemes,
-            tooltip: 'Advanced themes',
-            colorScheme: colorScheme,
-          ),
+
+          // Professional action buttons
+          _buildThemeSwitchButton(currentTheme),
         ],
       ),
     );
   }
 
-  Widget _buildFloatingActionButton({
+  Widget _buildHarmonizedActionButton({
     required IconData icon,
     required VoidCallback onTap,
     required String tooltip,
-    required ColorScheme colorScheme,
+    required HarmonizedTheme currentTheme,
   }) {
     return Tooltip(
       message: tooltip,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           onTap: () {
             HapticFeedback.lightImpact();
             onTap();
           },
-          onHighlightChanged: (highlighted) {
-            // Future: Add micro-interaction on press
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOutCubic,
+          child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: currentTheme.buttonGradient,
+              ),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: colorScheme.primary.withValues(alpha: 0.2),
+                color: currentTheme.advancedTheme.inputFieldBorderColor,
                 width: 1,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: colorScheme.primary.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: currentTheme.advancedTheme.floatingActionShadows,
             ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                icon,
-                key: ValueKey(icon.codePoint),
-                color: colorScheme.primary,
-                size: 20,
-              ),
+            child: Icon(
+              icon,
+              color: currentTheme.advancedTheme.primaryActionColor,
+              size: 20,
             ),
           ),
         ),
@@ -651,7 +484,42 @@ Ask me to demonstrate any feature or theme!
     );
   }
 
-  Widget _buildChatContent(AppState appState, ColorScheme colorScheme, bool isDark, BubbleTheme currentTheme) {
+  Widget _buildThemeToggleButton(HarmonizedTheme currentTheme) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    return _buildHarmonizedActionButton(
+      icon: appState.themeMode == ThemeMode.dark
+          ? Icons.light_mode_rounded
+          : Icons.dark_mode_rounded,
+      onTap: appState.toggleTheme,
+      tooltip: 'Toggle theme mode',
+      currentTheme: currentTheme,
+    );
+  }
+
+  Widget _buildThemeSwitchButton(HarmonizedTheme currentTheme) {
+    return _buildHarmonizedActionButton(
+      icon: Icons.palette_rounded,
+      onTap: _switchTheme,
+      tooltip: 'Switch theme',
+      currentTheme: currentTheme,
+    );
+  }
+
+  Widget _buildSettingsButton(HarmonizedTheme currentTheme) {
+    return Builder(
+      builder: (context) => _buildHarmonizedActionButton(
+        icon: Icons.settings_rounded,
+        onTap: () => Scaffold.of(context).openEndDrawer(),
+        tooltip: 'Settings',
+        currentTheme: currentTheme,
+      ),
+    );
+  }
+
+  Widget _buildHarmonizedChatContent(
+    AppState appState,
+    HarmonizedTheme currentTheme,
+  ) {
     return AiChatWidget(
       currentUser: _currentUser,
       aiUser: _aiUser,
@@ -659,28 +527,42 @@ Ask me to demonstrate any feature or theme!
       onSendMessage: _handleSendMessage,
       scrollController: _scrollController,
 
-      // Use current bubble theme styling
+      // Use package's built-in theming system properly
       messageOptions: MessageOptions(
-        bubbleStyle: null, // Disable default bubble style
-        decoration: currentTheme.messageDecoration,
-        containerDecoration: currentTheme.userMessageDecoration,
-        textStyle: currentTheme.messageTextStyle,
-        aiTextColor: currentTheme.messageTextStyle?.color,
-        userTextColor: currentTheme.userMessageTextStyle?.color,
+        // Use BubbleStyle for proper bubble theming
+        bubbleStyle: currentTheme.bubbleStyle,
+
+        // Additional message customization
         padding: currentTheme.messagePadding,
         showUserName: true,
         showTime: true,
         showCopyButton: true,
+
+        // Custom markdown styling using package's typography
         markdownStyleSheet: MarkdownStyleSheet(
-          p: TextStyle(
-            fontSize: appState.fontSize,
-            color: isDark ? Colors.white : Colors.black87,
+          h1: currentTheme.advancedTheme.typography.headlineLarge.copyWith(
+            color: currentTheme.advancedTheme.primaryActionColor,
           ),
-          code: TextStyle(
-            fontFamily: 'monospace',
-            backgroundColor: isDark
-                ? Colors.black.withOpacityCompat(0.3)
-                : Colors.grey.withOpacityCompat(0.2),
+          h2: currentTheme.advancedTheme.typography.headlineMedium.copyWith(
+            color: currentTheme.advancedTheme.primaryActionColor,
+          ),
+          h3: currentTheme.advancedTheme.typography.headlineSmall.copyWith(
+            color: currentTheme.advancedTheme.primaryActionColor,
+          ),
+          p: currentTheme.advancedTheme.typography.messageBody.copyWith(
+            fontSize: appState.fontSize,
+          ),
+          strong: currentTheme.advancedTheme.typography.messageBody.copyWith(
+            fontWeight: FontWeight.w600,
+            color: currentTheme.advancedTheme.primaryActionColor,
+          ),
+          code: currentTheme.advancedTheme.typography.inlineCode.copyWith(
+            backgroundColor:
+                currentTheme.advancedTheme.inputFieldGradient.first,
+          ),
+          blockquote: currentTheme.advancedTheme.typography.bodyMedium.copyWith(
+            fontStyle: FontStyle.italic,
+            color: currentTheme.advancedTheme.secondaryActionColor,
           ),
         ),
       ),
@@ -688,7 +570,7 @@ Ask me to demonstrate any feature or theme!
       // Loading configuration
       loadingConfig: LoadingConfig(
         isLoading: _isGenerating && !appState.isStreaming,
-        typingIndicatorColor: colorScheme.primary,
+        typingIndicatorColor: currentTheme.advancedTheme.typingIndicatorColor,
       ),
 
       // Example questions
@@ -698,17 +580,18 @@ Ask me to demonstrate any feature or theme!
       // Width constraint
       maxWidth: appState.chatMaxWidth,
 
-      // Input customization with current theme
+      // Professional input styling using package's theming
       inputOptions: InputOptions(
         decoration: currentTheme.inputDecoration,
-        textStyle: currentTheme.inputTextStyle,
+        textStyle: currentTheme.advancedTheme.typography.inputText,
         sendButtonIcon: Icons.send_rounded,
+        sendButtonColor: currentTheme.advancedTheme.primaryActionColor,
       ),
 
       // Animation settings
       enableAnimation: appState.enableAnimation,
       enableMarkdownStreaming: appState.isStreaming,
-      streamingDuration: const Duration(milliseconds: 15),
+      streamingDuration: const Duration(milliseconds: 20),
 
       // Pagination configuration
       paginationConfig: const PaginationConfig(
@@ -719,381 +602,461 @@ Ask me to demonstrate any feature or theme!
   }
 }
 
-// Bubble theme classes (from Essential AI example)
-class BubbleTheme {
-  final String name;
-  final Color backgroundColor;
-  final Color appBarColor;
-  final Color appBarTextColor;
-  final BoxDecoration messageDecoration;
-  final BoxDecoration userMessageDecoration;
-  final TextStyle messageTextStyle;
-  final TextStyle userMessageTextStyle;
-  final TextStyle inputTextStyle;
-  final InputDecoration inputDecoration;
-  final EdgeInsets messagePadding;
-  final EdgeInsets messageMargin;
-  final BorderRadius borderRadius;
-
-  const BubbleTheme({
-    required this.name,
-    required this.backgroundColor,
-    required this.appBarColor,
-    required this.appBarTextColor,
-    required this.messageDecoration,
-    required this.userMessageDecoration,
-    required this.messageTextStyle,
-    required this.userMessageTextStyle,
-    required this.inputTextStyle,
-    required this.inputDecoration,
-    required this.messagePadding,
-    required this.messageMargin,
-    required this.borderRadius,
-  });
-
-  BubbleTheme darkVariant() {
-    switch (name) {
-      case 'Gradient':
-        return BubbleTheme.gradientDark();
-      case 'Neon':
-        return this; // Neon is already dark
-      case 'Glassmorphic':
-        return BubbleTheme.glassmorphicDark();
-      case 'Elegant':
-        return BubbleTheme.elegantDark();
-      case 'Minimal':
-        return BubbleTheme.minimalDark();
-      default:
-        return this;
-    }
-  }
-
-  factory BubbleTheme.gradient() {
-    return BubbleTheme(
-      name: 'Gradient',
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBarColor: const Color(0xFF667EEA),
-      appBarTextColor: Colors.white,
-      messageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF667EEA).withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      userMessageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFF9A9E), Color(0xFFFECFEF)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      messageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16),
-      inputDecoration: InputDecoration(
-        hintText: '🌈 Message with gradient magic...',
-        filled: true,
-        fillColor: const Color(0xFFF8F9FF),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      borderRadius: BorderRadius.circular(18),
-    );
-  }
-
-  factory BubbleTheme.neon() {
-    return BubbleTheme(
-      name: 'Neon',
-      backgroundColor: const Color(0xFF0D1117),
-      appBarColor: const Color(0xFF21262D),
-      appBarTextColor: const Color(0xFF00D9FF),
-      messageDecoration: BoxDecoration(
-        color: const Color(0xFF1E1E2E),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF00D9FF), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF00D9FF).withValues(alpha: 0.5),
-            blurRadius: 12,
-          ),
-        ],
-      ),
-      userMessageDecoration: BoxDecoration(
-        color: const Color(0xFF2D1B69),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFF0080), width: 2),
-      ),
-      messageTextStyle: const TextStyle(color: Color(0xFF00D9FF), fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Color(0xFFFF0080), fontSize: 16),
-      inputTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputDecoration: InputDecoration(
-        hintText: '⚡ EXECUTE_COMMAND.exe',
-        filled: true,
-        fillColor: const Color(0xFF0A0A0A),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      borderRadius: BorderRadius.circular(16),
-    );
-  }
-
-  factory BubbleTheme.glassmorphic() {
-    return BubbleTheme(
-      name: 'Glassmorphic',
-      backgroundColor: const Color(0xFFF0F2F5),
-      appBarColor: Colors.white.withValues(alpha: 0.8),
-      appBarTextColor: const Color(0xFF2E3A59),
-      messageDecoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-      ),
-      userMessageDecoration: BoxDecoration(
-        color: const Color(0xFF007AFF).withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      messageTextStyle: const TextStyle(color: Color(0xFF2E3A59), fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Color(0xFF007AFF), fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Color(0xFF2E3A59)),
-      inputDecoration: InputDecoration(
-        hintText: '🔮 Type through the glass...',
-        filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.15),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      borderRadius: BorderRadius.circular(20),
-    );
-  }
-
-  factory BubbleTheme.elegant() {
-    return BubbleTheme(
-      name: 'Elegant',
-      backgroundColor: const Color(0xFFFAF9F7),
-      appBarColor: const Color(0xFF2C2C2C),
-      appBarTextColor: const Color(0xFFD4AF37),
-      messageDecoration: BoxDecoration(
-        color: const Color(0xFF2C2C2C),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFFD4AF37)),
-      ),
-      userMessageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFD4AF37), Color(0xFFE6C35C)],
-        ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      messageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Color(0xFF2C2C2C)),
-      inputDecoration: InputDecoration(
-        hintText: '💎 Craft your elegant message...',
-        filled: true,
-        fillColor: const Color(0xFFFFFCF7),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      borderRadius: BorderRadius.circular(15),
-    );
-  }
-
-  factory BubbleTheme.minimal() {
-    return BubbleTheme(
-      name: 'Minimal',
-      backgroundColor: Colors.white,
-      appBarColor: Colors.white,
-      appBarTextColor: const Color(0xFF1D1D1F),
-      messageDecoration: BoxDecoration(
-        color: const Color(0xFFF2F2F7),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      userMessageDecoration: BoxDecoration(
-        color: const Color(0xFF007AFF),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      messageTextStyle: const TextStyle(color: Color(0xFF1D1D1F), fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Color(0xFF1D1D1F)),
-      inputDecoration: InputDecoration(
-        hintText: '🎯 Simple and clean...',
-        filled: true,
-        fillColor: const Color(0xFFFAFAFA),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      borderRadius: BorderRadius.circular(12),
-    );
-  }
-
-  // Dark variants
-  factory BubbleTheme.gradientDark() {
-    return BubbleTheme(
-      name: 'Gradient',
-      backgroundColor: const Color(0xFF1A1A1A),
-      appBarColor: const Color(0xFF2A2A2A),
-      appBarTextColor: const Color(0xFF667EEA),
-      messageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      userMessageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFF6B9D), Color(0xFFFF8E7F)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      messageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Colors.white),
-      inputDecoration: InputDecoration(
-        hintText: '🌈 Message with gradient magic...',
-        filled: true,
-        fillColor: const Color(0xFF2A2A2A),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      borderRadius: BorderRadius.circular(18),
-    );
-  }
-
-  factory BubbleTheme.glassmorphicDark() {
-    return BubbleTheme(
-      name: 'Glassmorphic',
-      backgroundColor: const Color(0xFF0F0F23),
-      appBarColor: const Color(0xFF1A1A2E).withValues(alpha: 0.9),
-      appBarTextColor: const Color(0xFF9D4EDD),
-      messageDecoration: BoxDecoration(
-        color: const Color(0xFF16213E).withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      userMessageDecoration: BoxDecoration(
-        color: const Color(0xFF7209B7).withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      messageTextStyle: const TextStyle(color: Color(0xFFE0AAFF), fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Color(0xFFE0AAFF), fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Color(0xFFE0AAFF)),
-      inputDecoration: InputDecoration(
-        hintText: '🔮 Type through the glass...',
-        filled: true,
-        fillColor: const Color(0xFF16213E).withValues(alpha: 0.2),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      borderRadius: BorderRadius.circular(20),
-    );
-  }
-
-  factory BubbleTheme.elegantDark() {
-    return BubbleTheme(
-      name: 'Elegant',
-      backgroundColor: const Color(0xFF0A0A0A),
-      appBarColor: const Color(0xFF1A1A1A),
-      appBarTextColor: const Color(0xFFFFD700),
-      messageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF2A2A2A), Color(0xFF1A1A1A)],
-        ),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFFFFD700)),
-      ),
-      userMessageDecoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFD700), Color(0xFFFFC107)],
-        ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      messageTextStyle: const TextStyle(color: Color(0xFFFFD700), fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Color(0xFFFFD700)),
-      inputDecoration: InputDecoration(
-        hintText: '💎 Craft your elegant message...',
-        filled: true,
-        fillColor: const Color(0xFF1A1A1A),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      borderRadius: BorderRadius.circular(15),
-    );
-  }
-
-  factory BubbleTheme.minimalDark() {
-    return BubbleTheme(
-      name: 'Minimal',
-      backgroundColor: const Color(0xFF000000),
-      appBarColor: const Color(0xFF1C1C1E),
-      appBarTextColor: Colors.white,
-      messageDecoration: BoxDecoration(
-        color: const Color(0xFF1C1C1E),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      userMessageDecoration: BoxDecoration(
-        color: const Color(0xFF007AFF),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      messageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      userMessageTextStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      inputTextStyle: const TextStyle(fontSize: 16, color: Colors.white),
-      inputDecoration: InputDecoration(
-        hintText: '🎯 Simple and clean...',
-        filled: true,
-        fillColor: const Color(0xFF1C1C1E),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-      ),
-      messagePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      messageMargin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      borderRadius: BorderRadius.circular(12),
-    );
-  }
-}
-
-// Theme option class (from Advanced Theme System)
-class ThemeOption {
+// Harmonized theme system using package's AdvancedChatTheme
+class HarmonizedTheme {
   final String name;
   final String description;
-  final Color primaryColor;
-  final Color backgroundColor;
-  final Color surfaceColor;
-  final Color userBubbleColor;
-  final Color aiBubbleColor;
-  final Brightness brightness;
+  final String typographyDescription;
+  final String layoutDescription;
 
-  ThemeOption({
+  // Package theming - using AdvancedChatTheme properly
+  final AdvancedChatTheme advancedTheme;
+  final BubbleStyle bubbleStyle;
+  final EdgeInsets messagePadding;
+  final InputDecoration inputDecoration;
+
+  // Harmonized gradients for consistent theming
+  final List<Color> appBarGradient;
+  final List<Color> buttonGradient;
+  final Color accentColor;
+
+  const HarmonizedTheme({
     required this.name,
     required this.description,
-    required this.primaryColor,
-    required this.backgroundColor,
-    required this.surfaceColor,
-    required this.userBubbleColor,
-    required this.aiBubbleColor,
-    required this.brightness,
+    required this.typographyDescription,
+    required this.layoutDescription,
+    required this.advancedTheme,
+    required this.bubbleStyle,
+    required this.messagePadding,
+    required this.inputDecoration,
+    required this.appBarGradient,
+    required this.buttonGradient,
+    required this.accentColor,
   });
 
+  // Get Flutter ThemeData for consistent theming
   ThemeData get themeData => ThemeData(
     useMaterial3: true,
-    brightness: brightness,
-    primaryColor: primaryColor,
-    scaffoldBackgroundColor: backgroundColor,
+    brightness: _getBrightness(),
+    primaryColor: advancedTheme.primaryActionColor,
+    scaffoldBackgroundColor: advancedTheme.backgroundGradient.first,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: brightness,
-      surface: surfaceColor,
+      seedColor: advancedTheme.primaryActionColor,
+      brightness: _getBrightness(),
     ),
   );
+
+  Brightness _getBrightness() {
+    // Determine brightness based on background colors
+    final firstColor = advancedTheme.backgroundGradient.first;
+    final luminance = firstColor.computeLuminance();
+    return luminance > 0.5 ? Brightness.light : Brightness.dark;
+  }
+
+  factory HarmonizedTheme.modern() {
+    final theme =
+        ChatThemeBuilder.fromBrand(
+              primaryColor: const Color(0xFF3B82F6),
+              secondaryColor: const Color(0xFF6366F1),
+              backgroundColor: const Color(0xFFFAFBFC),
+            )
+            .withBackgroundGradient([
+              const Color(0xFFFAFBFC),
+              const Color(0xFFF1F5F9),
+            ])
+            .withMessageBubbleGradient([Colors.white, const Color(0xFFF8FAFC)])
+            .withUserBubbleGradient([
+              const Color(0xFF3B82F6),
+              const Color(0xFF2563EB),
+            ])
+            .withShadows(
+              messageBubbleShadows: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              userBubbleShadows: [
+                BoxShadow(
+                  color: const Color(0xFF3B82F6).withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            )
+            .build();
+
+    return HarmonizedTheme(
+      name: 'Modern',
+      description:
+          'Clean, contemporary design with subtle shadows and rounded corners',
+      typographyDescription: 'Clear hierarchy with balanced font weights',
+      layoutDescription: 'Generous spacing with consistent margins and padding',
+      advancedTheme: theme,
+      bubbleStyle: const BubbleStyle(
+        userBubbleColor: Color(0xFF3B82F6),
+        aiBubbleColor: Colors.white,
+        userBubbleTopLeftRadius: 18,
+        userBubbleTopRightRadius: 4,
+        aiBubbleTopLeftRadius: 4,
+        aiBubbleTopRightRadius: 18,
+        bottomLeftRadius: 18,
+        bottomRightRadius: 18,
+        enableShadow: true,
+        shadowOpacity: 0.08,
+        shadowBlurRadius: 12,
+        shadowOffset: Offset(0, 4),
+      ),
+      messagePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      inputDecoration: InputDecoration(
+        hintText: 'Type your message...',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFFE5E7EB)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFFE5E7EB)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFF3B82F6), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
+      ),
+      appBarGradient: [Colors.white, const Color(0xFFF8F9FA)],
+      buttonGradient: [const Color(0xFFF9FAFB), const Color(0xFFF3F4F6)],
+      accentColor: const Color(0xFF3B82F6),
+    );
+  }
+
+  factory HarmonizedTheme.classic() {
+    final theme =
+        ChatThemeBuilder.fromBrand(
+              primaryColor: const Color(0xFFD4AF37),
+              secondaryColor: const Color(0xFF8B7355),
+              backgroundColor: const Color(0xFFF8F6F1),
+            )
+            .withBackgroundGradient([
+              const Color(0xFFF8F6F1),
+              const Color(0xFFF0E6D6),
+            ])
+            .withMessageBubbleGradient([Colors.white, const Color(0xFFFFFEFC)])
+            .withUserBubbleGradient([
+              const Color(0xFFD4AF37),
+              const Color(0xFFB8941F),
+            ])
+            .withShadows(
+              messageBubbleShadows: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+              userBubbleShadows: [
+                BoxShadow(
+                  color: const Color(0xFFD4AF37).withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            )
+            .build();
+
+    return HarmonizedTheme(
+      name: 'Classic',
+      description:
+          'Timeless design with traditional proportions and elegant typography',
+      typographyDescription: 'Serif fonts with refined letter spacing',
+      layoutDescription: 'Balanced proportions with golden ratio spacing',
+      advancedTheme: theme,
+      bubbleStyle: const BubbleStyle(
+        userBubbleColor: Color(0xFFD4AF37),
+        aiBubbleColor: Colors.white,
+        userBubbleTopLeftRadius: 15,
+        userBubbleTopRightRadius: 4,
+        aiBubbleTopLeftRadius: 4,
+        aiBubbleTopRightRadius: 15,
+        bottomLeftRadius: 15,
+        bottomRightRadius: 15,
+        enableShadow: true,
+        shadowOpacity: 0.12,
+        shadowBlurRadius: 16,
+        shadowOffset: Offset(0, 6),
+      ),
+      messagePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      inputDecoration: InputDecoration(
+        hintText: 'Compose your message...',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: const Color(0xFFD4AF37)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: const Color(0xFFD4AF37)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: const Color(0xFFD4AF37), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 14,
+        ),
+      ),
+      appBarGradient: [const Color(0xFF2C2C2C), const Color(0xFF1A1A1A)],
+      buttonGradient: [const Color(0xFFF0E6D6), const Color(0xFFE8DCC8)],
+      accentColor: const Color(0xFFD4AF37),
+    );
+  }
+
+  factory HarmonizedTheme.minimal() {
+    final theme =
+        ChatThemeBuilder.fromBrand(
+              primaryColor: const Color(0xFF007BFF),
+              secondaryColor: const Color(0xFF6C757D),
+              backgroundColor: Colors.white,
+            )
+            .withBackgroundGradient([Colors.white, const Color(0xFFF8F9FA)])
+            .withMessageBubbleGradient([
+              const Color(0xFFF8F9FA),
+              const Color(0xFFF1F3F4),
+            ])
+            .withUserBubbleGradient([
+              const Color(0xFF007BFF),
+              const Color(0xFF0056CC),
+            ])
+            .withShadows(
+              messageBubbleShadows: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+              userBubbleShadows: [
+                BoxShadow(
+                  color: const Color(0xFF007BFF).withOpacity(0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            )
+            .build();
+
+    return HarmonizedTheme(
+      name: 'Minimal',
+      description: 'Essential elements with maximum whitespace and clean lines',
+      typographyDescription: 'Simple sans-serif with generous line height',
+      layoutDescription: 'Ample breathing room with minimal visual noise',
+      advancedTheme: theme,
+      bubbleStyle: const BubbleStyle(
+        userBubbleColor: Color(0xFF007BFF),
+        aiBubbleColor: const Color(0xFFF8F9FA),
+        userBubbleTopLeftRadius: 12,
+        userBubbleTopRightRadius: 4,
+        aiBubbleTopLeftRadius: 4,
+        aiBubbleTopRightRadius: 12,
+        bottomLeftRadius: 12,
+        bottomRightRadius: 12,
+        enableShadow: false,
+      ),
+      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      inputDecoration: InputDecoration(
+        hintText: 'Message...',
+        filled: true,
+        fillColor: const Color(0xFFF8F9FA),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
+      ),
+      appBarGradient: [const Color(0xFFF8F9FA), const Color(0xFFE9ECEF)],
+      buttonGradient: [const Color(0xFFF8F9FA), const Color(0xFFE9ECEF)],
+      accentColor: const Color(0xFF007BFF),
+    );
+  }
+
+  factory HarmonizedTheme.dark() {
+    final theme =
+        ChatThemeBuilder.fromBrand(
+              primaryColor: const Color(0xFF00D4FF),
+              secondaryColor: const Color(0xFF999999),
+              backgroundColor: const Color(0xFF0A0A0A),
+            )
+            .withBackgroundGradient([
+              const Color(0xFF0A0A0A),
+              const Color(0xFF1A1A1A),
+            ])
+            .withMessageBubbleGradient([
+              const Color(0xFF1A1A1A),
+              const Color(0xFF2D2D2D),
+            ])
+            .withUserBubbleGradient([
+              const Color(0xFF00D4FF),
+              const Color(0xFF0099CC),
+            ])
+            .withShadows(
+              messageBubbleShadows: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+              userBubbleShadows: [
+                BoxShadow(
+                  color: const Color(0xFF00D4FF).withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            )
+            .build();
+
+    return HarmonizedTheme(
+      name: 'Dark',
+      description:
+          'Sophisticated dark theme with high contrast and modern aesthetics',
+      typographyDescription: 'High contrast text with careful color balance',
+      layoutDescription: 'Strategic use of shadows and depth',
+      advancedTheme: theme,
+      bubbleStyle: const BubbleStyle(
+        userBubbleColor: Color(0xFF00D4FF),
+        aiBubbleColor: const Color(0xFF1A1A1A),
+        userBubbleTopLeftRadius: 18,
+        userBubbleTopRightRadius: 4,
+        aiBubbleTopLeftRadius: 4,
+        aiBubbleTopRightRadius: 18,
+        bottomLeftRadius: 18,
+        bottomRightRadius: 18,
+        enableShadow: true,
+        shadowOpacity: 0.3,
+        shadowBlurRadius: 8,
+        shadowOffset: Offset(0, 2),
+      ),
+      messagePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      inputDecoration: InputDecoration(
+        hintText: 'Type your message...',
+        filled: true,
+        fillColor: const Color(0xFF1A1A1A),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFF333333)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFF333333)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: const Color(0xFF00D4FF), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
+      ),
+      appBarGradient: [const Color(0xFF1A1A1A), const Color(0xFF0A0A0A)],
+      buttonGradient: [const Color(0xFF1A1A1A), const Color(0xFF0A0A0A)],
+      accentColor: const Color(0xFF00D4FF),
+    );
+  }
+
+  factory HarmonizedTheme.enterprise() {
+    final theme =
+        ChatThemeBuilder.fromBrand(
+              primaryColor: const Color(0xFF3498DB),
+              secondaryColor: const Color(0xFF7F8C8D),
+              backgroundColor: const Color(0xFFF5F7FA),
+            )
+            .withBackgroundGradient([
+              const Color(0xFFF5F7FA),
+              const Color(0xFFECF0F1),
+            ])
+            .withMessageBubbleGradient([Colors.white, const Color(0xFFF8F9FA)])
+            .withUserBubbleGradient([
+              const Color(0xFF3498DB),
+              const Color(0xFF2980B9),
+            ])
+            .withShadows(
+              messageBubbleShadows: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+              userBubbleShadows: [
+                BoxShadow(
+                  color: const Color(0xFF3498DB).withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            )
+            .build();
+
+    return HarmonizedTheme(
+      name: 'Enterprise',
+      description:
+          'Corporate design with structured layout and professional color scheme',
+      typographyDescription:
+          'Clear hierarchy optimized for business applications',
+      layoutDescription: 'Structured grid system with consistent spacing',
+      advancedTheme: theme,
+      bubbleStyle: const BubbleStyle(
+        userBubbleColor: Color(0xFF3498DB),
+        aiBubbleColor: Colors.white,
+        userBubbleTopLeftRadius: 12,
+        userBubbleTopRightRadius: 4,
+        aiBubbleTopLeftRadius: 4,
+        aiBubbleTopRightRadius: 12,
+        bottomLeftRadius: 12,
+        bottomRightRadius: 12,
+        enableShadow: true,
+        shadowOpacity: 0.1,
+        shadowBlurRadius: 8,
+        shadowOffset: Offset(0, 2),
+      ),
+      messagePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      inputDecoration: InputDecoration(
+        hintText: 'Enter your message...',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: const Color(0xFFBDC3C7)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: const Color(0xFFBDC3C7)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+      appBarGradient: [const Color(0xFF2C3E50), const Color(0xFF34495E)],
+      buttonGradient: [const Color(0xFFECF0F1), const Color(0xFFBDC3C7)],
+      accentColor: const Color(0xFF3498DB),
+    );
+  }
 }

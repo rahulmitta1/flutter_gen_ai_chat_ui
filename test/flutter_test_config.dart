@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
-  // Load fonts for consistent rendering
-  await loadAppFonts();
+  // Load system fonts for consistent rendering
+  TestWidgetsFlutterBinding.ensureInitialized();
+  await _loadTestFonts();
 
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -24,6 +25,20 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   }
 
   return testMain();
+}
+
+/// Load test fonts for consistent rendering
+Future<void> _loadTestFonts() async {
+  // This ensures consistent font rendering across test environments
+  try {
+    final fontLoader = FontLoader('Roboto');
+    final font = rootBundle.load('fonts/Roboto-Regular.ttf');
+    fontLoader.addFont(font);
+    await fontLoader.load();
+  } catch (e) {
+    // Ignore font loading errors in test environment
+    debugPrint('Font loading failed in test environment: $e');
+  }
 }
 
 class _AlwaysPassingGoldenFileComparator extends GoldenFileComparator {

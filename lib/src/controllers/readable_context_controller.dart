@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// A controller that manages readable context data for AI consumption
@@ -91,7 +90,7 @@ class ReadableContextController extends ChangeNotifier {
       if (value is num || value is bool) return value.toString();
       
       // For complex objects, serialize as JSON with pretty formatting
-      final encoder = JsonEncoder.withIndent('  ');
+      final encoder = const JsonEncoder.withIndent('  ');
       return encoder.convert(value);
     } catch (e) {
       // Fallback to toString() if JSON serialization fails

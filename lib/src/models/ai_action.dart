@@ -243,7 +243,7 @@ class ActionParameter {
       case ActionParameterType.array:
         if (value is! List) return '$name must be an array';
         if (itemType != null) {
-          bool badType = false;
+          var badType = false;
           switch (itemType!) {
             case ActionParameterType.string:
               badType = value.any((e) => e is! String);
@@ -302,7 +302,7 @@ class ActionParameter {
 
   /// Converts to JSON schema representation used for function calling
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> schema = {
+    final schema = <String, dynamic>{
       'description': description,
     };
 

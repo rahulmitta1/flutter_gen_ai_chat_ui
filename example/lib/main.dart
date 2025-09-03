@@ -9,6 +9,7 @@ import 'examples/01_basic/enhanced_basic_chat.dart';
 import 'examples/02_intermediate/intermediate_chat_screen.dart';
 import 'examples/03_complete/complete_showcase.dart';
 import 'examples/04_file_media_chat/file_media_chat.dart';
+import 'bug_reproduction/welcome_message_bug_screen.dart';
 
 // For state management
 import 'models/app_state.dart';
@@ -55,6 +56,7 @@ class ExampleApp extends StatelessWidget {
               '/intermediate': (context) => const IntermediateChatScreen(),
               '/complete-showcase': (context) => const CompleteShowcase(),
               '/file-media-chat': (context) => const FileMediaChat(),
+              '/welcome-bug': (context) => const WelcomeMessageBugScreen(),
             },
           );
         },

@@ -1,9 +1,8 @@
-import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../controllers/readable_context_controller.dart';
 import '../models/ai_action.dart';
+import '../utils/color_extensions.dart';
 
 /// A drop-in replacement for TextField that provides AI-powered assistance
 /// Equivalent to CopilotKit's CopilotTextarea component
@@ -224,7 +223,7 @@ class _CopilotTextareaState extends State<CopilotTextarea> {
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  color: Theme.of(context).colorScheme.outline.withOpacityCompat(0.2),
                 ),
               ),
               child: Column(
@@ -252,7 +251,7 @@ class _CopilotTextareaState extends State<CopilotTextarea> {
                     ),
                   ),
                   const Divider(height: 1),
-                  ..._suggestions.map((suggestion) => _buildSuggestionItem(suggestion)),
+                  ..._suggestions.map(_buildSuggestionItem),
                 ],
               ),
             ),
@@ -329,9 +328,6 @@ class _CopilotTextareaState extends State<CopilotTextarea> {
   
   @override
   Widget build(BuildContext context) {
-    // Get readable context if available
-    final readableController = ReadableContextProvider.of(context);
-    
     return CompositedTransformTarget(
       link: _layerLink,
       child: Column(

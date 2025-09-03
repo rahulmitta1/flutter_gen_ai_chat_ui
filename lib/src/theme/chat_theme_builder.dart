@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -74,26 +73,26 @@ class ChatThemeBuilder {
   }
 
   /// Create a theme builder from an image (extracts dominant colors)
-  factory ChatThemeBuilder.fromImage(ImageProvider image) {
+  factory ChatThemeBuilder.fromImage() {
     // Note: In a real implementation, you'd extract colors from the image
     // For now, we'll create a sophisticated default theme
-    return ChatThemeBuilder._internal(AdvancedChatTheme(
-      backgroundGradient: const [
+    return ChatThemeBuilder._internal(const AdvancedChatTheme(
+      backgroundGradient: [
         Color(0xFFF8F9FA),
         Color(0xFFE9ECEF),
       ],
-      userBubbleGradient: const [
+      userBubbleGradient: [
         Color(0xFF6C5CE7),
         Color(0xFFA29BFE),
       ],
-      messageBubbleGradient: const [
+      messageBubbleGradient: [
         Color(0xFFFFFFFF),
         Color(0xFFF1F3F4),
       ],
-      typography: const ChatTypography(),
-      spacing: const ChatSpacing(),
-      animations: const ChatAnimationPresets(),
-      platform: const PlatformThemeVariants(),
+      typography: ChatTypography(),
+      spacing: ChatSpacing(),
+      animations: ChatAnimationPresets(),
+      platform: PlatformThemeVariants(),
     ));
   }
 
@@ -104,72 +103,72 @@ class ChatThemeBuilder {
     final isDark = brightness == Brightness.dark;
     
     if (isDark) {
-      return ChatThemeBuilder._internal(AdvancedChatTheme(
-        backgroundGradient: const [
+      return ChatThemeBuilder._internal(const AdvancedChatTheme(
+        backgroundGradient: [
           Color(0xFF000000),
           Color(0xFF111111),
         ],
-        messageBubbleGradient: const [
+        messageBubbleGradient: [
           Color(0xFF1A1A1A),
           Color(0xFF2D2D2D),
         ],
-        userBubbleGradient: const [
+        userBubbleGradient: [
           Color(0xFF333333),
           Color(0xFF404040),
         ],
-        aiResponseGradient: const [
+        aiResponseGradient: [
           Color(0xFF1A1A1A),
           Color(0xFF262626),
         ],
-        typography: const ChatTypography(),
-        spacing: const ChatSpacing(),
-        animations: const ChatAnimationPresets(),
-        platform: const PlatformThemeVariants(),
+        typography: ChatTypography(),
+        spacing: ChatSpacing(),
+        animations: ChatAnimationPresets(),
+        platform: PlatformThemeVariants(),
         // Minimal shadows
-        messageBubbleShadows: const [],
-        userBubbleShadows: const [],
-        inputFieldShadows: const [],
-        floatingActionShadows: const [],
+        messageBubbleShadows: [],
+        userBubbleShadows: [],
+        inputFieldShadows: [],
+        floatingActionShadows: [],
       ));
     } else {
-      return ChatThemeBuilder._internal(AdvancedChatTheme(
-        backgroundGradient: const [
+      return ChatThemeBuilder._internal(const AdvancedChatTheme(
+        backgroundGradient: [
           Color(0xFFFFFFFF),
           Color(0xFFFAFAFA),
         ],
-        messageBubbleGradient: const [
+        messageBubbleGradient: [
           Color(0xFFF8F9FA),
           Color(0xFFFFFFFF),
         ],
-        userBubbleGradient: const [
+        userBubbleGradient: [
           Color(0xFFE3F2FD),
           Color(0xFFF3E5F5),
         ],
-        aiResponseGradient: const [
+        aiResponseGradient: [
           Color(0xFFFFFFFF),
           Color(0xFFF5F5F5),
         ],
-        typography: const ChatTypography(),
-        spacing: const ChatSpacing(),
-        animations: const ChatAnimationPresets(),
-        platform: const PlatformThemeVariants(),
+        typography: ChatTypography(),
+        spacing: ChatSpacing(),
+        animations: ChatAnimationPresets(),
+        platform: PlatformThemeVariants(),
         // Minimal shadows
-        messageBubbleShadows: const [
+        messageBubbleShadows: [
           BoxShadow(
             color: Color(0x08000000),
             offset: Offset(0, 1),
             blurRadius: 2,
           ),
         ],
-        userBubbleShadows: const [
+        userBubbleShadows: [
           BoxShadow(
             color: Color(0x08000000),
             offset: Offset(0, 1),
             blurRadius: 2,
           ),
         ],
-        inputFieldShadows: const [],
-        floatingActionShadows: const [],
+        inputFieldShadows: [],
+        floatingActionShadows: [],
       ));
     }
   }
@@ -181,29 +180,29 @@ class ChatThemeBuilder {
     final isDark = brightness == Brightness.dark;
     
     if (isDark) {
-      return ChatThemeBuilder._internal(AdvancedChatTheme(
-        backgroundGradient: const [
+      return ChatThemeBuilder._internal(const AdvancedChatTheme(
+        backgroundGradient: [
           Color(0xFF0A0A0A),
           Color(0xFF1A1A1A),
         ],
-        messageBubbleGradient: const [
+        messageBubbleGradient: [
           Color(0x40FFFFFF),
           Color(0x20FFFFFF),
         ],
-        userBubbleGradient: const [
+        userBubbleGradient: [
           Color(0x60007AFF),
           Color(0x40007AFF),
         ],
-        aiResponseGradient: const [
+        aiResponseGradient: [
           Color(0x30FFFFFF),
           Color(0x15FFFFFF),
         ],
-        typography: const ChatTypography(),
-        spacing: const ChatSpacing(),
-        animations: const ChatAnimationPresets(),
-        platform: const PlatformThemeVariants(),
+        typography: ChatTypography(),
+        spacing: ChatSpacing(),
+        animations: ChatAnimationPresets(),
+        platform: PlatformThemeVariants(),
         // Glassmorphic shadows
-        messageBubbleShadows: const [
+        messageBubbleShadows: [
           BoxShadow(
             color: Color(0x20000000),
             offset: Offset(0, 8),
@@ -211,7 +210,7 @@ class ChatThemeBuilder {
             spreadRadius: 0,
           ),
         ],
-        userBubbleShadows: const [
+        userBubbleShadows: [
           BoxShadow(
             color: Color(0x30007AFF),
             offset: Offset(0, 8),
@@ -219,7 +218,7 @@ class ChatThemeBuilder {
             spreadRadius: 0,
           ),
         ],
-        inputFieldShadows: const [
+        inputFieldShadows: [
           BoxShadow(
             color: Color(0x15FFFFFF),
             offset: Offset(0, 4),
@@ -229,29 +228,29 @@ class ChatThemeBuilder {
         ],
       ));
     } else {
-      return ChatThemeBuilder._internal(AdvancedChatTheme(
-        backgroundGradient: const [
+      return ChatThemeBuilder._internal(const AdvancedChatTheme(
+        backgroundGradient: [
           Color(0xFFF0F8FF),
           Color(0xFFE6F3FF),
         ],
-        messageBubbleGradient: const [
+        messageBubbleGradient: [
           Color(0x80FFFFFF),
           Color(0x60FFFFFF),
         ],
-        userBubbleGradient: const [
+        userBubbleGradient: [
           Color(0x80007AFF),
           Color(0x60007AFF),
         ],
-        aiResponseGradient: const [
+        aiResponseGradient: [
           Color(0x90FFFFFF),
           Color(0x70FFFFFF),
         ],
-        typography: const ChatTypography(),
-        spacing: const ChatSpacing(),
-        animations: const ChatAnimationPresets(),
-        platform: const PlatformThemeVariants(),
+        typography: ChatTypography(),
+        spacing: ChatSpacing(),
+        animations: ChatAnimationPresets(),
+        platform: PlatformThemeVariants(),
         // Glassmorphic shadows
-        messageBubbleShadows: const [
+        messageBubbleShadows: [
           BoxShadow(
             color: Color(0x10000000),
             offset: Offset(0, 8),
@@ -259,7 +258,7 @@ class ChatThemeBuilder {
             spreadRadius: 0,
           ),
         ],
-        userBubbleShadows: const [
+        userBubbleShadows: [
           BoxShadow(
             color: Color(0x20007AFF),
             offset: Offset(0, 8),
@@ -267,7 +266,7 @@ class ChatThemeBuilder {
             spreadRadius: 0,
           ),
         ],
-        inputFieldShadows: const [
+        inputFieldShadows: [
           BoxShadow(
             color: Color(0x08000000),
             offset: Offset(0, 4),

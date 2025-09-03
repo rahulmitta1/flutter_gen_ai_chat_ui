@@ -22,8 +22,16 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   final _aiService = example_ai.AiService();
 
   // Define users for the chat
-  final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
-  final _aiUser = const ChatUser(id: 'ai123', firstName: 'AI Assistant');
+  final _currentUser = const ChatUser(
+    id: 'user123',
+    firstName: 'You',
+    avatar: 'https://ui-avatars.com/api/?name=You&background=10a37f&color=fff',
+  );
+  final _aiUser = const ChatUser(
+    id: 'ai123',
+    firstName: 'AI Assistant',
+    avatar: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff',
+  );
 
   // Track loading state
   bool _isLoading = false;
@@ -35,17 +43,34 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
   final _exampleQuestions = [
     const ExampleQuestion(question: "What can you help me with?"),
     const ExampleQuestion(question: "Tell me about Flutter"),
+    const ExampleQuestion(question: "Show me some code examples"),
     const ExampleQuestion(question: "How does this UI work?"),
-    const ExampleQuestion(question: "Show me some examples"),
   ];
 
   @override
   void initState() {
     super.initState();
 
-    // Instead of adding a welcome message directly to the chat,
-    // we'll use the welcome message feature with example questions
-    // The controller's showWelcomeMessage property controls this
+    // Add an initial AI greeting message for better user experience
+    _chatController.addMessage(
+      ChatMessage(
+        text:
+            '''Hello! 👋 I'm your AI assistant, ready to help you explore the Flutter Gen AI Chat UI package.
+
+I can help you with:
+• Flutter development questions
+• Code examples and explanations  
+• Information about this chat UI
+• General programming topics
+
+Feel free to ask me anything or try one of the example questions below!''',
+        user: _aiUser,
+        createdAt: DateTime.now(),
+        isMarkdown: false,
+      ),
+    );
+
+    // Show welcome message with example questions for additional guidance
     _chatController.showWelcomeMessage = true;
 
     // Initialize text controller
@@ -54,17 +79,17 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
       if (_textController.text.endsWith('\n')) {
         _textController.text = _textController.text.trim();
         if (_textController.text.isNotEmpty) {
-          _handleSendMessage(ChatMessage(
-            text: _textController.text,
-            user: _currentUser,
-            createdAt: DateTime.now(),
-          ));
+          _handleSendMessage(
+            ChatMessage(
+              text: _textController.text,
+              user: _currentUser,
+              createdAt: DateTime.now(),
+            ),
+          );
           _textController.clear();
         }
       }
     });
-
-    // No initial messages added to chat
   }
 
   @override
@@ -96,8 +121,10 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
 
     try {
       // Simulate API call to generate response
-      final response = await _aiService.generateResponse(message.text,
-          includeCodeBlock: false);
+      final response = await _aiService.generateResponse(
+        message.text,
+        includeCodeBlock: true,
+      );
 
       // Reset loading state before adding response
       setState(() => _isLoading = false);
@@ -140,8 +167,42 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
     } catch (error) {
       // Reset loading state on error
       setState(() => _isLoading = false);
-      rethrow;
+
+      // Show error message to user
+      if (mounted) {
+        _showErrorMessage('Failed to generate response. Please try again.');
+      }
     }
+  }
+
+  /// Show error message to user
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: 'Dismiss',
+          textColor: Colors.white,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Show success message (e.g., when copying text)
+  void _showSuccessMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -152,14 +213,18 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     // ChatGPT-inspired color scheme
-    final backgroundColor =
-        isDark ? const Color(0xFF212121) : const Color(0xFFFFFFFF);
-    final surfaceColor =
-        isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8);
-    final borderColor =
-        isDark ? const Color(0xFF565869) : const Color(0xFFD1D5DB);
-    final accentColor =
-        isDark ? const Color(0xFF10a37f) : const Color(0xFF10a37f);
+    final backgroundColor = isDark
+        ? const Color(0xFF212121)
+        : const Color(0xFFFFFFFF);
+    final surfaceColor = isDark
+        ? const Color(0xFF2f2f2f)
+        : const Color(0xFFF7F7F8);
+    final borderColor = isDark
+        ? const Color(0xFF565869)
+        : const Color(0xFFD1D5DB);
+    final accentColor = isDark
+        ? const Color(0xFF10a37f)
+        : const Color(0xFF10a37f);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -177,10 +242,7 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: borderColor,
-          ),
+          child: Container(height: 1, color: borderColor),
         ),
         actions: [
           // Theme toggle button
@@ -197,8 +259,28 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
             onPressed: () {
               // Clear all messages
               _chatController.clearMessages();
-              // Show the welcome message again
+              // Add the welcome message back
+              _chatController.addMessage(
+                ChatMessage(
+                  text:
+                      '''Hello! 👋 I'm your AI assistant, ready to help you explore the Flutter Gen AI Chat UI package.
+
+I can help you with:
+• Flutter development questions
+• Code examples and explanations  
+• Information about this chat UI
+• General programming topics
+
+Feel free to ask me anything or try one of the example questions below!''',
+                  user: _aiUser,
+                  createdAt: DateTime.now(),
+                  isMarkdown: false,
+                ),
+              );
+              // Show welcome message with example questions
               _chatController.showWelcomeMessage = true;
+              // Show success message
+              _showSuccessMessage('New conversation started');
             },
             tooltip: 'New conversation',
           ),
@@ -249,41 +331,43 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
             fontWeight: FontWeight.w500,
             color: isDark ? Colors.white60 : Colors.black54,
           ),
-          containerDecoration: BoxDecoration(
-            color: backgroundColor,
+          containerDecoration: BoxDecoration(color: backgroundColor),
+          containerPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 32,
           ),
-          containerPadding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           questionsSectionPadding: const EdgeInsets.all(16),
         ),
 
         // ChatGPT-style example questions
         exampleQuestions: _exampleQuestions
-            .map((q) => ExampleQuestion(
-                  question: q.question,
-                  config: ExampleQuestionConfig(
-                    iconData: Icons.lightbulb_outline,
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                    containerPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
-                    ),
-                    containerDecoration: BoxDecoration(
-                      color: surfaceColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: borderColor.withOpacity(0.3),
-                        width: 1,
-                      ),
-                    ),
-                    iconColor: isDark ? Colors.white60 : Colors.black54,
-                    iconSize: 16,
+            .map(
+              (q) => ExampleQuestion(
+                question: q.question,
+                config: ExampleQuestionConfig(
+                  iconData: Icons.lightbulb_outline,
+                  textStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
-                ))
+                  containerPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  containerDecoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: borderColor.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  iconColor: isDark ? Colors.white60 : Colors.black54,
+                  iconSize: 16,
+                ),
+              ),
+            )
             .toList(),
 
         // ChatGPT-style input field
@@ -329,15 +413,14 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(24),
-              borderSide: BorderSide(
-                color: borderColor,
-                width: 1.5,
-              ),
+              borderSide: BorderSide(color: borderColor, width: 1.5),
             ),
             filled: true,
             fillColor: surfaceColor,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
           textStyle: TextStyle(
             fontSize: 16,
@@ -349,15 +432,18 @@ class _BasicChatScreenState extends State<BasicChatScreen> {
         // ChatGPT-style message styling
         messageOptions: MessageOptions(
           showUserName: false,
-          showTime: false,
+          showTime: true, // Show timestamps for better UX
           showCopyButton: true,
-          containerMargin:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          containerMargin: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           bubbleStyle: BubbleStyle(
             // User messages - ChatGPT style (right aligned, darker)
-            userBubbleColor:
-                isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8),
+            userBubbleColor: isDark
+                ? const Color(0xFF2f2f2f)
+                : const Color(0xFFF7F7F8),
             userBubbleTopLeftRadius: 18,
             userBubbleTopRightRadius: 18,
             userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,

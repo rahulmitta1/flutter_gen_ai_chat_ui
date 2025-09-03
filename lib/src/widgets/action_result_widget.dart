@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../controllers/action_controller.dart';
 import '../models/ai_action.dart';
+import '../utils/color_extensions.dart';
 import 'ai_action_provider.dart';
 
 /// Configuration for action result display
@@ -161,7 +162,6 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
     ActionResultConfig config,
   ) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     // If action has custom render function, use it
     if (execution.action.render != null) {
@@ -202,7 +202,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -351,7 +351,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.check,
                 color: Colors.green,
                 size: 16,
@@ -433,7 +433,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -469,10 +469,10 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
+        color: Colors.green.withOpacityCompat(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: Colors.green.withOpacityCompat(0.3),
           width: 1,
         ),
       ),
@@ -481,7 +481,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle_outline,
                 color: Colors.green,
                 size: 16,

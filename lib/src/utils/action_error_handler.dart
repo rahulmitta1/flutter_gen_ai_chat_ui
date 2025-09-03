@@ -104,15 +104,15 @@ class ActionException implements Exception {
 
 /// Exception for network-related errors
 class NetworkException extends ActionException {
-  const NetworkException(String message) : super(message, code: 'NETWORK_ERROR');
+  const NetworkException(super.message) : super(code: 'NETWORK_ERROR');
 }
 
 /// Exception for timeout errors
 class TimeoutException extends ActionException {
   final Duration timeout;
 
-  const TimeoutException(String message, this.timeout)
-      : super(message, code: 'TIMEOUT');
+  const TimeoutException(super.message, this.timeout)
+      : super(code: 'TIMEOUT');
 }
 
 /// Exception for parameter validation errors
@@ -120,7 +120,7 @@ class ValidationException extends ActionException {
   final Map<String, String> validationErrors;
 
   const ValidationException(
-    String message,
+    super.message,
     this.validationErrors,
-  ) : super(message, code: 'VALIDATION_ERROR', metadata: validationErrors);
+  ) : super(code: 'VALIDATION_ERROR', metadata: validationErrors);
 }

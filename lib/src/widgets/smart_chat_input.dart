@@ -433,7 +433,7 @@ class _AttachmentButtonState extends State<AttachmentButton>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: widget.options
-                    .map((option) => _buildOptionButton(option))
+                    .map(_buildOptionButton)
                     .toList(),
               ),
             ),

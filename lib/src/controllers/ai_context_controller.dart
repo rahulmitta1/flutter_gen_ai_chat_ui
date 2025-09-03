@@ -369,7 +369,7 @@ class AiContextController extends ChangeNotifier {
       });
 
     final itemsToRemove = _contextData.length - _config.maxContextItems;
-    for (int i = 0; i < itemsToRemove; i++) {
+    for (var i = 0; i < itemsToRemove; i++) {
       _contextData.remove(sortedContexts[i].id);
       
       if (_config.enableLogging) {

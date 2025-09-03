@@ -33,9 +33,7 @@ class AgentOrchestrator extends ChangeNotifier {
     _agents[agent.id] = agent;
     
     // Listen to agent state changes
-    agent.streamState().listen((state) {
-      _stateStreamController.add(state);
-    });
+    agent.streamState().listen(_stateStreamController.add);
     
     // Initialize agent
     await agent.initialize({
@@ -185,18 +183,18 @@ class AgentOrchestrator extends ChangeNotifier {
   /// Route a request to the most appropriate agent
   Future<RoutingDecision> _routeRequest(AgentRequest request) async {
     if (_agents.isEmpty) {
-      throw AgentException('No agents available');
+      throw const AgentException('No agents available');
     }
 
     // Simple routing algorithm - can be enhanced with ML models
-    double bestScore = 0.0;
+    var bestScore = 0.0;
     String? bestAgentId;
-    String reasoning = 'Default routing';
+    var reasoning = 'Default routing';
 
     for (final agent in _agents.values) {
       if (!agent.canHandle(request)) continue;
 
-      double score = _calculateRoutingScore(agent, request);
+      final score = _calculateRoutingScore(agent, request);
       if (score > bestScore) {
         bestScore = score;
         bestAgentId = agent.id;
@@ -211,7 +209,7 @@ class AgentOrchestrator extends ChangeNotifier {
         bestAgentId = availableAgents.first.id;
         reasoning = 'Fallback to available agent';
       } else {
-        throw AgentException('No suitable agent found for request');
+        throw const AgentException('No suitable agent found for request');
       }
     }
 
@@ -224,7 +222,7 @@ class AgentOrchestrator extends ChangeNotifier {
 
   /// Calculate routing score for an agent
   double _calculateRoutingScore(AIAgent agent, AgentRequest request) {
-    double score = 0.0;
+    var score = 0.0;
 
     // Check if agent can handle the request
     if (!agent.canHandle(request)) return 0.0;
@@ -277,7 +275,7 @@ class AgentOrchestrator extends ChangeNotifier {
     final delegatedQuery = delegationResponse.metadata['delegated_query'] as String? ?? originalRequest.query;
 
     if (targetAgentId == null) {
-      throw AgentException('Delegation target not specified');
+      throw const AgentException('Delegation target not specified');
     }
 
     final targetAgent = _agents[targetAgentId];
@@ -303,7 +301,7 @@ class AgentOrchestrator extends ChangeNotifier {
     final topic = collaborationResponse.metadata['topic'] as String? ?? originalRequest.query;
 
     if (participantIds == null || coordinatorId == null) {
-      throw AgentException('Collaboration parameters not specified');
+      throw const AgentException('Collaboration parameters not specified');
     }
 
     final collaboration = await startCollaboration(

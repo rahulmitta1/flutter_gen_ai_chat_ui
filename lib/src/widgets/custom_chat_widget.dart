@@ -83,7 +83,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     return widget.controller?.showWelcomeMessage == true &&
         (widget.welcomeMessageConfig != null ||
             widget.exampleQuestions.isNotEmpty) &&
-        widget.messages.isEmpty;  // Only show if there are no messages
+        widget.messages.isEmpty; // Only show if there are no messages
   }
 
   @override
@@ -323,8 +323,9 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
         if (index < widget.messages.length) {
           final message = widget.messages[index];
           final isUser = message.user.id == widget.currentUser.id;
-          final messageId = message.customProperties?['id'] as String? ??
-              '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}_${message.text.hashCode}';
+          final messageId = widget.controller?.getMessageId(message) ??
+              (message.customProperties?['id'] as String? ??
+                  '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}');
 
           // return _buildMessageBubble(message, isUser);
           return RepaintBoundary(
@@ -770,7 +771,6 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
       if (needsInteractiveMarkdown) {
         // Preserve interactive Markdown behavior
         textWidget = Markdown(
-          key: ValueKey('markdown_${message.text.hashCode}'),
           data: message.text,
           selectable: false,
           shrinkWrap: true,
@@ -829,27 +829,13 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                   );
                 },
         );
-      } else if (shouldAnimate) {
-        // Stream markdown using StreamingText only for active streaming messages
+      } else {
+        // Default: stream markdown using StreamingText
         textWidget = StreamingText(
           text: message.text,
           style: textStyle,
-          typingSpeed: widget.streamingTypingSpeed,
+          typingSpeed: const Duration(milliseconds: 30),
           markdownEnabled: true,
-          fadeInEnabled: widget.streamingFadeInEnabled,
-          fadeInDuration: widget.streamingFadeInDuration,
-          fadeInCurve: widget.streamingFadeInCurve,
-          wordByWord: widget.streamingWordByWord,
-        );
-      } else {
-        // Static markdown for completed messages
-        textWidget = Markdown(
-          key: ValueKey('static_markdown_${message.text.hashCode}'),
-          data: message.text,
-          selectable: false,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          styleSheet: effectiveStyleSheet,
         );
       }
     } else {
@@ -1199,7 +1185,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             Container(
               padding: widget.welcomeMessageConfig?.questionsSectionPadding ??
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: widget.welcomeMessageConfig?.questionsSectionDecoration,
+              decoration:
+                  widget.welcomeMessageConfig?.questionsSectionDecoration,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -1207,16 +1194,20 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                   Text(
                     widget.welcomeMessageConfig?.questionsSectionTitle ??
                         'Here are some questions you can ask:',
-                    style: widget.welcomeMessageConfig?.questionsSectionTitleStyle ??
+                    style: widget
+                            .welcomeMessageConfig?.questionsSectionTitleStyle ??
                         TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: isDarkMode ? Colors.white70 : Colors.black87,
                         ),
                   ),
-                  SizedBox(height: widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
+                  SizedBox(
+                      height:
+                          widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
                   ...widget.exampleQuestions.map(
-                    (question) => _buildExampleQuestionInWelcome(question, isDarkMode),
+                    (question) =>
+                        _buildExampleQuestionInWelcome(question, isDarkMode),
                   ),
                 ],
               ),
@@ -1228,26 +1219,30 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   }
 
   /// Build an example question within the welcome message
-  Widget _buildExampleQuestionInWelcome(ExampleQuestion question, bool isDarkMode) {
+  Widget _buildExampleQuestionInWelcome(
+      ExampleQuestion question, bool isDarkMode) {
     final theme = Theme.of(context);
     final primaryColor = theme.primaryColor;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
+      padding: EdgeInsets.only(
+          bottom: widget.welcomeMessageConfig?.questionSpacing ?? 12.0),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _handleExampleQuestionTap(question.question),
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: question.config?.containerPadding ?? 
+            padding: question.config?.containerPadding ??
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: question.config?.containerDecoration ??
                 BoxDecoration(
-                  color: primaryColor.withOpacityCompat(isDarkMode ? 0.12 : 0.06),
+                  color:
+                      primaryColor.withOpacityCompat(isDarkMode ? 0.12 : 0.06),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: primaryColor.withOpacityCompat(isDarkMode ? 0.3 : 0.15),
+                    color:
+                        primaryColor.withOpacityCompat(isDarkMode ? 0.3 : 0.15),
                     width: 1,
                   ),
                 ),
@@ -1278,7 +1273,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                 ),
                 const SizedBox(width: 8),
                 Icon(
-                  question.config?.trailingIconData ?? Icons.arrow_forward_ios_rounded,
+                  question.config?.trailingIconData ??
+                      Icons.arrow_forward_ios_rounded,
                   size: question.config?.trailingIconSize ?? 16,
                   color: question.config?.trailingIconColor ??
                       (isDarkMode

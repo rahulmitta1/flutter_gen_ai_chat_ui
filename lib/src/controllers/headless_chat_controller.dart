@@ -131,7 +131,7 @@ class HeadlessChatController extends ChangeNotifier {
       // Simulate streaming response with intermediate states
       final words = 'This is a simulated streaming AI response with multiple chunks and intermediate state updates.'.split(' ');
       
-      for (int i = 0; i < words.length; i++) {
+      for (var i = 0; i < words.length; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 100));
         
         // Simulate intermediate state updates

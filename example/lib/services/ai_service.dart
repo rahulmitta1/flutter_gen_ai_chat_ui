@@ -17,8 +17,10 @@ class AiService {
   final Random _random = Random();
 
   /// Generate a response with a realistic delay
-  Future<AiResponse> generateResponse(String query,
-      {bool includeCodeBlock = true}) async {
+  Future<AiResponse> generateResponse(
+    String query, {
+    bool includeCodeBlock = true,
+  }) async {
     // Simulate network delay
     await Future.delayed(Duration(milliseconds: 500 + _random.nextInt(1000)));
 
@@ -97,9 +99,11 @@ Flutter is Google's UI toolkit for building beautiful, natively compiled applica
             lowerQuery.contains('sample')) &&
         includeCodeBlock) {
       return AiResponse('''
-# Flutter Code Example
+# Flutter Code Examples
 
-Here's a simple Flutter widget that creates a button:
+Here are some useful Flutter code examples:
+
+## 1. Custom Button Widget
 
 ```dart
 class StyledButton extends StatelessWidget {
@@ -132,7 +136,7 @@ class StyledButton extends StatelessWidget {
         text,
         style: const TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -140,7 +144,7 @@ class StyledButton extends StatelessWidget {
 }
 ```
 
-You can use this button in your app like this:
+## 2. Usage Example
 
 ```dart
 StyledButton(
@@ -149,6 +153,26 @@ StyledButton(
   color: Colors.purple,
 )
 ```
+
+## 3. Theme-Aware Container
+
+```dart
+Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[800]
+        : Colors.grey[100],
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(
+      color: Theme.of(context).dividerColor.withOpacity(0.3),
+    ),
+  ),
+  child: Text('Theme-aware content'),
+)
+```
+
+These examples show Flutter's flexibility and how to create reusable, theme-aware components!
       ''', isMarkdown: true);
     }
 
@@ -162,16 +186,24 @@ StyledButton(
 This example demonstrates these features:
 
 ## Core Features
-- 🎨 Light & dark mode themes
-- 💬 Message bubbles with user avatars
-- ⏳ Typing indicators
-- 📝 Markdown formatting support
+- 🎨 Light & dark mode themes with smooth transitions
+- 💬 Message bubbles with user avatars and timestamps
+- ⏳ Typing indicators with animated text
+- 📝 Markdown formatting support for rich content
+- 📱 Responsive design that works on all screen sizes
 
 ## UI Elements
-- Welcome messages with example questions
-- Modern, Material 3 design
-- Clean, minimal interface
-- Responsive layout
+- Welcome messages with interactive example questions
+- Modern, Material 3 design with ChatGPT-inspired styling
+- Clean, minimal interface with proper spacing
+- Copy buttons for easy text selection
+- Smooth animations and transitions
+
+## Enhanced UX
+- Error handling with user-friendly messages
+- Success notifications for actions
+- Theme toggle and conversation reset
+- Enter key support for quick messaging
 
 Try exploring the various examples to see more advanced features!
       ''', isMarkdown: true);
@@ -202,10 +234,14 @@ Navigate back to the home screen to explore them all!
   }
 
   /// Stream a response word by word for examples that support streaming
-  Stream<String> streamResponse(String query,
-      {bool includeCodeBlock = true}) async* {
-    final response =
-        await generateResponse(query, includeCodeBlock: includeCodeBlock);
+  Stream<String> streamResponse(
+    String query, {
+    bool includeCodeBlock = true,
+  }) async* {
+    final response = await generateResponse(
+      query,
+      includeCodeBlock: includeCodeBlock,
+    );
     final words = response.text.split(' ');
 
     String accumulated = '';

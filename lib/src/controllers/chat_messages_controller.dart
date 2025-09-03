@@ -92,14 +92,15 @@ class ChatMessagesController extends ChangeNotifier {
 
   /// Add this property at the top of the class with other properties
   DateTime _lastScrollTime = DateTime.now();
-  int _scrollDebounceMs = 800; // Increased default debounce time to reduce frequency
+  int _scrollDebounceMs =
+      800; // Increased default debounce time to reduce frequency
   String?
       _lastScrollOperation; // Track the last scroll operation to prevent conflicts
 
   /// Sets the scroll controller for auto-scrolling
   void setScrollController(ScrollController controller) {
     if (!_mounted) return;
-    
+
     // Remove the old listener if it exists
     if (_scrollController != null && _scrollListener != null) {
       _scrollController!.removeListener(_scrollListener!);
@@ -170,7 +171,7 @@ class ChatMessagesController extends ChangeNotifier {
     return _getMessageId(message);
   }
 
-void addAgentMessage(ChatMessage message) {
+  void addAgentMessage(ChatMessage message) {
     final messageId = _getMessageId(message);
     if (!_messageCache.containsKey(messageId)) {
       if (paginationConfig.reverseOrder) {
@@ -189,9 +190,23 @@ void addAgentMessage(ChatMessage message) {
       //_scrollToBottomAfterRender();
     }
   }
+
   /// Adds a new message to the chat.
   void addMessage(ChatMessage message) {
-    final messageId = _getMessageId(message);
+    // Ensure message has a stable id; if missing, generate and persist it
+    String messageId = _getMessageId(message);
+    if (message.customProperties == null ||
+        message.customProperties!['id'] == null) {
+      final generatedId =
+          '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}';
+      message = message.copyWith(
+        customProperties: {
+          ...?message.customProperties,
+          'id': generatedId,
+        },
+      );
+      messageId = generatedId;
+    }
     if (!_messageCache.containsKey(messageId)) {
       // Determine if this is a user message using the ID and properties
       final isFromUser =
