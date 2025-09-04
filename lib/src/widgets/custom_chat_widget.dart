@@ -194,24 +194,23 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _buildMessageList(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            if (widget.quickReplyOptions.quickReplies != null &&
+                widget.quickReplyOptions.quickReplies!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: _buildQuickReplies(),
               ),
-              if (widget.quickReplyOptions.quickReplies != null &&
-                  widget.quickReplyOptions.quickReplies!.isNotEmpty)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: _buildQuickReplies(),
-                ),
-            ],
-          ),
-          if (_showScrollToBottom || widget.scrollToBottomOptions.alwaysVisible)
-            _buildScrollToBottomButton(),
-        ],
+          ],
+        ),
+        if (_showScrollToBottom || widget.scrollToBottomOptions.alwaysVisible)
+          _buildScrollToBottomButton(),
+      ],
     );
   }
 

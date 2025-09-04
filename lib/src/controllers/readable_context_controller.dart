@@ -15,8 +15,7 @@ class ReadableContextController extends ChangeNotifier {
       return 'No application context available.';
     }
 
-    final buffer = StringBuffer()
-      ..writeln('Application Context:');
+    final buffer = StringBuffer()..writeln('Application Context:');
 
     for (final entry in _contexts.entries) {
       final context = entry.value;
@@ -110,8 +109,7 @@ class ReadableContextController extends ChangeNotifier {
       return 'No matching context available.';
     }
 
-    final buffer = StringBuffer()
-      ..writeln('Relevant Context:');
+    final buffer = StringBuffer()..writeln('Relevant Context:');
 
     for (final entry in filteredContexts.entries) {
       final context = entry.value;
