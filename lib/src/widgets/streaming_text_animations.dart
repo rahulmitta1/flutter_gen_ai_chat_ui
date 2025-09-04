@@ -244,8 +244,9 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       HapticFeedback.selectionClick();
     }
 
-    _controller.reset();
-    _controller.forward();
+    _controller
+      ..reset()
+      ..forward();
 
     Future.delayed(widget.config.delay, () {
       if (mounted && widget.isStreaming) {
@@ -403,7 +404,7 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: accentColor.withOpacity(glowIntensity * 0.5),
+                color: accentColor.withValues(alpha: glowIntensity * 0.5),
                 blurRadius: 10 * glowIntensity,
                 spreadRadius: 2 * glowIntensity,
               ),

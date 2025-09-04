@@ -545,8 +545,9 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
     if (widget.isRecording && !oldWidget.isRecording) {
       _pulseController.repeat(reverse: true);
     } else if (!widget.isRecording && oldWidget.isRecording) {
-      _pulseController.stop();
-      _pulseController.reset();
+      _pulseController
+        ..stop()
+        ..reset();
     }
   }
 
@@ -626,17 +627,17 @@ class _TypingIndicatorState extends State<TypingIndicator>
       vsync: this,
     );
 
-    _controller.addListener(() {
-      final progress = _controller.value * 3;
-      final newDot = progress.floor() % 3;
-      if (newDot != _currentDot) {
-        setState(() {
-          _currentDot = newDot;
-        });
-      }
-    });
-
-    _controller.repeat();
+    _controller
+      ..addListener(() {
+        final progress = _controller.value * 3;
+        final newDot = progress.floor() % 3;
+        if (newDot != _currentDot) {
+          setState(() {
+            _currentDot = newDot;
+          });
+        }
+      })
+      ..repeat();
   }
 
   @override
