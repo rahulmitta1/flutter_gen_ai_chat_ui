@@ -100,7 +100,7 @@ class MarkdownContent extends StatelessWidget {
     // Simple markdown parsing for common patterns
     final lines = markdown.split('\n');
 
-    for (int i = 0; i < lines.length; i++) {
+    for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
 
       if (line.startsWith('```')) {
@@ -119,7 +119,7 @@ class MarkdownContent extends StatelessWidget {
       } else if (line.startsWith('# ')) {
         // Header
         spans.add(TextSpan(
-          text: line.substring(2) + '\n',
+          text: '${line.substring(2)}\n',
           style: baseStyle.copyWith(
             fontSize: (baseStyle.fontSize ?? 14) * 1.5,
             fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class MarkdownContent extends StatelessWidget {
       } else if (line.startsWith('## ')) {
         // Sub-header
         spans.add(TextSpan(
-          text: line.substring(3) + '\n',
+          text: '${line.substring(3)}\n',
           style: baseStyle.copyWith(
             fontSize: (baseStyle.fontSize ?? 14) * 1.3,
             fontWeight: FontWeight.bold,
@@ -142,7 +142,7 @@ class MarkdownContent extends StatelessWidget {
         ));
       } else {
         // Regular text with inline formatting
-        spans.add(_parseInlineMarkdown(line + '\n', baseStyle));
+        spans.add(_parseInlineMarkdown('$line\n', baseStyle));
       }
     }
 
@@ -154,11 +154,11 @@ class MarkdownContent extends StatelessWidget {
   TextSpan _parseInlineMarkdown(String text, TextStyle baseStyle) {
     final spans = <InlineSpan>[];
     final buffer = StringBuffer();
-    bool inBold = false;
-    bool inItalic = false;
-    bool inCode = false;
+    var inBold = false;
+    var inItalic = false;
+    var inCode = false;
 
-    for (int i = 0; i < text.length; i++) {
+    for (var i = 0; i < text.length; i++) {
       final char = text[i];
       final nextChar = i + 1 < text.length ? text[i + 1] : '';
 
@@ -214,7 +214,7 @@ class MarkdownContent extends StatelessWidget {
     bool italic,
     bool code,
   ) {
-    TextStyle style = base;
+    var style = base;
 
     if (bold) {
       style = style.copyWith(fontWeight: FontWeight.bold);

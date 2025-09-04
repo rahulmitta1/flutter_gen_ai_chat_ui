@@ -336,11 +336,12 @@ class ActionController extends ChangeNotifier {
     ActionResult result, [
     ActionStatus? status,
   ]) {
-    execution.result = result;
-    execution.error = result.error;
-    execution.status = status ??
-        (result.success ? ActionStatus.completed : ActionStatus.failed);
-    execution.endTime = DateTime.now();
+    execution
+      ..result = result
+      ..error = result.error
+      ..status = status ??
+          (result.success ? ActionStatus.completed : ActionStatus.failed)
+      ..endTime = DateTime.now();
 
     if (!execution.completer.isCompleted) {
       execution.completer.complete(result);

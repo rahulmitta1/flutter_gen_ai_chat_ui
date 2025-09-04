@@ -32,13 +32,13 @@ enum ActionParameterType {
   /// Boolean parameter
   boolean,
 
-  /// Object parameter (Map<String, dynamic>)
+  /// Object parameter (Map&lt;String, dynamic&gt;)
   object,
 
-  /// Array parameter (List<dynamic>)
+  /// Array parameter (List&lt;dynamic&gt;)
   array,
 
-  /// Array of objects parameter (List<Map<String, dynamic>>) - CopilotKit compatibility
+  /// Array of objects parameter (List&lt;Map&lt;String, dynamic&gt;&gt;) - CopilotKit compatibility
   objectArray,
 }
 

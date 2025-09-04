@@ -51,8 +51,8 @@ class HeadlessChatController extends ChangeNotifier {
 
   /// Delete a thread
   void deleteThread(String threadId) {
-    final updatedThreads = Map<String, ChatThread>.from(_state.threads);
-    updatedThreads.remove(threadId);
+    final updatedThreads = Map<String, ChatThread>.from(_state.threads)
+      ..remove(threadId);
 
     String? newActiveId;
     if (_state.activeThreadId == threadId && updatedThreads.isNotEmpty) {
@@ -105,8 +105,9 @@ class HeadlessChatController extends ChangeNotifier {
 
   /// Update the last message in the current thread
   void updateLastMessage(ChatMessage updatedMessage) {
-    if (_state.activeThread == null || _state.activeThread!.messages.isEmpty)
+    if (_state.activeThread == null || _state.activeThread!.messages.isEmpty) {
       return;
+    }
 
     final currentThread = _state.activeThread!;
     final messages = [...currentThread.messages];

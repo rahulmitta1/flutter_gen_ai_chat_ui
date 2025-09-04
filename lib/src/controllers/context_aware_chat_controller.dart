@@ -89,21 +89,21 @@ class ContextAwareChatController extends ChangeNotifier {
   String _createEnhancedPrompt(String originalMessage) {
     final buffer = StringBuffer();
 
-    // Add the original message
+    // Build the complete prompt
     buffer.writeln('User Request: $originalMessage');
 
     // Add readable context if enabled and available
     if (includeContextInPrompts) {
       final context = _readableController.contextSummary;
       if (context != 'No application context available.') {
-        buffer.writeln('\\n--- Application Context ---');
-
         // Truncate context if too long
         final contextToAdd = context.length > maxContextLength
             ? '${context.substring(0, maxContextLength)}...'
             : context;
 
-        buffer.writeln(contextToAdd);
+        buffer
+          ..writeln('\\n--- Application Context ---')
+          ..writeln(contextToAdd);
       }
     }
 
@@ -111,8 +111,9 @@ class ContextAwareChatController extends ChangeNotifier {
     if (includeActionsInPrompts) {
       final actions = _actionController.registeredActions;
       if (actions.isNotEmpty) {
-        buffer.writeln('\\n--- Available Actions ---');
-        buffer.writeln('You can call the following actions to help the user:');
+        buffer
+          ..writeln('\\n--- Available Actions ---')
+          ..writeln('You can call the following actions to help the user:');
 
         for (final action in actions) {
           buffer.writeln('- ${action.name}: ${action.description}');
@@ -129,12 +130,13 @@ class ContextAwareChatController extends ChangeNotifier {
       }
     }
 
-    // Add instruction for natural interaction
-    buffer.writeln('\\n--- Instructions ---');
-    buffer.writeln(
-        'Use the provided context to give more relevant and helpful responses.');
-    buffer.writeln('If you can help by calling an action, do so naturally.');
-    buffer.writeln('Always be conversational and helpful.');
+    // Add final instructions
+    buffer
+      ..writeln('\\n--- Instructions ---')
+      ..writeln(
+          'Use the provided context to give more relevant and helpful responses.')
+      ..writeln('If you can help by calling an action, do so naturally.')
+      ..writeln('Always be conversational and helpful.');
 
     return buffer.toString();
   }

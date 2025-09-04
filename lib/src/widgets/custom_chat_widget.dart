@@ -192,9 +192,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
+    return Stack(
+      children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -213,7 +212,6 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           if (_showScrollToBottom || widget.scrollToBottomOptions.alwaysVisible)
             _buildScrollToBottomButton(),
         ],
-      ),
     );
   }
 

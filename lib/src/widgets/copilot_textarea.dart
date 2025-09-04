@@ -100,8 +100,9 @@ class _CopilotTextareaState extends State<CopilotTextarea> {
   @override
   void dispose() {
     _hideSuggestions();
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
+    _focusNode
+      ..removeListener(_onFocusChanged)
+      ..dispose();
     if (widget.controller == null) {
       _controller.dispose();
     } else {

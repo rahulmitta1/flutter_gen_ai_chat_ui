@@ -246,7 +246,7 @@ class ChatMessagesController extends ChangeNotifier {
   /// Adds a new message to the chat.
   void addMessage(ChatMessage message) {
     // Ensure message has a stable id; if missing, generate and persist it
-    String messageId = _getMessageId(message);
+    var messageId = _getMessageId(message);
     if (message.customProperties == null ||
         message.customProperties!['id'] == null) {
       final generatedId =

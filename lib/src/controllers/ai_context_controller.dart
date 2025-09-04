@@ -236,8 +236,9 @@ class AiContextController extends ChangeNotifier {
         .where((context) => context.enabled && context.isValid)
         .where((context) {
       if (types != null && !types.contains(context.type)) return false;
-      if (priorities != null && !priorities.contains(context.priority))
+      if (priorities != null && !priorities.contains(context.priority)) {
         return false;
+      }
       if (categories != null &&
           !categories.any((cat) => context.categories.contains(cat))) {
         return false;

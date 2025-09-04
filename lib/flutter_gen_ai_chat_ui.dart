@@ -35,12 +35,12 @@ export 'src/models/welcome_message_config.dart';
 export 'src/services/ai_service.dart';
 // Advanced Theme System (50+ properties with gradients, animations, platform variants)
 export 'src/theme/advanced_theme_system.dart';
-// Theme (Basic)
-export 'src/theme/custom_theme_extension.dart';
 // Bubble Theme (for backward compatibility with examples)
 export 'src/theme/bubble_theme.dart';
-export 'src/utils/action_error_handler.dart';
+// Theme (Basic)
+export 'src/theme/custom_theme_extension.dart';
 // Utils
+export 'src/utils/action_error_handler.dart';
 export 'src/utils/color_extensions.dart';
 export 'src/utils/glassmorphic_container.dart';
 // Widgets

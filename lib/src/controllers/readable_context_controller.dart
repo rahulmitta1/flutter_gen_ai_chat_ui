@@ -15,14 +15,15 @@ class ReadableContextController extends ChangeNotifier {
       return 'No application context available.';
     }
 
-    final buffer = StringBuffer();
-    buffer.writeln('Application Context:');
+    final buffer = StringBuffer()
+      ..writeln('Application Context:');
 
     for (final entry in _contexts.entries) {
       final context = entry.value;
-      buffer.writeln('');
-      buffer.writeln('${context.description}:');
-      buffer.writeln(_formatValue(context.value));
+      buffer
+        ..writeln('')
+        ..writeln('${context.description}:')
+        ..writeln(_formatValue(context.value));
     }
 
     return buffer.toString();
@@ -109,14 +110,15 @@ class ReadableContextController extends ChangeNotifier {
       return 'No matching context available.';
     }
 
-    final buffer = StringBuffer();
-    buffer.writeln('Relevant Context:');
+    final buffer = StringBuffer()
+      ..writeln('Relevant Context:');
 
     for (final entry in filteredContexts.entries) {
       final context = entry.value;
-      buffer.writeln('');
-      buffer.writeln('${context.description}:');
-      buffer.writeln(_formatValue(context.value));
+      buffer
+        ..writeln('')
+        ..writeln('${context.description}:')
+        ..writeln(_formatValue(context.value));
     }
 
     return buffer.toString();
