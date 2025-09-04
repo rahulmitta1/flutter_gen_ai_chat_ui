@@ -261,13 +261,13 @@ class MessageOptions {
   )? markdownBuilder;
 
   /// Custom builder for message bubbles
-  /// 
+  ///
   /// This builder allows for complete replacement of the default message bubble.
   /// The parameters provided are:
   /// - [BuildContext] context: The build context
   /// - [ChatMessage] message: The message being rendered
   /// - [bool] isUser: Whether this message is from the current user
-  /// 
+  ///
   /// Return a completely custom widget that replaces the entire bubble.
   /// This provides true customization rather than just wrapping the default bubble.
   final Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder;
@@ -341,7 +341,8 @@ class MessageOptions {
     bool? enableImageTaps,
     void Function(String url, String? title, String? alt)? onImageTap,
     Widget Function(BuildContext, String, TextStyle, bool)? textBuilder,
-    Widget Function(BuildContext, String, MarkdownStyleSheet, bool)? markdownBuilder,
+    Widget Function(BuildContext, String, MarkdownStyleSheet, bool)?
+        markdownBuilder,
     Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder,
   }) =>
       MessageOptions(

@@ -213,18 +213,14 @@ Feel free to ask me anything or try one of the example questions below!''',
     final isDark = theme.brightness == Brightness.dark;
 
     // ChatGPT-inspired color scheme
-    final backgroundColor = isDark
-        ? const Color(0xFF212121)
-        : const Color(0xFFFFFFFF);
-    final surfaceColor = isDark
-        ? const Color(0xFF2f2f2f)
-        : const Color(0xFFF7F7F8);
-    final borderColor = isDark
-        ? const Color(0xFF565869)
-        : const Color(0xFFD1D5DB);
-    final accentColor = isDark
-        ? const Color(0xFF10a37f)
-        : const Color(0xFF10a37f);
+    final backgroundColor =
+        isDark ? const Color(0xFF212121) : const Color(0xFFFFFFFF);
+    final surfaceColor =
+        isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8);
+    final borderColor =
+        isDark ? const Color(0xFF565869) : const Color(0xFFD1D5DB);
+    final accentColor =
+        isDark ? const Color(0xFF10a37f) : const Color(0xFF10a37f);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -441,9 +437,8 @@ Feel free to ask me anything or try one of the example questions below!''',
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           bubbleStyle: BubbleStyle(
             // User messages - ChatGPT style (right aligned, darker)
-            userBubbleColor: isDark
-                ? const Color(0xFF2f2f2f)
-                : const Color(0xFFF7F7F8),
+            userBubbleColor:
+                isDark ? const Color(0xFF2f2f2f) : const Color(0xFFF7F7F8),
             userBubbleTopLeftRadius: 18,
             userBubbleTopRightRadius: 18,
             userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.85,

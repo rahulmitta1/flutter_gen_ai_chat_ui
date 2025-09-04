@@ -7,8 +7,10 @@ import '../models/chat_thread.dart';
 /// Equivalent to CopilotKit's useCopilotChat hook
 class HeadlessChatController extends ChangeNotifier {
   ThreadState _state = const ThreadState();
-  final StreamController<ChatMessage> _messageStreamController = StreamController<ChatMessage>.broadcast();
-  final StreamController<ThreadState> _stateStreamController = StreamController<ThreadState>.broadcast();
+  final StreamController<ChatMessage> _messageStreamController =
+      StreamController<ChatMessage>.broadcast();
+  final StreamController<ThreadState> _stateStreamController =
+      StreamController<ThreadState>.broadcast();
 
   // Getters equivalent to useCopilotChat return values
   ThreadState get state => _state;
@@ -103,7 +105,8 @@ class HeadlessChatController extends ChangeNotifier {
 
   /// Update the last message in the current thread
   void updateLastMessage(ChatMessage updatedMessage) {
-    if (_state.activeThread == null || _state.activeThread!.messages.isEmpty) return;
+    if (_state.activeThread == null || _state.activeThread!.messages.isEmpty)
+      return;
 
     final currentThread = _state.activeThread!;
     final messages = [...currentThread.messages];
@@ -129,11 +132,13 @@ class HeadlessChatController extends ChangeNotifier {
 
     try {
       // Simulate streaming response with intermediate states
-      final words = 'This is a simulated streaming AI response with multiple chunks and intermediate state updates.'.split(' ');
-      
+      final words =
+          'This is a simulated streaming AI response with multiple chunks and intermediate state updates.'
+              .split(' ');
+
       for (var i = 0; i < words.length; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 100));
-        
+
         // Simulate intermediate state updates
         if (onIntermediateState != null && i % 3 == 0) {
           onIntermediateState({
@@ -142,7 +147,7 @@ class HeadlessChatController extends ChangeNotifier {
             'processingState': 'generating',
           });
         }
-        
+
         yield '${words[i]} ';
       }
     } finally {
@@ -169,10 +174,11 @@ class HeadlessChatController extends ChangeNotifier {
   /// Load thread state from storage
   Future<void> loadThreadState(Map<String, dynamic> data) async {
     final threads = <String, ChatThread>{};
-    
+
     if (data['threads'] != null) {
       for (final entry in (data['threads'] as Map).entries) {
-        threads[entry.key as String] = ChatThread.fromJson(entry.value as Map<String, dynamic>);
+        threads[entry.key as String] =
+            ChatThread.fromJson(entry.value as Map<String, dynamic>);
       }
     }
 
@@ -186,7 +192,8 @@ class HeadlessChatController extends ChangeNotifier {
   /// Save thread state to storage
   Map<String, dynamic> saveThreadState() {
     return {
-      'threads': _state.threads.map((key, thread) => MapEntry(key, thread.toJson())),
+      'threads':
+          _state.threads.map((key, thread) => MapEntry(key, thread.toJson())),
       'activeThreadId': _state.activeThreadId,
     };
   }

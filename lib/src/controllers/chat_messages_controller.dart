@@ -20,6 +20,9 @@ class ChatMessagesController extends ChangeNotifier {
   /// Whether a message is currently being streamed
   bool get isCurrentlyStreaming => _isCurrentlyStreaming;
 
+  /// The ID of the message currently being streamed
+  String? get currentlyStreamingMessageId => _currentlyStreamingMessageId;
+
   /// Creates a new chat messages controller.
   ///
   /// [initialMessages] - Optional list of messages to initialize the chat with.
@@ -66,6 +69,52 @@ class ChatMessagesController extends ChangeNotifier {
         'scrollToFirstResponseMessage: ${config?.scrollToFirstResponseMessage ?? false}');
   }
 
+  /// Sets which message is currently being streamed
+  void setStreamingMessage(String? messageId) {
+    if (_currentlyStreamingMessageId != messageId) {
+      _currentlyStreamingMessageId = messageId;
+      _isCurrentlyStreaming = messageId != null;
+      notifyListeners();
+      debugPrint(
+          'ChatMessagesController: Streaming message set to: $messageId');
+    }
+  }
+
+  /// Stops streaming for a specific message (marks it as complete)
+  void stopStreamingMessage(String messageId) {
+    if (_currentlyStreamingMessageId == messageId) {
+      _currentlyStreamingMessageId = null;
+      _isCurrentlyStreaming = false;
+      notifyListeners();
+      debugPrint(
+          'ChatMessagesController: Streaming stopped for message: $messageId');
+    }
+  }
+
+  /// Adds a new message with streaming enabled
+  void addStreamingMessage(ChatMessage message) {
+    // Add the message first
+    addMessage(message);
+
+    // If it's an AI message, keep it streaming
+    final isFromUser =
+        message.customProperties?['isUserMessage'] as bool? ?? false;
+    if (!isFromUser) {
+      final messageId = _getMessageId(message);
+      setStreamingMessage(messageId);
+    }
+  }
+
+  /// Simulates streaming completion after a delay (useful for demos)
+  void simulateStreamingCompletion(String messageId,
+      {Duration delay = const Duration(seconds: 3)}) {
+    Timer(delay, () {
+      if (mounted) {
+        stopStreamingMessage(messageId);
+      }
+    });
+  }
+
   /// Callback for loading more messages (backward compatibility)
   Future<List<ChatMessage>> Function(ChatMessage? lastMessage)?
       _onLoadMoreMessagesCallback;
@@ -85,6 +134,9 @@ class ChatMessagesController extends ChangeNotifier {
 
   /// The user of the last message added (to track response chains)
   String? _lastMessageUserId;
+
+  /// The ID of the message currently being streamed
+  String? _currentlyStreamingMessageId;
 
   /// Is the user manually scrolling
   bool _isManuallyScrolling = false;
@@ -296,6 +348,12 @@ class ChatMessagesController extends ChangeNotifier {
         _messages.add(updatedMessage);
       }
       _messageCache[messageId] = updatedMessage;
+
+      // If this is an AI message, set it as the currently streaming message
+      if (!isFromUser) {
+        setStreamingMessage(messageId);
+      }
+
       notifyListeners();
 
       // Determine if we should scroll based on the configuration

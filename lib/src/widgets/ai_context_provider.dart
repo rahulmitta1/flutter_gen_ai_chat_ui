@@ -9,16 +9,16 @@ import '../models/ai_context.dart';
 class AiContextProviderConfig {
   /// Context controller configuration
   final AiContextConfig contextConfig;
-  
+
   /// Whether to automatically provide navigation context
   final bool autoNavigationContext;
-  
+
   /// Whether to automatically provide theme context
   final bool autoThemeContext;
-  
+
   /// Whether to automatically provide device context
   final bool autoDeviceContext;
-  
+
   /// Custom context providers
   final List<AiContextData Function(BuildContext)> customProviders;
 
@@ -35,10 +35,10 @@ class AiContextProviderConfig {
 class AiContextProvider extends StatefulWidget {
   /// Configuration for the context provider
   final AiContextProviderConfig config;
-  
+
   /// Child widget
   final Widget child;
-  
+
   /// Optional external context controller
   final AiContextController? controller;
 
@@ -54,7 +54,8 @@ class AiContextProvider extends StatefulWidget {
 
   /// Get the AiContextController from the current context
   static AiContextController of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<_AiContextInheritedWidget>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<_AiContextInheritedWidget>();
     if (provider == null) {
       throw FlutterError(
         'AiContextProvider.of() called with a context that does not contain an AiContextProvider.\n'
@@ -66,14 +67,14 @@ class AiContextProvider extends StatefulWidget {
 
   /// Get the AiContextController from the current context, or null if not found
   static AiContextController? maybeOf(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<_AiContextInheritedWidget>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<_AiContextInheritedWidget>();
     return provider?.controller;
   }
 }
 
 class _AiContextProviderState extends State<AiContextProvider>
     with WidgetsBindingObserver, RouteAware {
-  
   late AiContextController _controller;
   bool _isExternalController = false;
   StreamSubscription<AiContextEvent>? _eventSubscription;
@@ -82,7 +83,7 @@ class _AiContextProviderState extends State<AiContextProvider>
   @override
   void initState() {
     super.initState();
-    
+
     // Use external controller or create new one
     if (widget.controller != null) {
       _controller = widget.controller!;
@@ -94,7 +95,7 @@ class _AiContextProviderState extends State<AiContextProvider>
 
     // Listen to lifecycle changes
     WidgetsBinding.instance.addObserver(this);
-    
+
     // Set up event monitoring for debugging
     if (widget.config.contextConfig.enableLogging) {
       _eventSubscription = _controller.events.listen(_logContextEvent);
@@ -131,11 +132,11 @@ class _AiContextProviderState extends State<AiContextProvider>
     if (widget.config.autoNavigationContext) {
       _updateNavigationContext();
     }
-    
+
     if (widget.config.autoThemeContext) {
       _updateThemeContext();
     }
-    
+
     if (widget.config.autoDeviceContext) {
       _updateDeviceContext();
     }
@@ -189,9 +190,11 @@ class _AiContextProviderState extends State<AiContextProvider>
       id: 'device_context',
       name: 'Device Information',
       data: {
-        'screenSize': '${mediaQuery.size.width.round()}x${mediaQuery.size.height.round()}',
+        'screenSize':
+            '${mediaQuery.size.width.round()}x${mediaQuery.size.height.round()}',
         'devicePixelRatio': mediaQuery.devicePixelRatio,
-        'platformBrightness': mediaQuery.platformBrightness.toString().split('.').last,
+        'platformBrightness':
+            mediaQuery.platformBrightness.toString().split('.').last,
         'textScaler': mediaQuery.textScaler.toString(),
         'orientation': mediaQuery.orientation.toString().split('.').last,
       },
@@ -209,12 +212,12 @@ class _AiContextProviderState extends State<AiContextProvider>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _eventSubscription?.cancel();
-    
+
     // Only dispose if we created the controller
     if (!_isExternalController) {
       _controller.dispose();
     }
-    
+
     super.dispose();
   }
 

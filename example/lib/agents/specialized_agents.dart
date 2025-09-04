@@ -25,20 +25,21 @@ class CodeReviewAgent extends AIAgent {
   @override
   bool canHandle(AgentRequest request) {
     final query = request.query.toLowerCase();
-    return query.contains('review') || 
-           query.contains('code') || 
-           query.contains('quality');
+    return query.contains('review') ||
+        query.contains('code') ||
+        query.contains('quality');
   }
 
   @override
   Future<AgentResponse> processRequest(AgentRequest request) async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    
+
     return AgentResponse(
       id: 'code_review_${DateTime.now().millisecondsSinceEpoch}',
       requestId: request.id,
       agentId: id,
-      content: 'Code review analysis completed. Found potential improvements in error handling and performance optimization.',
+      content:
+          'Code review analysis completed. Found potential improvements in error handling and performance optimization.',
       type: AgentResponseType.finalAnswer,
       confidence: 0.9,
       timestamp: DateTime.now(),
@@ -80,21 +81,22 @@ class ProjectPlanningAgent extends AIAgent {
   @override
   bool canHandle(AgentRequest request) {
     final query = request.query.toLowerCase();
-    return query.contains('project') || 
-           query.contains('plan') || 
-           query.contains('schedule') ||
-           query.contains('milestone');
+    return query.contains('project') ||
+        query.contains('plan') ||
+        query.contains('schedule') ||
+        query.contains('milestone');
   }
 
   @override
   Future<AgentResponse> processRequest(AgentRequest request) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     return AgentResponse(
       id: 'project_planning_${DateTime.now().millisecondsSinceEpoch}',
       requestId: request.id,
       agentId: id,
-      content: 'Project plan created with 5 phases, estimated completion in 3 months. Key milestones identified and resource allocation optimized.',
+      content:
+          'Project plan created with 5 phases, estimated completion in 3 months. Key milestones identified and resource allocation optimized.',
       type: AgentResponseType.finalAnswer,
       confidence: 0.85,
       timestamp: DateTime.now(),

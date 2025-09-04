@@ -13,15 +13,15 @@ class MultiStyleShowcase extends StatefulWidget {
 class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
   final _chatController = ChatMessagesController();
   final _textController = TextEditingController();
-  
+
   // Define users for the chat
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(id: 'ai123', firstName: 'AI Assistant');
-  
+
   // Track loading state and current style
   bool _isLoading = false;
   int _currentStyle = 1; // Current style (1-6)
-  
+
   // Style descriptions for UI
   final _styleDescriptions = [
     '🍎 Apple Glassmorphic - Premium glass design with ultra-transparent backgrounds',
@@ -35,18 +35,19 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
   @override
   void initState() {
     super.initState();
-    
+
     // Add some sample messages to show the styles
     _addSampleMessages();
   }
 
   void _addSampleMessages() {
     _chatController.addMessage(ChatMessage(
-      text: 'Hello! Try switching between different chat styles using the dropdown above.',
+      text:
+          'Hello! Try switching between different chat styles using the dropdown above.',
       user: _aiUser,
       createdAt: DateTime.now().subtract(const Duration(minutes: 2)),
     ));
-    
+
     _chatController.addMessage(ChatMessage(
       text: 'This is amazing! Each style has its own personality.',
       user: _currentUser,
@@ -69,11 +70,12 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
 
     // Simulate AI response
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     setState(() => _isLoading = false);
-    
+
     _chatController.addMessage(ChatMessage(
-      text: 'Thanks for testing style $_currentStyle! ${_styleDescriptions[_currentStyle - 1].split(' - ')[1]}',
+      text:
+          'Thanks for testing style $_currentStyle! ${_styleDescriptions[_currentStyle - 1].split(' - ')[1]}',
       user: _aiUser,
       createdAt: DateTime.now(),
     ));
@@ -86,13 +88,16 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
     const primaryAccent = Color(0xFF2C6BED);
 
     // Get style-specific options
-    final inputOptions = _getInputOptionsForStyle(_currentStyle, isDark, primaryAccent, context);
-    final bubbleStyle = _getBubbleStyleForStyle(_currentStyle, isDark, primaryAccent, context);
+    final inputOptions =
+        _getInputOptionsForStyle(_currentStyle, isDark, primaryAccent, context);
+    final bubbleStyle =
+        _getBubbleStyleForStyle(_currentStyle, isDark, primaryAccent, context);
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF9FAFC),
+        backgroundColor:
+            isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF9FAFC),
         title: const Text('Multi-Style Chat Showcase'),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(80),
@@ -102,7 +107,8 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
               children: [
                 Row(
                   children: [
-                    const Text('Style: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                    const Text('Style: ',
+                        style: TextStyle(fontWeight: FontWeight.w500)),
                     Expanded(
                       child: DropdownButton<int>(
                         value: _currentStyle,
@@ -115,7 +121,8 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
                         items: List.generate(6, (index) {
                           return DropdownMenuItem(
                             value: index + 1,
-                            child: Text(_styleDescriptions[index].split(' - ')[0]),
+                            child:
+                                Text(_styleDescriptions[index].split(' - ')[0]),
                           );
                         }),
                       ),
@@ -141,17 +148,15 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
         controller: _chatController,
         onSendMessage: _handleSendMessage,
         maxWidth: 700,
-        
         inputOptions: inputOptions,
-        
         messageOptions: MessageOptions(
           containerColor: Colors.transparent,
           bubbleStyle: bubbleStyle,
           showUserName: false,
           showCopyButton: true,
-          containerMargin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          containerMargin:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         ),
-        
         loadingConfig: LoadingConfig(
           isLoading: _isLoading,
           loadingIndicator: LoadingWidget(
@@ -164,11 +169,14 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
   }
 
   // Style 1: Apple Glassmorphic
-  InputOptions _getAppleGlassmorphicStyle(bool isDark, Color primaryAccent, BuildContext context) {
+  InputOptions _getAppleGlassmorphicStyle(
+      bool isDark, Color primaryAccent, BuildContext context) {
     return InputOptions(
       textController: _textController,
       useOuterContainer: false,
-      materialColor: isDark ? Colors.black.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.18),
+      materialColor: isDark
+          ? Colors.black.withValues(alpha: 0.15)
+          : Colors.white.withValues(alpha: 0.18),
       materialElevation: 0,
       materialShape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.only(
@@ -176,7 +184,9 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
           topRight: Radius.circular(28),
         ),
         side: BorderSide(
-          color: isDark ? Colors.white.withValues(alpha: 0.12) : Colors.black.withValues(alpha: 0.06),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.12)
+              : Colors.black.withValues(alpha: 0.06),
           width: 0.8,
         ),
       ),
@@ -186,24 +196,31 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
         filled: true,
-        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.02),
+        fillColor: isDark
+            ? Colors.white.withValues(alpha: 0.05)
+            : Colors.black.withValues(alpha: 0.02),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
         ),
         hintText: 'Message',
         hintStyle: TextStyle(
-          color: isDark ? Colors.white.withValues(alpha: 0.4) : Colors.black.withValues(alpha: 0.4),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.4)
+              : Colors.black.withValues(alpha: 0.4),
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
-      sendButtonBuilder: (onSend) => _buildAppleStyleSendButton(onSend, isDark, primaryAccent),
+      sendButtonBuilder: (onSend) =>
+          _buildAppleStyleSendButton(onSend, isDark, primaryAccent),
     );
   }
 
-  Widget _buildAppleStyleSendButton(VoidCallback onSend, bool isDark, Color primaryAccent) {
+  Widget _buildAppleStyleSendButton(
+      VoidCallback onSend, bool isDark, Color primaryAccent) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.only(left: 8, right: 4),
@@ -234,7 +251,8 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
   // Add other style methods here (Discord, Telegram, WhatsApp, Slack, Instagram)
   // For brevity, I'll add a simplified version that covers the key differences
 
-  InputOptions _getInputOptionsForStyle(int style, bool isDark, Color primaryAccent, BuildContext context) {
+  InputOptions _getInputOptionsForStyle(
+      int style, bool isDark, Color primaryAccent, BuildContext context) {
     switch (style) {
       case 1:
         return _getAppleGlassmorphicStyle(isDark, primaryAccent, context);
@@ -253,34 +271,54 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
     }
   }
 
-  BubbleStyle _getBubbleStyleForStyle(int style, bool isDark, Color primaryAccent, BuildContext context) {
+  BubbleStyle _getBubbleStyleForStyle(
+      int style, bool isDark, Color primaryAccent, BuildContext context) {
     switch (style) {
       case 1: // Apple Glassmorphic
         return BubbleStyle(
           userBubbleMaxWidth: MediaQuery.of(context).size.width * 0.68,
           aiBubbleMaxWidth: MediaQuery.of(context).size.width * 0.75,
-          userBubbleColor: isDark ? primaryAccent.withValues(alpha: 0.8) : primaryAccent.withValues(alpha: 0.1),
-          aiBubbleColor: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.04),
-          userBubbleTopLeftRadius: 24, userBubbleTopRightRadius: 24,
-          aiBubbleTopLeftRadius: 24, aiBubbleTopRightRadius: 24,
-          bottomLeftRadius: 24, bottomRightRadius: 24,
-          enableShadow: true, shadowOpacity: isDark ? 0.3 : 0.15, shadowBlurRadius: 8,
+          userBubbleColor: isDark
+              ? primaryAccent.withValues(alpha: 0.8)
+              : primaryAccent.withValues(alpha: 0.1),
+          aiBubbleColor: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.04),
+          userBubbleTopLeftRadius: 24,
+          userBubbleTopRightRadius: 24,
+          aiBubbleTopLeftRadius: 24,
+          aiBubbleTopRightRadius: 24,
+          bottomLeftRadius: 24,
+          bottomRightRadius: 24,
+          enableShadow: true,
+          shadowOpacity: isDark ? 0.3 : 0.15,
+          shadowBlurRadius: 8,
         );
       case 2: // Discord
         return BubbleStyle(
-          userBubbleColor: isDark ? const Color(0xFF5865F2) : const Color(0xFFE8F4FD),
-          aiBubbleColor: isDark ? const Color(0xFF40444B) : const Color(0xFFF2F3F5),
-          userBubbleTopLeftRadius: 8, userBubbleTopRightRadius: 8,
-          aiBubbleTopLeftRadius: 8, aiBubbleTopRightRadius: 8,
-          bottomLeftRadius: 8, bottomRightRadius: 8,
-          enableShadow: true, shadowOpacity: isDark ? 0.3 : 0.1, shadowBlurRadius: 2,
+          userBubbleColor:
+              isDark ? const Color(0xFF5865F2) : const Color(0xFFE8F4FD),
+          aiBubbleColor:
+              isDark ? const Color(0xFF40444B) : const Color(0xFFF2F3F5),
+          userBubbleTopLeftRadius: 8,
+          userBubbleTopRightRadius: 8,
+          aiBubbleTopLeftRadius: 8,
+          aiBubbleTopRightRadius: 8,
+          bottomLeftRadius: 8,
+          bottomRightRadius: 8,
+          enableShadow: true,
+          shadowOpacity: isDark ? 0.3 : 0.1,
+          shadowBlurRadius: 2,
         );
       // Add other cases for remaining styles...
       default:
         return BubbleStyle(
-          userBubbleTopLeftRadius: 18, userBubbleTopRightRadius: 18,
-          aiBubbleTopLeftRadius: 18, aiBubbleTopRightRadius: 18,
-          bottomLeftRadius: 18, bottomRightRadius: 18,
+          userBubbleTopLeftRadius: 18,
+          userBubbleTopRightRadius: 18,
+          aiBubbleTopLeftRadius: 18,
+          aiBubbleTopRightRadius: 18,
+          bottomLeftRadius: 18,
+          bottomRightRadius: 18,
         );
     }
   }
@@ -294,8 +332,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
         filled: true,
         fillColor: isDark ? const Color(0xFF40444B) : Colors.white,
         hintText: 'Message #ai-chat',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       sendButtonBuilder: (onSend) => Container(
         margin: const EdgeInsets.only(left: 8),
@@ -306,9 +347,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
             borderRadius: BorderRadius.circular(6),
             onTap: onSend,
             child: Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               alignment: Alignment.center,
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              child:
+                  const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             ),
           ),
         ),
@@ -324,13 +367,15 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
         hintText: 'Write a message...',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide(color: isDark ? Colors.white24 : Colors.black12),
+          borderSide:
+              BorderSide(color: isDark ? Colors.white24 : Colors.black12),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
           borderSide: const BorderSide(color: Color(0xFF0088CC), width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
       sendButtonBuilder: (onSend) => Container(
         margin: const EdgeInsets.only(left: 8),
@@ -341,9 +386,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
             customBorder: const CircleBorder(),
             onTap: onSend,
             child: Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               alignment: Alignment.center,
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              child:
+                  const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             ),
           ),
         ),
@@ -359,7 +406,12 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
       containerDecoration: BoxDecoration(
         color: isDark ? const Color(0xFF1F2C33) : Colors.white,
         borderRadius: BorderRadius.circular(25),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
+        ],
       ),
       containerPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: const InputDecoration(
@@ -376,9 +428,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
             customBorder: const CircleBorder(),
             onTap: onSend,
             child: Container(
-              width: 48, height: 48,
+              width: 48,
+              height: 48,
               alignment: Alignment.center,
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 24),
+              child:
+                  const Icon(Icons.send_rounded, color: Colors.white, size: 24),
             ),
           ),
         ),
@@ -393,7 +447,9 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
       useOuterContainer: true,
       containerDecoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1D29) : Colors.white,
-        border: Border.all(color: isDark ? const Color(0xFF4A154B) : const Color(0xFFE1E1E1), width: 2),
+        border: Border.all(
+            color: isDark ? const Color(0xFF4A154B) : const Color(0xFFE1E1E1),
+            width: 2),
         borderRadius: BorderRadius.circular(12),
       ),
       containerPadding: const EdgeInsets.all(16),
@@ -415,9 +471,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
             borderRadius: BorderRadius.circular(8),
             onTap: onSend,
             child: Container(
-              width: 36, height: 36,
+              width: 36,
+              height: 36,
               alignment: Alignment.center,
-              child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 18),
+              child: const Icon(Icons.arrow_upward_rounded,
+                  color: Colors.white, size: 18),
             ),
           ),
         ),
@@ -432,12 +490,22 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
       useOuterContainer: true,
       containerDecoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF833AB4), Color(0xFFE1306C), Color(0xFFF56040), Color(0xFFFCAF45)],
+          colors: [
+            Color(0xFF833AB4),
+            Color(0xFFE1306C),
+            Color(0xFFF56040),
+            Color(0xFFFCAF45)
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 12,
+              offset: const Offset(0, 4))
+        ],
       ),
       containerPadding: const EdgeInsets.all(3),
       decoration: InputDecoration(
@@ -445,13 +513,17 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
         fillColor: isDark ? Colors.black87 : Colors.white,
         hintText: 'Add a message...',
         hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(27), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(27),
+            borderSide: BorderSide.none),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
       sendButtonBuilder: (onSend) => Container(
         margin: const EdgeInsets.only(left: 8),
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [Color(0xFF833AB4), Color(0xFFE1306C)]),
+          gradient:
+              LinearGradient(colors: [Color(0xFF833AB4), Color(0xFFE1306C)]),
           shape: BoxShape.circle,
         ),
         child: Material(
@@ -460,9 +532,11 @@ class _MultiStyleShowcaseState extends State<MultiStyleShowcase> {
             customBorder: const CircleBorder(),
             onTap: onSend,
             child: Container(
-              width: 42, height: 42,
+              width: 42,
+              height: 42,
               alignment: Alignment.center,
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              child:
+                  const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             ),
           ),
         ),

@@ -14,9 +14,8 @@ class ExamplesHomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF0f0f0f)
-          : const Color(0xFFFAFAFA),
+      backgroundColor:
+          isDark ? const Color(0xFF0f0f0f) : const Color(0xFFFAFAFA),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -39,7 +38,7 @@ class ExamplesHomeScreen extends StatelessWidget {
                 _buildHeroExampleCard(
                   context,
                   title: '🚀 Hero Demo',
-                  description: 
+                  description:
                       '30-second showcase of unique features - streaming animations, live themes, file handling, and performance excellence!',
                   icon: Icons.auto_awesome_rounded,
                   gradient: const LinearGradient(
@@ -197,11 +196,12 @@ class ExamplesHomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Gen AI Chat UI',
-                      style: Theme.of(context).textTheme.headlineLarge
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineLarge
                           ?.copyWith(
-                            color: isDark
-                                ? Colors.white
-                                : const Color(0xFF1F2937),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF1F2937),
                             fontWeight: FontWeight.w800,
                             fontSize: 32,
                             letterSpacing: -0.5,
@@ -211,11 +211,11 @@ class ExamplesHomeScreen extends StatelessWidget {
                     Text(
                       'Some examples to see different features',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: isDark
-                            ? Colors.white.withOpacity(0.7)
-                            : const Color(0xFF64748B),
-                        fontWeight: FontWeight.w500,
-                      ),
+                            color: isDark
+                                ? Colors.white.withOpacity(0.7)
+                                : const Color(0xFF64748B),
+                            fontWeight: FontWeight.w500,
+                          ),
                     ),
                   ],
                 ),
@@ -241,9 +241,8 @@ class ExamplesHomeScreen extends StatelessWidget {
                       size: 24,
                     ),
                   ),
-                  tooltip: isDark
-                      ? 'Switch to Light Theme'
-                      : 'Switch to Dark Theme',
+                  tooltip:
+                      isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',
                 ),
               ),
             ],
@@ -294,7 +293,8 @@ class ExamplesHomeScreen extends StatelessWidget {
               children: [
                 // Special hero badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
@@ -312,7 +312,7 @@ class ExamplesHomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Icon with special animation
                 Container(
                   width: 64,
@@ -362,12 +362,13 @@ class ExamplesHomeScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // Call to action
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFD700).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -455,10 +456,10 @@ class ExamplesHomeScreen extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
+                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -469,12 +470,12 @@ class ExamplesHomeScreen extends StatelessWidget {
                   child: Text(
                     description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: isDark
-                          ? Colors.white.withOpacity(0.8)
-                          : const Color(0xFF64748B),
-                      height: 1.5,
-                      fontSize: 14,
-                    ),
+                          color: isDark
+                              ? Colors.white.withOpacity(0.8)
+                              : const Color(0xFF64748B),
+                          height: 1.5,
+                          fontSize: 14,
+                        ),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),

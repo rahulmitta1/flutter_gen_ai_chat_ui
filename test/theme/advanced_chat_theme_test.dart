@@ -183,7 +183,8 @@ void main() {
       const typography = ChatTypography();
       final scaledTypography = typography.scale(1.5);
 
-      expect(scaledTypography.messageBody.fontSize!, greaterThan(typography.messageBody.fontSize!));
+      expect(scaledTypography.messageBody.fontSize!,
+          greaterThan(typography.messageBody.fontSize!));
     });
   });
 

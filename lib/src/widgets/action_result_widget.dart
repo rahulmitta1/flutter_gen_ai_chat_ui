@@ -100,7 +100,7 @@ class _ActionResultWidgetState extends State<ActionResultWidget>
     super.didChangeDependencies();
     // Access inherited widgets here, not in initState
     if (!mounted) return;
-    
+
     final controller = AiActionProvider.of(context);
     if (_controller != controller) {
       _controller = controller;

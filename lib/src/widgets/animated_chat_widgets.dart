@@ -210,7 +210,7 @@ class _AnimatedBubbleState extends State<AnimatedBubble>
       builder: (context, child) {
         final hoverValue = _hoverController.value;
         final scale = 1.0 + (hoverValue * 0.05); // Subtle scale on hover
-        
+
         return Transform.scale(
           scale: scale,
           child: Container(
@@ -289,7 +289,8 @@ class _GradientBorderBubbleState extends State<GradientBorderBubble>
             gradientColors: widget.gradientColors,
             borderWidth: widget.borderWidth,
             borderRadius: widget.borderRadius,
-            rotationAngle: widget.animate ? _rotationController.value * 2 * math.pi : 0,
+            rotationAngle:
+                widget.animate ? _rotationController.value * 2 * math.pi : 0,
           ),
           child: Container(
             decoration: BoxDecoration(

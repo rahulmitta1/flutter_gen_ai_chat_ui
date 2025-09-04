@@ -37,7 +37,7 @@ class CartItem {
   }
 
   double get total => price * quantity;
-  
+
   // Alias for total for compatibility
   double get totalPrice => total;
 
@@ -85,22 +85,23 @@ class ShoppingCart extends ChangeNotifier {
   ShoppingCart({List<CartItem>? items}) : _items = items ?? [];
 
   List<CartItem> get items => List.unmodifiable(_items);
-  
+
   int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
-  
+
   double get totalPrice => _items.fold(0, (sum, item) => sum + item.total);
-  
+
   // Alias for totalPrice for compatibility
   double get total => totalPrice;
-  
+
   bool get isEmpty => _items.isEmpty;
-  
+
   bool get isNotEmpty => _items.isNotEmpty;
 
   /// Add item to cart or increase quantity if item already exists
   void addItem(CartItem item) {
-    final existingIndex = _items.indexWhere((cartItem) => cartItem.id == item.id);
-    
+    final existingIndex =
+        _items.indexWhere((cartItem) => cartItem.id == item.id);
+
     if (existingIndex >= 0) {
       _items[existingIndex] = _items[existingIndex].copyWith(
         quantity: _items[existingIndex].quantity + item.quantity,
@@ -108,7 +109,7 @@ class ShoppingCart extends ChangeNotifier {
     } else {
       _items.add(item);
     }
-    
+
     notifyListeners();
   }
 
@@ -155,17 +156,18 @@ class ShoppingCart extends ChangeNotifier {
   /// Get cart summary as string
   String getSummary() {
     if (isEmpty) return 'Cart is empty';
-    
+
     final summary = StringBuffer();
     summary.writeln('Shopping Cart Summary:');
     summary.writeln('Total Items: $itemCount');
     summary.writeln('Total Price: \$${totalPrice.toStringAsFixed(2)}');
     summary.writeln('\nItems:');
-    
+
     for (final item in _items) {
-      summary.writeln('- ${item.name} (${item.quantity}x) - \$${item.total.toStringAsFixed(2)}');
+      summary.writeln(
+          '- ${item.name} (${item.quantity}x) - \$${item.total.toStringAsFixed(2)}');
     }
-    
+
     return summary.toString();
   }
 }

@@ -10,10 +10,11 @@ import 'ai_context_provider.dart';
 class AiActionConfig {
   /// List of actions to register
   final List<AiAction> actions;
-  
+
   /// Custom confirmation dialog builder
-  final Future<bool> Function(BuildContext context, AiAction action, Map<String, dynamic> parameters)? confirmationBuilder;
-  
+  final Future<bool> Function(BuildContext context, AiAction action,
+      Map<String, dynamic> parameters)? confirmationBuilder;
+
   /// Whether to show debug information
   final bool debug;
 
@@ -28,10 +29,10 @@ class AiActionConfig {
 class AiActionProvider extends StatefulWidget {
   /// Configuration for the provider
   final AiActionConfig config;
-  
+
   /// Child widget
   final Widget child;
-  
+
   /// Optional external action controller
   final ActionController? controller;
 
@@ -47,7 +48,8 @@ class AiActionProvider extends StatefulWidget {
 
   /// Get the ActionController from the current context
   static ActionController of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<_AiActionInheritedWidget>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<_AiActionInheritedWidget>();
     if (provider == null) {
       throw FlutterError(
         'AiActionProvider.of() called with a context that does not contain a AiActionProvider.\n'
@@ -59,7 +61,8 @@ class AiActionProvider extends StatefulWidget {
 
   /// Get the ActionController from the current context, or null if not found
   static ActionController? maybeOf(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<_AiActionInheritedWidget>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<_AiActionInheritedWidget>();
     return provider?.controller;
   }
 }
@@ -71,7 +74,7 @@ class _AiActionProviderState extends State<AiActionProvider> {
   @override
   void initState() {
     super.initState();
-    
+
     // Use external controller or create new one
     if (widget.controller != null) {
       _controller = widget.controller!;
@@ -95,7 +98,7 @@ class _AiActionProviderState extends State<AiActionProvider> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Try to connect to context controller if available
     final contextController = AiContextProvider.maybeOf(context);
     if (contextController != null) {
@@ -112,14 +115,14 @@ class _AiActionProviderState extends State<AiActionProvider> {
   @override
   void didUpdateWidget(AiActionProvider oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // Update confirmation handler
     if (widget.config.confirmationBuilder != null) {
       _controller.onConfirmationRequired = widget.config.confirmationBuilder;
     } else {
       _controller.onConfirmationRequired = _defaultConfirmationHandler;
     }
-    
+
     // Handle action changes
     if (widget.config.actions != oldWidget.config.actions) {
       // Unregister old actions that are no longer present
@@ -128,7 +131,7 @@ class _AiActionProviderState extends State<AiActionProvider> {
           _controller.unregisterAction(oldAction.name);
         }
       }
-      
+
       // Register new actions
       for (final newAction in widget.config.actions) {
         if (!oldWidget.config.actions.any((a) => a.name == newAction.name)) {
@@ -145,63 +148,67 @@ class _AiActionProviderState extends State<AiActionProvider> {
     Map<String, dynamic> parameters,
   ) async {
     return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        final config = action.confirmationConfig!;
-        
-        // Use custom builder if provided
-        if (config.builder != null) {
-          return Dialog(
-            child: config.builder!(context, parameters),
-          );
-        }
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            final config = action.confirmationConfig!;
 
-        // Default confirmation dialog
-        return AlertDialog(
-          title: Text(config.title ?? 'Confirm Action'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(config.message ?? 'Do you want to execute "${action.name}"?'),
-              const SizedBox(height: 16),
-              if (parameters.isNotEmpty) ...[
-                const Text(
-                  'Parameters:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+            // Use custom builder if provided
+            if (config.builder != null) {
+              return Dialog(
+                child: config.builder!(context, parameters),
+              );
+            }
+
+            // Default confirmation dialog
+            return AlertDialog(
+              title: Text(config.title ?? 'Confirm Action'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(config.message ??
+                      'Do you want to execute "${action.name}"?'),
+                  const SizedBox(height: 16),
+                  if (parameters.isNotEmpty) ...[
+                    const Text(
+                      'Parameters:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        parameters.entries
+                            .map((e) => '${e.key}: ${e.value}')
+                            .join('\n'),
+                        style: const TextStyle(fontFamily: 'monospace'),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(config.cancelText),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    parameters.entries
-                        .map((e) => '${e.key}: ${e.value}')
-                        .join('\n'),
-                    style: const TextStyle(fontFamily: 'monospace'),
-                  ),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(config.confirmText),
                 ),
               ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(config.cancelText),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(config.confirmText),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+            );
+          },
+        ) ??
+        false;
   }
 
   @override

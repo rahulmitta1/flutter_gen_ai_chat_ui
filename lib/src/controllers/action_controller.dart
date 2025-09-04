@@ -318,7 +318,7 @@ class ActionController extends ChangeNotifier {
         e,
         stackTrace,
       );
-      
+
       _emitEvent(ActionEvent(
         type: ActionEventType.failed,
         actionName: action.name,
@@ -349,7 +349,8 @@ class ActionController extends ChangeNotifier {
     // Remove from active executions after a shorter delay for better memory management
     Timer(const Duration(seconds: 2), () {
       _executions.remove(execution.id);
-      if (mounted) {  // Check if controller is still mounted
+      if (mounted) {
+        // Check if controller is still mounted
         notifyListeners();
       }
     });
@@ -537,7 +538,7 @@ class ActionController extends ChangeNotifier {
   void dispose() {
     mounted = false;
     _eventController.close();
-    
+
     // Cancel all running executions
     for (final execution in _executions.values) {
       if (execution.isActive) {
@@ -545,7 +546,7 @@ class ActionController extends ChangeNotifier {
       }
     }
     _executions.clear();
-    
+
     super.dispose();
   }
 }

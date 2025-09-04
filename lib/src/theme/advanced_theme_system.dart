@@ -1,5 +1,5 @@
 /// Advanced theme system exports
-/// 
+///
 /// This file provides access to the complete advanced theme system with
 /// 50+ sophisticated properties, gradient support, typography scales,
 /// animation presets, and platform-specific variations.

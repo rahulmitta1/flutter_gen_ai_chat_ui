@@ -17,34 +17,34 @@ void main() {
     group('Action Registration', () {
       test('should register action successfully', () {
         final action = _createTestAction();
-        
+
         controller.registerAction(action);
-        
+
         expect(controller.actions, containsPair('test_action', action));
       });
 
       test('should unregister action successfully', () {
         final action = _createTestAction();
         controller.registerAction(action);
-        
+
         controller.unregisterAction('test_action');
-        
+
         expect(controller.actions, isNot(contains('test_action')));
       });
 
       test('should handle unregistering non-existent action', () {
         // Should not throw exception
         controller.unregisterAction('non_existent');
-        
+
         expect(controller.actions, isEmpty);
       });
 
       test('should clear all actions', () {
         controller.registerAction(_createTestAction());
         controller.registerAction(_createTestAction(name: 'action2'));
-        
+
         controller.clearActions();
-        
+
         expect(controller.actions, isEmpty);
       });
     });
@@ -53,9 +53,10 @@ void main() {
       test('should execute action successfully', () async {
         final action = _createTestAction();
         controller.registerAction(action);
-        
-        final result = await controller.executeAction('test_action', {'param': 'value'});
-        
+
+        final result =
+            await controller.executeAction('test_action', {'param': 'value'});
+
         expect(result.success, isTrue);
         expect(result.data, equals({'result': 'success', 'param': 'value'}));
       });
@@ -63,16 +64,16 @@ void main() {
       test('should handle action execution failure', () async {
         final action = _createFailingAction();
         controller.registerAction(action);
-        
+
         final result = await controller.executeAction('failing_action', {});
-        
+
         expect(result.success, isFalse);
         expect(result.error, equals('Test error'));
       });
 
       test('should return error for non-existent action', () async {
         final result = await controller.executeAction('non_existent', {});
-        
+
         expect(result.success, isFalse);
         expect(result.error, contains('Action not found'));
       });
@@ -80,9 +81,9 @@ void main() {
       test('should validate required parameters', () async {
         final action = _createActionWithRequiredParams();
         controller.registerAction(action);
-        
+
         final result = await controller.executeAction('param_action', {});
-        
+
         expect(result.success, isFalse);
         expect(result.error, contains('required_param'));
       });
@@ -90,11 +91,10 @@ void main() {
       test('should pass validation with all required parameters', () async {
         final action = _createActionWithRequiredParams();
         controller.registerAction(action);
-        
-        final result = await controller.executeAction('param_action', {
-          'required_param': 'test_value'
-        });
-        
+
+        final result = await controller
+            .executeAction('param_action', {'required_param': 'test_value'});
+
         expect(result.success, isTrue);
       });
     });
@@ -103,9 +103,9 @@ void main() {
       test('should generate function calling format correctly', () {
         final action = _createTestAction();
         controller.registerAction(action);
-        
+
         final functions = controller.getActionsForFunctionCalling();
-        
+
         expect(functions, hasLength(1));
         expect(functions.first['name'], equals('test_action'));
         expect(functions.first['description'], equals('Test action'));
@@ -117,12 +117,10 @@ void main() {
       test('should handle function call correctly', () async {
         final action = _createTestAction();
         controller.registerAction(action);
-        
-        final result = await controller.handleFunctionCall(
-          'test_action',
-          {'param': 'value'}
-        );
-        
+
+        final result = await controller
+            .handleFunctionCall('test_action', {'param': 'value'});
+
         expect(result.success, isTrue);
         expect(result.data, equals({'result': 'success', 'param': 'value'}));
       });
@@ -132,14 +130,14 @@ void main() {
       test('should emit execution started event', () async {
         final action = _createTestAction();
         controller.registerAction(action);
-        
+
         late ActionEvent receivedEvent;
         controller.events.listen((event) {
           receivedEvent = event;
         });
-        
+
         await controller.executeAction('test_action', {});
-        
+
         expect(receivedEvent.type, equals(ActionEventType.executionStarted));
         expect(receivedEvent.actionName, equals('test_action'));
       });
@@ -147,18 +145,19 @@ void main() {
       test('should emit execution completed event', () async {
         final action = _createTestAction();
         controller.registerAction(action);
-        
+
         ActionEvent? completedEvent;
         controller.events.listen((event) {
           if (event.type == ActionEventType.executionCompleted) {
             completedEvent = event;
           }
         });
-        
+
         await controller.executeAction('test_action', {});
-        
+
         expect(completedEvent, isNotNull);
-        expect(completedEvent!.type, equals(ActionEventType.executionCompleted));
+        expect(
+            completedEvent!.type, equals(ActionEventType.executionCompleted));
         expect(completedEvent!.result, isNotNull);
         expect(completedEvent!.result!.success, isTrue);
       });
@@ -166,16 +165,16 @@ void main() {
       test('should emit execution failed event', () async {
         final action = _createFailingAction();
         controller.registerAction(action);
-        
+
         ActionEvent? failedEvent;
         controller.events.listen((event) {
           if (event.type == ActionEventType.executionFailed) {
             failedEvent = event;
           }
         });
-        
+
         await controller.executeAction('failing_action', {});
-        
+
         expect(failedEvent, isNotNull);
         expect(failedEvent!.type, equals(ActionEventType.executionFailed));
         expect(failedEvent!.error, equals('Test error'));
@@ -186,9 +185,9 @@ void main() {
       test('should integrate with context controller', () {
         final contextController = AiContextController();
         controller.contextController = contextController;
-        
+
         expect(controller.contextController, equals(contextController));
-        
+
         contextController.dispose();
       });
 
@@ -199,16 +198,16 @@ void main() {
           name: 'Test User',
           profileData: {'role': 'admin'},
         ));
-        
+
         controller.contextController = contextController;
         controller.registerAction(_createTestAction());
-        
+
         final result = controller.getActionsWithContext();
-        
+
         expect(result['actions'], isA<List>());
         expect(result['context'], isA<Map>());
         expect(result['context']['test_user'], isNotNull);
-        
+
         contextController.dispose();
       });
 
@@ -219,14 +218,14 @@ void main() {
           name: 'Test User',
           profileData: {'role': 'admin'},
         ));
-        
+
         controller.contextController = contextController;
-        
+
         final enhancedPrompt = controller.getEnhancedPrompt('Test prompt');
-        
+
         expect(enhancedPrompt, contains('Test prompt'));
         expect(enhancedPrompt, contains('Context'));
-        
+
         contextController.dispose();
       });
     });

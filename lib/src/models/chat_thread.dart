@@ -41,7 +41,8 @@ class ChatThread {
     return {
       'id': id,
       'title': title,
-      'messages': <Map<String, dynamic>>[], // Messages serialization not implemented yet
+      'messages': <Map<String,
+          dynamic>>[], // Messages serialization not implemented yet
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'metadata': metadata,
@@ -85,10 +86,9 @@ class ThreadState {
     );
   }
 
-  ChatThread? get activeThread => 
+  ChatThread? get activeThread =>
       activeThreadId != null ? threads[activeThreadId] : null;
 
-  List<ChatThread> get sortedThreads => threads.values
-      .toList()
-      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+  List<ChatThread> get sortedThreads => threads.values.toList()
+    ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 }

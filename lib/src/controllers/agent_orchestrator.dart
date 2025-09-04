@@ -8,14 +8,16 @@ import '../models/ai_agent.dart';
 class AgentOrchestrator extends ChangeNotifier {
   final Map<String, AIAgent> _agents = {};
   final Map<String, AgentCollaboration> _activeCollaborations = {};
-  final StreamController<AgentResponse> _responseStreamController = StreamController<AgentResponse>.broadcast();
-  final StreamController<AgentState> _stateStreamController = StreamController<AgentState>.broadcast();
-  
+  final StreamController<AgentResponse> _responseStreamController =
+      StreamController<AgentResponse>.broadcast();
+  final StreamController<AgentState> _stateStreamController =
+      StreamController<AgentState>.broadcast();
+
   // Orchestrator configuration
   final int maxConcurrentRequests;
   final Duration requestTimeout;
   final bool enableCollaboration;
-  
+
   AgentOrchestrator({
     this.maxConcurrentRequests = 10,
     this.requestTimeout = const Duration(seconds: 30),
@@ -24,23 +26,24 @@ class AgentOrchestrator extends ChangeNotifier {
 
   // Getters
   List<AIAgent> get agents => _agents.values.toList();
-  List<AgentCollaboration> get activeCollaborations => _activeCollaborations.values.toList();
+  List<AgentCollaboration> get activeCollaborations =>
+      _activeCollaborations.values.toList();
   Stream<AgentResponse> get responseStream => _responseStreamController.stream;
   Stream<AgentState> get stateStream => _stateStreamController.stream;
 
   /// Register an agent with the orchestrator
   Future<void> registerAgent(AIAgent agent) async {
     _agents[agent.id] = agent;
-    
+
     // Listen to agent state changes
     agent.streamState().listen(_stateStreamController.add);
-    
+
     // Initialize agent
     await agent.initialize({
       'orchestrator_id': 'main',
       'collaboration_enabled': enableCollaboration,
     });
-    
+
     notifyListeners();
   }
 
@@ -59,25 +62,26 @@ class AgentOrchestrator extends ChangeNotifier {
     // Find the best agent for this request
     final routingDecision = await _routeRequest(request);
     final targetAgent = _agents[routingDecision.targetAgentId];
-    
+
     if (targetAgent == null) {
-      throw AgentException('Target agent ${routingDecision.targetAgentId} not found');
+      throw AgentException(
+          'Target agent ${routingDecision.targetAgentId} not found');
     }
 
     try {
       final response = await targetAgent.processRequest(request);
       _responseStreamController.add(response);
-      
+
       // Handle delegation if needed
       if (response.type == AgentResponseType.delegation) {
         return await _handleDelegation(request, response);
       }
-      
+
       // Handle collaboration requests
       if (response.type == AgentResponseType.collaborationRequest) {
         return await _handleCollaborationRequest(request, response);
       }
-      
+
       return response;
     } catch (e) {
       final errorResponse = AgentResponse(
@@ -88,7 +92,7 @@ class AgentOrchestrator extends ChangeNotifier {
         type: AgentResponseType.error,
         timestamp: DateTime.now(),
       );
-      
+
       _responseStreamController.add(errorResponse);
       return errorResponse;
     }
@@ -98,7 +102,7 @@ class AgentOrchestrator extends ChangeNotifier {
   Stream<AgentResponse> streamResponse(AgentRequest request) async* {
     final routingDecision = await _routeRequest(request);
     final targetAgent = _agents[routingDecision.targetAgentId];
-    
+
     if (targetAgent == null) {
       yield AgentResponse(
         id: 'error_${DateTime.now().millisecondsSinceEpoch}',
@@ -198,7 +202,8 @@ class AgentOrchestrator extends ChangeNotifier {
       if (score > bestScore) {
         bestScore = score;
         bestAgentId = agent.id;
-        reasoning = 'Best match: ${agent.specialization} (score: ${score.toStringAsFixed(2)})';
+        reasoning =
+            'Best match: ${agent.specialization} (score: ${score.toStringAsFixed(2)})';
       }
     }
 
@@ -269,10 +274,13 @@ class AgentOrchestrator extends ChangeNotifier {
   }
 
   /// Handle delegation to another agent
-  Future<AgentResponse> _handleDelegation(AgentRequest originalRequest, AgentResponse delegationResponse) async {
+  Future<AgentResponse> _handleDelegation(
+      AgentRequest originalRequest, AgentResponse delegationResponse) async {
     // Extract delegation information from response metadata
     final targetAgentId = delegationResponse.metadata['delegate_to'] as String?;
-    final delegatedQuery = delegationResponse.metadata['delegated_query'] as String? ?? originalRequest.query;
+    final delegatedQuery =
+        delegationResponse.metadata['delegated_query'] as String? ??
+            originalRequest.query;
 
     if (targetAgentId == null) {
       throw const AgentException('Delegation target not specified');
@@ -295,10 +303,14 @@ class AgentOrchestrator extends ChangeNotifier {
   }
 
   /// Handle collaboration request
-  Future<AgentResponse> _handleCollaborationRequest(AgentRequest originalRequest, AgentResponse collaborationResponse) async {
-    final participantIds = collaborationResponse.metadata['participants'] as List<String>?;
-    final coordinatorId = collaborationResponse.metadata['coordinator'] as String?;
-    final topic = collaborationResponse.metadata['topic'] as String? ?? originalRequest.query;
+  Future<AgentResponse> _handleCollaborationRequest(
+      AgentRequest originalRequest, AgentResponse collaborationResponse) async {
+    final participantIds =
+        collaborationResponse.metadata['participants'] as List<String>?;
+    final coordinatorId =
+        collaborationResponse.metadata['coordinator'] as String?;
+    final topic = collaborationResponse.metadata['topic'] as String? ??
+        originalRequest.query;
 
     if (participantIds == null || coordinatorId == null) {
       throw const AgentException('Collaboration parameters not specified');
@@ -314,7 +326,8 @@ class AgentOrchestrator extends ChangeNotifier {
       id: 'collab_response_${DateTime.now().millisecondsSinceEpoch}',
       requestId: originalRequest.id,
       agentId: 'orchestrator',
-      content: 'Started collaboration ${collaboration.id} with ${participantIds.length} agents',
+      content:
+          'Started collaboration ${collaboration.id} with ${participantIds.length} agents',
       type: AgentResponseType.finalAnswer,
       metadata: {'collaboration_id': collaboration.id},
       timestamp: DateTime.now(),
@@ -325,13 +338,13 @@ class AgentOrchestrator extends ChangeNotifier {
   void dispose() {
     _responseStreamController.close();
     _stateStreamController.close();
-    
+
     // Dispose all agents
     for (final agent in _agents.values) {
       agent.dispose();
     }
     _agents.clear();
-    
+
     super.dispose();
   }
 }
@@ -340,7 +353,7 @@ class AgentOrchestrator extends ChangeNotifier {
 class AgentException implements Exception {
   final String message;
   const AgentException(this.message);
-  
+
   @override
   String toString() => 'AgentException: $message';
 }

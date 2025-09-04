@@ -137,12 +137,13 @@ class AdvancedThemeProvider extends ChangeNotifier {
   bool get isDarkMode => _isDarkMode;
 
   ThemeData get themeData {
-    final baseTheme = AdvancedTheme.themes[_currentTheme] ?? AdvancedTheme.themes[AdvancedTheme.gradient]!;
-    
+    final baseTheme = AdvancedTheme.themes[_currentTheme] ??
+        AdvancedTheme.themes[AdvancedTheme.gradient]!;
+
     if (_isDarkMode && baseTheme.brightness == Brightness.light) {
       return _createDarkVariant(baseTheme);
     }
-    
+
     return baseTheme;
   }
 
@@ -183,7 +184,8 @@ class AdvancedThemeProvider extends ChangeNotifier {
   }
 
   void setTheme(String themeName) {
-    if (_currentTheme != themeName && AdvancedTheme.themes.containsKey(themeName)) {
+    if (_currentTheme != themeName &&
+        AdvancedTheme.themes.containsKey(themeName)) {
       _currentTheme = themeName;
       notifyListeners();
     }

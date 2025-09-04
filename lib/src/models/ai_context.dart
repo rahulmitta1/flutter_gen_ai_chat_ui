@@ -2,14 +2,19 @@
 enum AiContextType {
   /// User profile and preferences
   userProfile,
+
   /// Application state (shopping cart, form data, etc.)
   applicationState,
+
   /// Current page or screen context
   navigationContext,
+
   /// Business logic state (inventory, account balance, etc.)
   businessContext,
+
   /// UI state (selected items, form values, etc.)
   uiState,
+
   /// Custom context types
   custom,
 }
@@ -18,10 +23,13 @@ enum AiContextType {
 enum AiContextPriority {
   /// Low priority - background information
   low,
+
   /// Normal priority - standard context
   normal,
+
   /// High priority - important for current conversation
   high,
+
   /// Critical priority - essential for AI responses
   critical,
 }
@@ -30,34 +38,34 @@ enum AiContextPriority {
 class AiContextData {
   /// Unique identifier for this context data
   final String id;
-  
+
   /// Human-readable name for this context
   final String name;
-  
+
   /// Type of context data
   final AiContextType type;
-  
+
   /// Priority level for AI consideration
   final AiContextPriority priority;
-  
+
   /// The actual context data
   final dynamic data;
-  
+
   /// Description of what this context represents
   final String description;
-  
+
   /// Categories or tags for filtering context
   final List<String> categories;
-  
+
   /// When this context was last updated
   final DateTime lastUpdated;
-  
+
   /// Whether this context should be included in AI prompts
   final bool enabled;
-  
+
   /// Custom serializer for AI consumption
   final String Function(dynamic data)? serializer;
-  
+
   /// Optional expiration time for context data
   final DateTime? expiresAt;
 
@@ -198,7 +206,8 @@ class AiContextData {
 
     // Default serialization based on data type
     if (data is Map) {
-      final entries = (data as Map<String, dynamic>).entries
+      final entries = (data as Map<String, dynamic>)
+          .entries
           .where((e) => e.value != null)
           .map((e) => '${e.key}: ${e.value}')
           .join(', ');
@@ -272,10 +281,13 @@ class AiContextData {
 enum AiContextEventType {
   /// Context data was added
   added,
+
   /// Context data was updated
   updated,
+
   /// Context data was removed
   removed,
+
   /// Context was cleared
   cleared,
 }
@@ -284,16 +296,16 @@ enum AiContextEventType {
 class AiContextEvent {
   /// Type of context event
   final AiContextEventType type;
-  
+
   /// The context data involved in the event
   final AiContextData? contextData;
-  
+
   /// Optional previous state for update events
   final AiContextData? previousData;
-  
+
   /// Timestamp of the event
   final DateTime timestamp;
-  
+
   /// Optional metadata about the event
   final Map<String, dynamic>? metadata;
 
@@ -306,6 +318,6 @@ class AiContextEvent {
   }) : timestamp = timestamp ?? DateTime.now();
 
   @override
-  String toString() => 
+  String toString() =>
       'AiContextEvent(type: $type, context: ${contextData?.id}, time: $timestamp)';
 }

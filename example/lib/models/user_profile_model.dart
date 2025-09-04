@@ -24,16 +24,16 @@ class UserProfile extends ChangeNotifier {
     List<String>? favoriteCategories,
     List<String>? recentPurchases,
     Map<String, dynamic>? metadata,
-  }) : _id = id,
-       _name = name,
-       _email = email,
-       _location = location,
-       _membershipLevel = membershipLevel,
-       _totalSpent = totalSpent,
-       _preferences = preferences ?? [],
-       _favoriteCategories = favoriteCategories ?? [],
-       _recentPurchases = recentPurchases ?? [],
-       _metadata = metadata ?? {};
+  })  : _id = id,
+        _name = name,
+        _email = email,
+        _location = location,
+        _membershipLevel = membershipLevel,
+        _totalSpent = totalSpent,
+        _preferences = preferences ?? [],
+        _favoriteCategories = favoriteCategories ?? [],
+        _recentPurchases = recentPurchases ?? [],
+        _metadata = metadata ?? {};
 
   // Getters
   String get id => _id;
@@ -118,18 +118,18 @@ class UserProfile extends ChangeNotifier {
     buffer.writeln('Name: $_name');
     buffer.writeln('Email: $_email');
     buffer.writeln('Location: $_location');
-    
+
     if (_preferences.isNotEmpty) {
       buffer.writeln('Preferences: ${_preferences.join(', ')}');
     }
-    
+
     if (_metadata.isNotEmpty) {
       buffer.writeln('Additional Info:');
       _metadata.forEach((key, value) {
         buffer.writeln('- $key: $value');
       });
     }
-    
+
     return buffer.toString();
   }
 

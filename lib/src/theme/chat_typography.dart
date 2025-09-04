@@ -323,28 +323,46 @@ class ChatTypography {
   /// Lerp between two typography instances
   ChatTypography lerp(ChatTypography other, double t) {
     return ChatTypography(
-      displayLarge: TextStyle.lerp(displayLarge, other.displayLarge, t) ?? displayLarge,
-      displayMedium: TextStyle.lerp(displayMedium, other.displayMedium, t) ?? displayMedium,
-      displaySmall: TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
-      headlineLarge: TextStyle.lerp(headlineLarge, other.headlineLarge, t) ?? headlineLarge,
-      headlineMedium: TextStyle.lerp(headlineMedium, other.headlineMedium, t) ?? headlineMedium,
-      headlineSmall: TextStyle.lerp(headlineSmall, other.headlineSmall, t) ?? headlineSmall,
+      displayLarge:
+          TextStyle.lerp(displayLarge, other.displayLarge, t) ?? displayLarge,
+      displayMedium: TextStyle.lerp(displayMedium, other.displayMedium, t) ??
+          displayMedium,
+      displaySmall:
+          TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
+      headlineLarge: TextStyle.lerp(headlineLarge, other.headlineLarge, t) ??
+          headlineLarge,
+      headlineMedium: TextStyle.lerp(headlineMedium, other.headlineMedium, t) ??
+          headlineMedium,
+      headlineSmall: TextStyle.lerp(headlineSmall, other.headlineSmall, t) ??
+          headlineSmall,
       titleLarge: TextStyle.lerp(titleLarge, other.titleLarge, t) ?? titleLarge,
-      titleMedium: TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
+      titleMedium:
+          TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
       titleSmall: TextStyle.lerp(titleSmall, other.titleSmall, t) ?? titleSmall,
       bodyLarge: TextStyle.lerp(bodyLarge, other.bodyLarge, t) ?? bodyLarge,
       bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t) ?? bodyMedium,
       bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t) ?? bodySmall,
       labelLarge: TextStyle.lerp(labelLarge, other.labelLarge, t) ?? labelLarge,
-      labelMedium: TextStyle.lerp(labelMedium, other.labelMedium, t) ?? labelMedium,
+      labelMedium:
+          TextStyle.lerp(labelMedium, other.labelMedium, t) ?? labelMedium,
       labelSmall: TextStyle.lerp(labelSmall, other.labelSmall, t) ?? labelSmall,
-      messageBody: TextStyle.lerp(messageBody, other.messageBody, t) ?? messageBody,
-      userMessageBody: TextStyle.lerp(userMessageBody, other.userMessageBody, t) ?? userMessageBody,
-      aiResponseBody: TextStyle.lerp(aiResponseBody, other.aiResponseBody, t) ?? aiResponseBody,
-      systemMessageBody: TextStyle.lerp(systemMessageBody, other.systemMessageBody, t) ?? systemMessageBody,
+      messageBody:
+          TextStyle.lerp(messageBody, other.messageBody, t) ?? messageBody,
+      userMessageBody:
+          TextStyle.lerp(userMessageBody, other.userMessageBody, t) ??
+              userMessageBody,
+      aiResponseBody: TextStyle.lerp(aiResponseBody, other.aiResponseBody, t) ??
+          aiResponseBody,
+      systemMessageBody:
+          TextStyle.lerp(systemMessageBody, other.systemMessageBody, t) ??
+              systemMessageBody,
       timestamp: TextStyle.lerp(timestamp, other.timestamp, t) ?? timestamp,
-      messageMetadata: TextStyle.lerp(messageMetadata, other.messageMetadata, t) ?? messageMetadata,
-      inputPlaceholder: TextStyle.lerp(inputPlaceholder, other.inputPlaceholder, t) ?? inputPlaceholder,
+      messageMetadata:
+          TextStyle.lerp(messageMetadata, other.messageMetadata, t) ??
+              messageMetadata,
+      inputPlaceholder:
+          TextStyle.lerp(inputPlaceholder, other.inputPlaceholder, t) ??
+              inputPlaceholder,
       inputText: TextStyle.lerp(inputText, other.inputText, t) ?? inputText,
       buttonText: TextStyle.lerp(buttonText, other.buttonText, t) ?? buttonText,
       errorText: TextStyle.lerp(errorText, other.errorText, t) ?? errorText,
@@ -355,9 +373,9 @@ class ChatTypography {
 
   /// Predefined typography variants
   static const ChatTypography mobile = ChatTypography();
-  
+
   static final ChatTypography tablet = const ChatTypography().scale(1.1);
-  
+
   static final ChatTypography desktop = const ChatTypography().scale(1.2);
 
   static const ChatTypography compact = ChatTypography(

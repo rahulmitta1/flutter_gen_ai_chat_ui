@@ -4,7 +4,8 @@ import '../models/ai_agent.dart';
 
 /// Text analysis specialist agent
 class TextAnalysisAgent extends AIAgent {
-  final StreamController<AgentState> _stateController = StreamController<AgentState>.broadcast();
+  final StreamController<AgentState> _stateController =
+      StreamController<AgentState>.broadcast();
   AgentStatus _status = AgentStatus.initializing;
   String? _currentTask;
 
@@ -32,11 +33,12 @@ class TextAnalysisAgent extends AIAgent {
   @override
   bool canHandle(AgentRequest request) {
     final queryLower = request.query.toLowerCase();
-    return capabilities.any((capability) => queryLower.contains(capability.replaceAll('_', ' '))) ||
-           queryLower.contains('analyze') ||
-           queryLower.contains('text') ||
-           queryLower.contains('sentiment') ||
-           queryLower.contains('summarize');
+    return capabilities.any((capability) =>
+            queryLower.contains(capability.replaceAll('_', ' '))) ||
+        queryLower.contains('analyze') ||
+        queryLower.contains('text') ||
+        queryLower.contains('sentiment') ||
+        queryLower.contains('summarize');
   }
 
   @override
@@ -113,13 +115,27 @@ class TextAnalysisAgent extends AIAgent {
 
   String _analyzeSentiment(String text) {
     // Simple sentiment analysis simulation
-    final positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'happy'];
-    final negativeWords = ['bad', 'terrible', 'awful', 'sad', 'angry', 'disappointed'];
-    
+    final positiveWords = [
+      'good',
+      'great',
+      'excellent',
+      'amazing',
+      'wonderful',
+      'happy'
+    ];
+    final negativeWords = [
+      'bad',
+      'terrible',
+      'awful',
+      'sad',
+      'angry',
+      'disappointed'
+    ];
+
     final textLower = text.toLowerCase();
     final positiveCount = positiveWords.where(textLower.contains).length;
     final negativeCount = negativeWords.where(textLower.contains).length;
-    
+
     if (positiveCount > negativeCount) {
       return 'Sentiment Analysis: Positive sentiment detected (score: ${(0.6 + positiveCount * 0.1).toStringAsFixed(1)}/1.0)';
     } else if (negativeCount > positiveCount) {
@@ -134,20 +150,22 @@ class TextAnalysisAgent extends AIAgent {
     if (words.length <= 10) {
       return 'Summary: Text is already concise (${words.length} words).';
     }
-    
+
     return 'Summary: This text contains ${words.length} words discussing various topics. '
-           'Key themes appear to be related to the main concepts mentioned in the content.';
+        'Key themes appear to be related to the main concepts mentioned in the content.';
   }
 
   String _checkGrammar(String text) {
     final issues = <String>[];
-    
+
     if (text.contains('teh')) issues.add('"teh" should be "the"');
     if (text.contains('recieve')) issues.add('"recieve" should be "receive"');
-    if (!text.trim().endsWith('.') && !text.trim().endsWith('!') && !text.trim().endsWith('?')) {
+    if (!text.trim().endsWith('.') &&
+        !text.trim().endsWith('!') &&
+        !text.trim().endsWith('?')) {
       issues.add('Consider adding punctuation at the end');
     }
-    
+
     if (issues.isEmpty) {
       return 'Grammar Check: No obvious grammar issues detected.';
     } else {
@@ -158,19 +176,22 @@ class TextAnalysisAgent extends AIAgent {
   String _generalTextAnalysis(String text) {
     final words = text.split(' ');
     final sentences = text.split(RegExp(r'[.!?]+'));
-    final avgWordsPerSentence = sentences.isNotEmpty ? (words.length / sentences.length).toStringAsFixed(1) : '0';
-    
+    final avgWordsPerSentence = sentences.isNotEmpty
+        ? (words.length / sentences.length).toStringAsFixed(1)
+        : '0';
+
     return 'Text Analysis Results:\n'
-           '• Word count: ${words.length}\n'
-           '• Sentence count: ${sentences.length}\n'
-           '• Average words per sentence: $avgWordsPerSentence\n'
-           '• Readability: ${words.length < 50 ? "Easy" : words.length < 100 ? "Moderate" : "Complex"}';
+        '• Word count: ${words.length}\n'
+        '• Sentence count: ${sentences.length}\n'
+        '• Average words per sentence: $avgWordsPerSentence\n'
+        '• Readability: ${words.length < 50 ? "Easy" : words.length < 100 ? "Moderate" : "Complex"}';
   }
 }
 
 /// Code analysis specialist agent
 class CodeAnalysisAgent extends AIAgent {
-  final StreamController<AgentState> _stateController = StreamController<AgentState>.broadcast();
+  final StreamController<AgentState> _stateController =
+      StreamController<AgentState>.broadcast();
   AgentStatus _status = AgentStatus.initializing;
   String? _currentTask;
 
@@ -199,12 +220,13 @@ class CodeAnalysisAgent extends AIAgent {
   @override
   bool canHandle(AgentRequest request) {
     final queryLower = request.query.toLowerCase();
-    return capabilities.any((capability) => queryLower.contains(capability.replaceAll('_', ' '))) ||
-           queryLower.contains('code') ||
-           queryLower.contains('function') ||
-           queryLower.contains('debug') ||
-           queryLower.contains('optimize') ||
-           queryLower.contains('review');
+    return capabilities.any((capability) =>
+            queryLower.contains(capability.replaceAll('_', ' '))) ||
+        queryLower.contains('code') ||
+        queryLower.contains('function') ||
+        queryLower.contains('debug') ||
+        queryLower.contains('optimize') ||
+        queryLower.contains('review');
   }
 
   @override
@@ -217,7 +239,7 @@ class CodeAnalysisAgent extends AIAgent {
       await Future<void>.delayed(const Duration(milliseconds: 1200));
 
       final content = _analyzeCode(request.query);
-      
+
       final response = AgentResponse(
         id: 'code_analysis_${DateTime.now().millisecondsSinceEpoch}',
         requestId: request.id,
@@ -267,26 +289,27 @@ class CodeAnalysisAgent extends AIAgent {
 
   String _analyzeCode(String query) {
     return 'Code Analysis Results:\n\n'
-           '✅ **Code Structure**: Well organized with clear separation of concerns\n'
-           '⚠️  **Potential Issues**:\n'
-           '   • Consider adding error handling in async functions\n'
-           '   • Some variables could be marked as final for better performance\n'
-           '   • Consider extracting complex logic into separate methods\n\n'
-           '🚀 **Performance Suggestions**:\n'
-           '   • Use const constructors where possible\n'
-           '   • Consider lazy loading for expensive operations\n'
-           '   • Implement proper disposal patterns for streams\n\n'
-           '📋 **Best Practices**:\n'
-           '   • Add comprehensive documentation\n'
-           '   • Implement unit tests for critical functions\n'
-           '   • Follow consistent naming conventions\n\n'
-           '**Overall Rating**: 8.5/10 - Good code quality with room for optimization';
+        '✅ **Code Structure**: Well organized with clear separation of concerns\n'
+        '⚠️  **Potential Issues**:\n'
+        '   • Consider adding error handling in async functions\n'
+        '   • Some variables could be marked as final for better performance\n'
+        '   • Consider extracting complex logic into separate methods\n\n'
+        '🚀 **Performance Suggestions**:\n'
+        '   • Use const constructors where possible\n'
+        '   • Consider lazy loading for expensive operations\n'
+        '   • Implement proper disposal patterns for streams\n\n'
+        '📋 **Best Practices**:\n'
+        '   • Add comprehensive documentation\n'
+        '   • Implement unit tests for critical functions\n'
+        '   • Follow consistent naming conventions\n\n'
+        '**Overall Rating**: 8.5/10 - Good code quality with room for optimization';
   }
 }
 
 /// General assistant agent that can delegate to specialists
 class GeneralAssistantAgent extends AIAgent {
-  final StreamController<AgentState> _stateController = StreamController<AgentState>.broadcast();
+  final StreamController<AgentState> _stateController =
+      StreamController<AgentState>.broadcast();
   AgentStatus _status = AgentStatus.initializing;
   String? _currentTask;
 
@@ -326,19 +349,19 @@ class GeneralAssistantAgent extends AIAgent {
       await Future<void>.delayed(const Duration(milliseconds: 500));
 
       final queryLower = request.query.toLowerCase();
-      
+
       // Check if this should be delegated to a specialist
       if (_shouldDelegateToTextAnalyst(queryLower)) {
-        return _createDelegationResponse(request, 'text_analysis_001', 
-          'Delegating text analysis request to specialist');
+        return _createDelegationResponse(request, 'text_analysis_001',
+            'Delegating text analysis request to specialist');
       } else if (_shouldDelegateToCodeAnalyst(queryLower)) {
         return _createDelegationResponse(request, 'code_analysis_001',
-          'Delegating code analysis request to specialist');
+            'Delegating code analysis request to specialist');
       }
 
       // Handle general queries
       final content = _handleGeneralQuery(request.query);
-      
+
       final response = AgentResponse(
         id: 'general_${DateTime.now().millisecondsSinceEpoch}',
         requestId: request.id,
@@ -384,19 +407,20 @@ class GeneralAssistantAgent extends AIAgent {
 
   bool _shouldDelegateToTextAnalyst(String query) {
     return query.contains('analyze') && query.contains('text') ||
-           query.contains('sentiment') ||
-           query.contains('summarize') ||
-           query.contains('grammar');
+        query.contains('sentiment') ||
+        query.contains('summarize') ||
+        query.contains('grammar');
   }
 
   bool _shouldDelegateToCodeAnalyst(String query) {
     return query.contains('code') ||
-           query.contains('function') ||
-           query.contains('debug') ||
-           query.contains('optimize');
+        query.contains('function') ||
+        query.contains('debug') ||
+        query.contains('optimize');
   }
 
-  AgentResponse _createDelegationResponse(AgentRequest request, String targetAgentId, String message) {
+  AgentResponse _createDelegationResponse(
+      AgentRequest request, String targetAgentId, String message) {
     return AgentResponse(
       id: 'delegation_${DateTime.now().millisecondsSinceEpoch}',
       requestId: request.id,
@@ -413,11 +437,11 @@ class GeneralAssistantAgent extends AIAgent {
 
   String _handleGeneralQuery(String query) {
     return 'Hello! I\'m your general assistant. I can help you with various tasks including:\n\n'
-           '🔍 **Text Analysis**: Ask me to analyze sentiment, summarize text, or check grammar\n'
-           '💻 **Code Review**: Request code analysis, debugging help, or optimization suggestions\n'
-           '🤝 **General Questions**: Ask me anything and I\'ll do my best to help\n\n'
-           'For your query: "$query"\n\n'
-           'I\'m here to assist you with whatever you need. Feel free to ask specific questions '
-           'about text analysis, code review, or any general topics!';
+        '🔍 **Text Analysis**: Ask me to analyze sentiment, summarize text, or check grammar\n'
+        '💻 **Code Review**: Request code analysis, debugging help, or optimization suggestions\n'
+        '🤝 **General Questions**: Ask me anything and I\'ll do my best to help\n\n'
+        'For your query: "$query"\n\n'
+        'I\'m here to assist you with whatever you need. Feel free to ask specific questions '
+        'about text analysis, code review, or any general topics!';
   }
 }

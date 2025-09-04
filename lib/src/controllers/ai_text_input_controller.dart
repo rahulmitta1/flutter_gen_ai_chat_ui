@@ -8,7 +8,8 @@ class AiTextInputController extends ChangeNotifier {
   final AiTextInputConfig config;
   AiTextInputState _state = const AiTextInputState();
   Timer? _suggestionTimer;
-  final StreamController<AiSuggestion> _suggestionStreamController = StreamController<AiSuggestion>.broadcast();
+  final StreamController<AiSuggestion> _suggestionStreamController =
+      StreamController<AiSuggestion>.broadcast();
 
   AiTextInputController({
     this.config = const AiTextInputConfig(),
@@ -21,15 +22,16 @@ class AiTextInputController extends ChangeNotifier {
   AiSuggestion? get activeSuggestion => _state.activeSuggestion;
   bool get isLoading => _state.isLoading;
   String? get error => _state.error;
-  Stream<AiSuggestion> get suggestionStream => _suggestionStreamController.stream;
+  Stream<AiSuggestion> get suggestionStream =>
+      _suggestionStreamController.stream;
 
   /// Update text and trigger AI suggestions
   void updateText(String newText) {
     _updateState(_state.copyWith(text: newText, error: null));
-    
+
     // Cancel existing timer
     _suggestionTimer?.cancel();
-    
+
     // Start new suggestion timer if text is long enough
     if (newText.length >= config.minCharactersForSuggestion) {
       _suggestionTimer = Timer(config.suggestionDelay, () {
@@ -43,16 +45,16 @@ class AiTextInputController extends ChangeNotifier {
   /// Generate AI suggestions for the current text
   Future<void> _generateSuggestions(String text) async {
     if (!_shouldGenerateSuggestions(text)) return;
-    
+
     _updateState(_state.copyWith(isLoading: true));
-    
+
     try {
       final suggestions = await _fetchAiSuggestions(text);
       _updateState(_state.copyWith(
         suggestions: suggestions,
         isLoading: false,
       ));
-      
+
       // Notify about new suggestions
       if (suggestions.isNotEmpty) {
         _suggestionStreamController.add(suggestions.first);
@@ -73,7 +75,7 @@ class AiTextInputController extends ChangeNotifier {
       suggestion.endIndex,
       suggestion.replacementText,
     );
-    
+
     _updateState(_state.copyWith(
       text: newText,
       suggestions: [],
@@ -92,7 +94,9 @@ class AiTextInputController extends ChangeNotifier {
   void rejectSuggestion() {
     _updateState(_state.copyWith(
       activeSuggestion: null,
-      suggestions: _state.suggestions.where((s) => s != _state.activeSuggestion).toList(),
+      suggestions: _state.suggestions
+          .where((s) => s != _state.activeSuggestion)
+          .toList(),
     ));
   }
 
@@ -106,9 +110,9 @@ class AiTextInputController extends ChangeNotifier {
     if (!config.enableAutoDrafts) {
       throw UnsupportedError('Auto drafts are disabled');
     }
-    
+
     _updateState(_state.copyWith(isLoading: true));
-    
+
     try {
       final draft = await _fetchFirstDraft(prompt);
       _updateState(_state.copyWith(
@@ -131,9 +135,9 @@ class AiTextInputController extends ChangeNotifier {
       yield originalText;
       return;
     }
-    
+
     _updateState(_state.copyWith(isLoading: true));
-    
+
     try {
       yield* _streamTextEnhancements(originalText);
     } finally {
@@ -160,57 +164,67 @@ class AiTextInputController extends ChangeNotifier {
 
   bool _shouldGenerateSuggestions(String text) {
     return text.length >= config.minCharactersForSuggestion &&
-           (config.enableAutoComplete || config.enableGrammarCheck || config.enableSmartEdits);
+        (config.enableAutoComplete ||
+            config.enableGrammarCheck ||
+            config.enableSmartEdits);
   }
 
   Future<List<AiSuggestion>> _fetchAiSuggestions(String text) async {
     // Simulate AI suggestion generation
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    
+
     final suggestions = <AiSuggestion>[];
     final words = text.split(' ');
     final lastWord = words.isNotEmpty ? words.last : '';
-    
+
     // Generate completion suggestions
-    if (config.enabledSuggestionTypes.contains(AiSuggestionType.completion) && 
-        config.enableAutoComplete && lastWord.isNotEmpty) {
+    if (config.enabledSuggestionTypes.contains(AiSuggestionType.completion) &&
+        config.enableAutoComplete &&
+        lastWord.isNotEmpty) {
       suggestions.addAll(_generateCompletionSuggestions(text, lastWord));
     }
-    
+
     // Generate grammar suggestions
-    if (config.enabledSuggestionTypes.contains(AiSuggestionType.grammar) && 
+    if (config.enabledSuggestionTypes.contains(AiSuggestionType.grammar) &&
         config.enableGrammarCheck) {
       suggestions.addAll(_generateGrammarSuggestions(text));
     }
-    
+
     // Generate enhancement suggestions
-    if (config.enabledSuggestionTypes.contains(AiSuggestionType.enhancement) && 
+    if (config.enabledSuggestionTypes.contains(AiSuggestionType.enhancement) &&
         config.enableSmartEdits) {
       suggestions.addAll(_generateEnhancementSuggestions(text));
     }
-    
+
     return suggestions.take(config.maxSuggestions).toList();
   }
 
-  List<AiSuggestion> _generateCompletionSuggestions(String text, String lastWord) {
+  List<AiSuggestion> _generateCompletionSuggestions(
+      String text, String lastWord) {
     final completions = [
-      'intelligence', 'interactive', 'innovative', 'implementation', 'integration'
+      'intelligence',
+      'interactive',
+      'innovative',
+      'implementation',
+      'integration'
     ].where((word) => word.startsWith(lastWord.toLowerCase())).take(2);
-    
-    return completions.map((completion) => AiSuggestion(
-      id: 'completion_${completion}_${DateTime.now().millisecondsSinceEpoch}',
-      text: lastWord,
-      replacementText: completion,
-      startIndex: text.length - lastWord.length,
-      endIndex: text.length,
-      type: AiSuggestionType.completion,
-      confidence: 0.8,
-    )).toList();
+
+    return completions
+        .map((completion) => AiSuggestion(
+              id: 'completion_${completion}_${DateTime.now().millisecondsSinceEpoch}',
+              text: lastWord,
+              replacementText: completion,
+              startIndex: text.length - lastWord.length,
+              endIndex: text.length,
+              type: AiSuggestionType.completion,
+              confidence: 0.8,
+            ))
+        .toList();
   }
 
   List<AiSuggestion> _generateGrammarSuggestions(String text) {
     final suggestions = <AiSuggestion>[];
-    
+
     // Simple grammar check for common mistakes
     if (text.contains('teh')) {
       final index = text.indexOf('teh');
@@ -224,13 +238,13 @@ class AiTextInputController extends ChangeNotifier {
         confidence: 0.95,
       ));
     }
-    
+
     return suggestions;
   }
 
   List<AiSuggestion> _generateEnhancementSuggestions(String text) {
     final suggestions = <AiSuggestion>[];
-    
+
     // Simple enhancement: replace "good" with "excellent"
     if (text.contains('good')) {
       final index = text.indexOf('good');
@@ -244,17 +258,17 @@ class AiTextInputController extends ChangeNotifier {
         confidence: 0.7,
       ));
     }
-    
+
     return suggestions;
   }
 
   Future<String> _fetchFirstDraft(String prompt) async {
     // Simulate AI draft generation
     await Future<void>.delayed(const Duration(milliseconds: 800));
-    
+
     return 'This is an AI-generated first draft based on your prompt: "$prompt". '
-           'The AI has analyzed your request and provided this initial content. '
-           'You can edit and refine this draft as needed.';
+        'The AI has analyzed your request and provided this initial content. '
+        'You can edit and refine this draft as needed.';
   }
 
   Stream<String> _streamTextEnhancements(String originalText) async* {
@@ -262,9 +276,11 @@ class AiTextInputController extends ChangeNotifier {
     final enhancements = [
       originalText,
       originalText.replaceAll('good', 'excellent'),
-      originalText.replaceAll('good', 'excellent').replaceAll('nice', 'wonderful'),
+      originalText
+          .replaceAll('good', 'excellent')
+          .replaceAll('nice', 'wonderful'),
     ];
-    
+
     for (final enhancement in enhancements) {
       await Future<void>.delayed(const Duration(milliseconds: 200));
       yield enhancement;

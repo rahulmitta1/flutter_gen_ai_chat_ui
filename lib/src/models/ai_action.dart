@@ -37,7 +37,7 @@ enum ActionParameterType {
 
   /// Array parameter (List<dynamic>)
   array,
-  
+
   /// Array of objects parameter (List<Map<String, dynamic>>) - CopilotKit compatibility
   objectArray,
 }
@@ -67,7 +67,7 @@ class ActionParameter {
 
   /// For array parameters: the expected item type (optional)
   final ActionParameterType? itemType;
-  
+
   /// For object and object[] parameters: nested parameter attributes (CopilotKit compatibility)
   final List<ActionParameter>? attributes;
 
@@ -171,7 +171,7 @@ class ActionParameter {
         validator: validator,
         itemType: itemType,
       );
-      
+
   /// Creates an object array parameter with nested attributes (CopilotKit compatibility)
   static ActionParameter objectArray({
     required String name,
@@ -190,7 +190,7 @@ class ActionParameter {
         defaultValue: defaultValue,
         validator: validator,
       );
-      
+
   /// Creates an object parameter with nested attributes
   static ActionParameter objectWithAttributes({
     required String name,
@@ -333,38 +333,38 @@ class ActionParameter {
       final inner = itemType ?? ActionParameterType.string;
       schema['items'] = {'type': typeString(inner)};
     }
-    
+
     // Handle object arrays with attributes (CopilotKit compatibility)
     if (type == ActionParameterType.objectArray && attributes != null) {
       final properties = <String, dynamic>{};
       final required = <String>[];
-      
+
       for (final attr in attributes!) {
         properties[attr.name] = attr.toJsonSchema();
         if (attr.required) {
           required.add(attr.name);
         }
       }
-      
+
       schema['items'] = {
         'type': 'object',
         'properties': properties,
         if (required.isNotEmpty) 'required': required,
       };
     }
-    
+
     // Handle object parameters with attributes
     if (type == ActionParameterType.object && attributes != null) {
       final properties = <String, dynamic>{};
       final required = <String>[];
-      
+
       for (final attr in attributes!) {
         properties[attr.name] = attr.toJsonSchema();
         if (attr.required) {
           required.add(attr.name);
         }
       }
-      
+
       schema['properties'] = properties;
       if (required.isNotEmpty) {
         schema['required'] = required;

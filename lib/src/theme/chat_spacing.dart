@@ -7,52 +7,52 @@ import 'package:flutter/material.dart';
 class ChatSpacing {
   /// Extra small spacing (2px)
   final double xs;
-  
+
   /// Small spacing (4px)
   final double sm;
-  
+
   /// Medium spacing (8px)
   final double md;
-  
+
   /// Large spacing (12px)
   final double lg;
-  
+
   /// Extra large spacing (16px)
   final double xl;
-  
+
   /// Double extra large spacing (24px)
   final double xxl;
-  
+
   /// Triple extra large spacing (32px)
   final double xxxl;
 
   /// Message bubble padding
   final EdgeInsets messageBubblePadding;
-  
+
   /// User bubble padding
   final EdgeInsets userBubblePadding;
-  
+
   /// Input field padding
   final EdgeInsets inputFieldPadding;
-  
+
   /// Container padding
   final EdgeInsets containerPadding;
-  
+
   /// Screen margin
   final EdgeInsets screenMargin;
-  
+
   /// Message spacing (vertical gap between messages)
   final double messageSpacing;
-  
+
   /// Message group spacing (gap between message groups)
   final double messageGroupSpacing;
-  
+
   /// Icon spacing
   final double iconSpacing;
-  
+
   /// Button spacing
   final double buttonSpacing;
-  
+
   /// Attachment spacing
   final double attachmentSpacing;
 
@@ -184,24 +184,39 @@ class ChatSpacing {
       xl: lerpDouble(xl, other.xl, t) ?? xl,
       xxl: lerpDouble(xxl, other.xxl, t) ?? xxl,
       xxxl: lerpDouble(xxxl, other.xxxl, t) ?? xxxl,
-      messageBubblePadding: EdgeInsets.lerp(messageBubblePadding, other.messageBubblePadding, t) ?? messageBubblePadding,
-      userBubblePadding: EdgeInsets.lerp(userBubblePadding, other.userBubblePadding, t) ?? userBubblePadding,
-      inputFieldPadding: EdgeInsets.lerp(inputFieldPadding, other.inputFieldPadding, t) ?? inputFieldPadding,
-      containerPadding: EdgeInsets.lerp(containerPadding, other.containerPadding, t) ?? containerPadding,
-      screenMargin: EdgeInsets.lerp(screenMargin, other.screenMargin, t) ?? screenMargin,
-      messageSpacing: lerpDouble(messageSpacing, other.messageSpacing, t) ?? messageSpacing,
-      messageGroupSpacing: lerpDouble(messageGroupSpacing, other.messageGroupSpacing, t) ?? messageGroupSpacing,
+      messageBubblePadding: EdgeInsets.lerp(
+              messageBubblePadding, other.messageBubblePadding, t) ??
+          messageBubblePadding,
+      userBubblePadding:
+          EdgeInsets.lerp(userBubblePadding, other.userBubblePadding, t) ??
+              userBubblePadding,
+      inputFieldPadding:
+          EdgeInsets.lerp(inputFieldPadding, other.inputFieldPadding, t) ??
+              inputFieldPadding,
+      containerPadding:
+          EdgeInsets.lerp(containerPadding, other.containerPadding, t) ??
+              containerPadding,
+      screenMargin:
+          EdgeInsets.lerp(screenMargin, other.screenMargin, t) ?? screenMargin,
+      messageSpacing:
+          lerpDouble(messageSpacing, other.messageSpacing, t) ?? messageSpacing,
+      messageGroupSpacing:
+          lerpDouble(messageGroupSpacing, other.messageGroupSpacing, t) ??
+              messageGroupSpacing,
       iconSpacing: lerpDouble(iconSpacing, other.iconSpacing, t) ?? iconSpacing,
-      buttonSpacing: lerpDouble(buttonSpacing, other.buttonSpacing, t) ?? buttonSpacing,
-      attachmentSpacing: lerpDouble(attachmentSpacing, other.attachmentSpacing, t) ?? attachmentSpacing,
+      buttonSpacing:
+          lerpDouble(buttonSpacing, other.buttonSpacing, t) ?? buttonSpacing,
+      attachmentSpacing:
+          lerpDouble(attachmentSpacing, other.attachmentSpacing, t) ??
+              attachmentSpacing,
     );
   }
 
   /// Predefined spacing variants
   static const ChatSpacing mobile = ChatSpacing();
-  
+
   static final ChatSpacing tablet = const ChatSpacing().scale(1.1);
-  
+
   static final ChatSpacing desktop = const ChatSpacing().scale(1.2);
 
   static const ChatSpacing compact = ChatSpacing(

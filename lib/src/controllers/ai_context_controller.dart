@@ -9,16 +9,16 @@ import '../models/ai_context.dart';
 class AiContextConfig {
   /// Maximum number of context items to keep
   final int maxContextItems;
-  
+
   /// Whether to automatically clean up expired context
   final bool autoCleanExpired;
-  
+
   /// How often to clean up expired context (in seconds)
   final int cleanupIntervalSeconds;
-  
+
   /// Whether to log context operations for debugging
   final bool enableLogging;
-  
+
   /// Custom context filters
   final List<bool Function(AiContextData)> contextFilters;
 
@@ -35,18 +35,17 @@ class AiContextConfig {
 class AiContextController extends ChangeNotifier {
   final AiContextConfig _config;
   final Map<String, AiContextData> _contextData = {};
-  final StreamController<AiContextEvent> _eventController = 
+  final StreamController<AiContextEvent> _eventController =
       StreamController<AiContextEvent>.broadcast();
-  
+
   Timer? _cleanupTimer;
 
-  AiContextController({AiContextConfig? config}) 
+  AiContextController({AiContextConfig? config})
       : _config = config ?? const AiContextConfig() {
-    
     if (_config.autoCleanExpired) {
       _startCleanupTimer();
     }
-    
+
     if (_config.enableLogging) {
       dev.log('AiContextController initialized with config: $_config');
     }
@@ -71,18 +70,15 @@ class AiContextController extends ChangeNotifier {
   /// Get context data by category
   List<AiContextData> getContextByCategory(String category) {
     return _contextData.values
-        .where((context) => 
-            context.categories.contains(category) && 
-            context.isValid)
+        .where((context) =>
+            context.categories.contains(category) && context.isValid)
         .toList();
   }
 
   /// Get context data by priority level
   List<AiContextData> getContextByPriority(AiContextPriority priority) {
     return _contextData.values
-        .where((context) => 
-            context.priority == priority && 
-            context.isValid)
+        .where((context) => context.priority == priority && context.isValid)
         .toList();
   }
 
@@ -105,10 +101,10 @@ class AiContextController extends ChangeNotifier {
     _enforceMaxItems();
 
     // Emit event
-    final eventType = previousData == null ? 
-        AiContextEventType.added : 
-        AiContextEventType.updated;
-    
+    final eventType = previousData == null
+        ? AiContextEventType.added
+        : AiContextEventType.updated;
+
     _emitEvent(AiContextEvent(
       type: eventType,
       contextData: contextData,
@@ -158,7 +154,7 @@ class AiContextController extends ChangeNotifier {
   /// Clear all context data
   void clearContext() {
     _contextData.clear();
-    
+
     _emitEvent(AiContextEvent(
       type: AiContextEventType.cleared,
     ));
@@ -188,7 +184,8 @@ class AiContextController extends ChangeNotifier {
 
     // Filter by priority
     if (priorities != null && priorities.isNotEmpty) {
-      contexts = contexts.where((c) => priorities.contains(c.priority)).toList();
+      contexts =
+          contexts.where((c) => priorities.contains(c.priority)).toList();
     }
 
     // Filter by categories
@@ -206,12 +203,12 @@ class AiContextController extends ChangeNotifier {
         AiContextPriority.normal: 2,
         AiContextPriority.low: 3,
       };
-      
-      final priorityComparison = priorityOrder[a.priority]!
-          .compareTo(priorityOrder[b.priority]!);
-      
+
+      final priorityComparison =
+          priorityOrder[a.priority]!.compareTo(priorityOrder[b.priority]!);
+
       if (priorityComparison != 0) return priorityComparison;
-      
+
       // If same priority, sort by most recent
       return b.lastUpdated.compareTo(a.lastUpdated);
     });
@@ -238,18 +235,18 @@ class AiContextController extends ChangeNotifier {
     final filteredContexts = _contextData.values
         .where((context) => context.enabled && context.isValid)
         .where((context) {
-          if (types != null && !types.contains(context.type)) return false;
-          if (priorities != null && !priorities.contains(context.priority)) return false;
-          if (categories != null && 
-              !categories.any((cat) => context.categories.contains(cat))) {
-            return false;
-          }
-          return true;
-        })
-        .toList();
+      if (types != null && !types.contains(context.type)) return false;
+      if (priorities != null && !priorities.contains(context.priority))
+        return false;
+      if (categories != null &&
+          !categories.any((cat) => context.categories.contains(cat))) {
+        return false;
+      }
+      return true;
+    }).toList();
 
     final result = <String, dynamic>{};
-    
+
     for (final context in filteredContexts) {
       result[context.id] = {
         'name': context.name,
@@ -315,7 +312,7 @@ class AiContextController extends ChangeNotifier {
 
     // Set initial context
     updateContext();
-    
+
     // Listen for changes
     notifier.addListener(updateContext);
   }
@@ -358,12 +355,12 @@ class AiContextController extends ChangeNotifier {
           AiContextPriority.high: 2,
           AiContextPriority.critical: 3,
         };
-        
-        final priorityComparison = priorityOrder[a.priority]!
-            .compareTo(priorityOrder[b.priority]!);
-        
+
+        final priorityComparison =
+            priorityOrder[a.priority]!.compareTo(priorityOrder[b.priority]!);
+
         if (priorityComparison != 0) return priorityComparison;
-        
+
         // If same priority, remove oldest first
         return a.lastUpdated.compareTo(b.lastUpdated);
       });
@@ -371,7 +368,7 @@ class AiContextController extends ChangeNotifier {
     final itemsToRemove = _contextData.length - _config.maxContextItems;
     for (var i = 0; i < itemsToRemove; i++) {
       _contextData.remove(sortedContexts[i].id);
-      
+
       if (_config.enableLogging) {
         dev.log('Removed context due to limit: ${sortedContexts[i].id}');
       }

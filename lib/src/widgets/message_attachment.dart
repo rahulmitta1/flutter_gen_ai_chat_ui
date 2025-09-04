@@ -98,7 +98,8 @@ class MessageAttachment extends StatelessWidget {
                           : null,
                       strokeWidth: 2,
                       color: Theme.of(context).primaryColor,
-                      backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                      backgroundColor:
+                          Theme.of(context).primaryColor.withValues(alpha: 0.2),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -114,7 +115,8 @@ class MessageAttachment extends StatelessWidget {
                         '${((loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!) * 100).toInt()}%',
                         style: TextStyle(
                           fontSize: 10,
-                          color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                          color:
+                              isDarkMode ? Colors.grey[500] : Colors.grey[500],
                         ),
                       ),
                   ],
@@ -179,14 +181,18 @@ class MessageAttachment extends StatelessWidget {
                                 : null,
                             strokeWidth: 2,
                             color: Theme.of(context).primaryColor,
-                            backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                            backgroundColor: Theme.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.2),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             'Loading thumbnail...',
                             style: TextStyle(
                               fontSize: 11,
-                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
                           ),

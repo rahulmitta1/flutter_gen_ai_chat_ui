@@ -19,12 +19,11 @@ class EnhancedBasicChat extends StatefulWidget {
 
 class _EnhancedBasicChatState extends State<EnhancedBasicChat>
     with TickerProviderStateMixin {
-  
   late ChatMessagesController _chatController;
   late example_ai.AiService _aiService;
   late AnimationController _featurePulseController;
   late AnimationController _themeTransitionController;
-  
+
   // Users
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(
@@ -38,7 +37,7 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
   int _currentThemeIndex = 0;
   bool _showFeatureDiscovery = true;
   bool _streamingEnabled = true;
-  
+
   // Available themes for instant switching
   final List<BubbleTheme> _quickThemes = [
     BubbleTheme.gradient(),
@@ -89,12 +88,12 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
   void _initializeComponents() {
     _chatController = ChatMessagesController();
     _aiService = example_ai.AiService();
-    
+
     _featurePulseController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     _themeTransitionController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -105,12 +104,12 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
     _chatController.addMessage(
       ChatMessage(
         text: '# Why Choose Flutter Gen AI Chat UI? 🚀\n\n'
-              'Unlike other packages, we offer:\n\n'
-              '✨ **Unique streaming animations** (word-by-word like ChatGPT)\n'
-              '🎨 **Instant theme switching** (try the buttons above!)\n'
-              '⚡ **60fps performance** with enterprise optimizations\n'
-              '📱 **Production-ready** - ship these examples directly\n\n'
-              '**Try the features below to see the difference!**',
+            'Unlike other packages, we offer:\n\n'
+            '✨ **Unique streaming animations** (word-by-word like ChatGPT)\n'
+            '🎨 **Instant theme switching** (try the buttons above!)\n'
+            '⚡ **60fps performance** with enterprise optimizations\n'
+            '📱 **Production-ready** - ship these examples directly\n\n'
+            '**Try the features below to see the difference!**',
         user: _aiUser,
         createdAt: DateTime.now(),
         isMarkdown: true,
@@ -139,39 +138,41 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
       setState(() => _isGenerating = false);
       await Future.delayed(const Duration(milliseconds: 100));
 
-      // Add streaming response
-      final messageId = 'ai_${DateTime.now().millisecondsSinceEpoch}';
-      _chatController.addMessage(
-        ChatMessage(
-          text: response.text,
-          user: _aiUser,
-          createdAt: DateTime.now(),
-          isMarkdown: response.isMarkdown,
-          customProperties: {
-            'id': messageId,
-            'isStreaming': _streamingEnabled,
-          },
-        ),
-      );
-
-      // Complete streaming after duration
+      // Add streaming response using the new system
       if (_streamingEnabled) {
-        Future.delayed(Duration(milliseconds: response.text.length * 30), () {
-          if (mounted) {
-            _chatController.updateMessage(
-              ChatMessage(
-                text: response.text,
-                user: _aiUser,
-                createdAt: DateTime.now(),
-                isMarkdown: response.isMarkdown,
-                customProperties: {
-                  'id': messageId,
-                  'isStreaming': false,
-                },
-              ),
-            );
-          }
-        });
+        // Use the new streaming method
+        _chatController.addStreamingMessage(
+          ChatMessage(
+            text: response.text,
+            user: _aiUser,
+            createdAt: DateTime.now(),
+            isMarkdown: response.isMarkdown,
+          ),
+        );
+
+        // Simulate completion after streaming
+        final messageId = _chatController.getMessageId(
+          ChatMessage(
+            text: response.text,
+            user: _aiUser,
+            createdAt: DateTime.now(),
+            isMarkdown: response.isMarkdown,
+          ),
+        );
+        _chatController.simulateStreamingCompletion(
+          messageId,
+          delay: Duration(milliseconds: response.text.length * 30),
+        );
+      } else {
+        // Add instant message
+        _chatController.addMessage(
+          ChatMessage(
+            text: response.text,
+            user: _aiUser,
+            createdAt: DateTime.now(),
+            isMarkdown: response.isMarkdown,
+          ),
+        );
       }
     } catch (error) {
       setState(() => _isGenerating = false);
@@ -201,11 +202,11 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
   void _toggleStreaming() {
     HapticFeedback.lightImpact();
     setState(() => _streamingEnabled = !_streamingEnabled);
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          _streamingEnabled 
+          _streamingEnabled
               ? '✨ Streaming animation enabled'
               : '⚡ Instant messages enabled',
         ),
@@ -237,8 +238,7 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
           child: Column(
             children: [
               _buildEnhancedHeader(isDark, currentTheme),
-              if (_showFeatureDiscovery) 
-                _buildFeatureDiscoveryPanel(isDark),
+              if (_showFeatureDiscovery) _buildFeatureDiscoveryPanel(isDark),
               Expanded(
                 child: AnimatedBuilder(
                   animation: _themeTransitionController,
@@ -307,7 +307,7 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
                   ],
                 ),
               ),
-              
+
               // Close button
               IconButton(
                 onPressed: () => Navigator.pop(context),
@@ -315,9 +315,9 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
               ),
             ],
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Feature controls
           Row(
             children: [
@@ -331,7 +331,7 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
                 ),
               ),
               const SizedBox(width: 12),
-              
+
               // Streaming toggle
               Expanded(
                 child: _buildFeatureButton(
@@ -343,9 +343,9 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Value proposition
           Container(
             padding: const EdgeInsets.all(12),
@@ -379,7 +379,12 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
     );
   }
 
-  Widget _buildFeatureButton(String text, IconData icon, VoidCallback onPressed, {required Color color}) {
+  Widget _buildFeatureButton(
+    String text,
+    IconData icon,
+    VoidCallback onPressed, {
+    required Color color,
+  }) {
     return AnimatedBuilder(
       animation: _featurePulseController,
       builder: (context, child) {
@@ -391,14 +396,14 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
               borderRadius: BorderRadius.circular(12),
               onTap: onPressed,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: color.withOpacity(0.3),
-                    width: 1,
-                  ),
+                  border: Border.all(color: color.withOpacity(0.3), width: 1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -433,13 +438,11 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isDark 
+            color: isDark
                 ? const Color(0xFF1F2937).withOpacity(0.8)
                 : Colors.white.withOpacity(0.9),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: const Color(0xFF6366F1).withOpacity(0.3),
-            ),
+            border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -469,7 +472,8 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () => setState(() => _showFeatureDiscovery = false),
+                    onPressed: () =>
+                        setState(() => _showFeatureDiscovery = false),
                     icon: Icon(
                       Icons.close,
                       size: 18,
@@ -482,9 +486,12 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: _featureSuggestions.map((suggestion) => 
-                  _buildFeatureSuggestionChip(suggestion, isDark),
-                ).toList(),
+                children: _featureSuggestions
+                    .map(
+                      (suggestion) =>
+                          _buildFeatureSuggestionChip(suggestion, isDark),
+                    )
+                    .toList(),
               ),
             ],
           ),
@@ -493,24 +500,21 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
     );
   }
 
-  Widget _buildFeatureSuggestionChip(FeatureSuggestion suggestion, bool isDark) {
+  Widget _buildFeatureSuggestionChip(
+    FeatureSuggestion suggestion,
+    bool isDark,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: suggestion.color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: suggestion.color.withOpacity(0.3),
-        ),
+        border: Border.all(color: suggestion.color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            suggestion.icon,
-            size: 16,
-            color: suggestion.color,
-          ),
+          Icon(suggestion.icon, size: 16, color: suggestion.color),
           const SizedBox(width: 6),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -539,7 +543,11 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
     );
   }
 
-  Widget _buildChatContent(AppState appState, bool isDark, BubbleTheme currentTheme) {
+  Widget _buildChatContent(
+    AppState appState,
+    bool isDark,
+    BubbleTheme currentTheme,
+  ) {
     return AiChatWidget(
       key: ValueKey(_currentThemeIndex),
       currentUser: _currentUser,
@@ -547,13 +555,13 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
       controller: _chatController,
       onSendMessage: _handleSendMessage,
       maxWidth: 700,
-      
+
       // Loading state
       loadingConfig: LoadingConfig(
         isLoading: _isGenerating,
         typingIndicatorColor: const Color(0xFF6366F1),
       ),
-      
+
       // Apply current theme
       messageOptions: MessageOptions(
         decoration: currentTheme.messageDecoration,
@@ -566,20 +574,23 @@ class _EnhancedBasicChatState extends State<EnhancedBasicChat>
         showTime: false,
         showCopyButton: true,
       ),
-      
+
       // Enhanced input
       inputOptions: InputOptions(
-        decoration: currentTheme.inputDecoration.copyWith(
-          hintText: '💬 Ask anything to see streaming animation...',
-        ),
+        decoration: currentTheme.inputDecoration?.copyWith(
+              hintText: '💬 Ask anything to see streaming animation...',
+            ) ??
+            InputDecoration(
+              hintText: '💬 Ask anything to see streaming animation...',
+            ),
         textStyle: currentTheme.inputTextStyle,
         sendOnEnter: true,
       ),
-      
+
       // Streaming configuration
       enableMarkdownStreaming: _streamingEnabled,
       streamingDuration: const Duration(milliseconds: 35),
-      
+
       // Animation
       enableAnimation: true,
     );

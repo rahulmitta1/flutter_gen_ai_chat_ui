@@ -715,9 +715,13 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
     final isCurrentUser = message.user.id == widget.currentUser.id;
 
     // Check if this message should show streaming animation
-    final isStreaming =
-        message.customProperties?['isStreaming'] as bool? ?? false;
-    final shouldAnimate = isStreaming && widget.streamingEnabled;
+    // Only animate the message that is currently being streamed
+    final messageId = message.customProperties?['id'] as String? ??
+        '${message.user.id}_${message.createdAt.millisecondsSinceEpoch}';
+    final isCurrentlyStreaming =
+        widget.controller?.currentlyStreamingMessageId == messageId;
+    final shouldAnimate =
+        isCurrentlyStreaming == true && widget.streamingEnabled;
 
     // Get appropriate text color from message options
     final textStyle = TextStyle(

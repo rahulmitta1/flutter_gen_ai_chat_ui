@@ -7,25 +7,25 @@ import 'package:flutter/services.dart';
 enum StreamingAnimationType {
   /// Classic typewriter effect - characters appear one by one
   typewriter,
-  
+
   /// Words fade in with opacity animation
   fadeIn,
-  
+
   /// Words slide in from the right with subtle bounce
   slideIn,
-  
+
   /// Words bounce in with spring physics
   bounce,
-  
+
   /// Words appear with a subtle glow effect
   glow,
-  
+
   /// Words scale up from nothing
   scale,
-  
+
   /// Words appear with a wave effect
   wave,
-  
+
   /// Words appear with a shimmer effect
   shimmer,
 }
@@ -34,22 +34,22 @@ enum StreamingAnimationType {
 class StreamingAnimationConfig {
   /// The type of animation to use
   final StreamingAnimationType type;
-  
+
   /// Duration for each character/word animation
   final Duration duration;
-  
+
   /// Delay between character/word animations
   final Duration delay;
-  
+
   /// Animation curve for the effect
   final Curve curve;
-  
+
   /// Whether to animate by character or by word
   final bool animateByWord;
-  
+
   /// Custom colors for glow/shimmer effects
   final Color? accentColor;
-  
+
   /// Whether to include haptic feedback
   final bool enableHapticFeedback;
 
@@ -134,25 +134,25 @@ class StreamingAnimationConfig {
 class StreamingTextWidget extends StatefulWidget {
   /// The complete text to display
   final String text;
-  
+
   /// Text style for the content
   final TextStyle? style;
-  
+
   /// Animation configuration
   final StreamingAnimationConfig config;
-  
+
   /// Whether the text should be streaming (animated)
   final bool isStreaming;
-  
+
   /// Callback when streaming completes
   final VoidCallback? onStreamingComplete;
-  
+
   /// Text alignment
   final TextAlign? textAlign;
-  
+
   /// Maximum lines
   final int? maxLines;
-  
+
   /// Text overflow behavior
   final TextOverflow? overflow;
 
@@ -194,7 +194,8 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
   @override
   void didUpdateWidget(StreamingTextWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.text != widget.text || oldWidget.isStreaming != widget.isStreaming) {
+    if (oldWidget.text != widget.text ||
+        oldWidget.isStreaming != widget.isStreaming) {
       _parseText();
       if (widget.isStreaming && !oldWidget.isStreaming) {
         _startAnimation();
@@ -210,7 +211,7 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       duration: widget.config.duration,
       vsync: this,
     );
-    
+
     _animation = CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
@@ -238,7 +239,7 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
     }
 
     setState(() => _currentIndex++);
-    
+
     if (widget.config.enableHapticFeedback) {
       HapticFeedback.selectionClick();
     }
@@ -266,7 +267,7 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
   Widget _buildTextWithAnimation() {
     final displayedText = _getDisplayedText();
     final lastPartIndex = _currentIndex - 1;
-    
+
     switch (widget.config.type) {
       case StreamingAnimationType.typewriter:
         return Text(
@@ -276,25 +277,25 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
           maxLines: widget.maxLines,
           overflow: widget.overflow,
         );
-        
+
       case StreamingAnimationType.fadeIn:
         return _buildFadeInText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.slideIn:
         return _buildSlideInText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.bounce:
         return _buildBounceText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.glow:
         return _buildGlowText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.scale:
         return _buildScaleText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.wave:
         return _buildWaveText(displayedText, lastPartIndex);
-        
+
       case StreamingAnimationType.shimmer:
         return _buildShimmerText(displayedText, lastPartIndex);
     }
@@ -317,13 +318,13 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
+
         final opacity = index == lastPartIndex ? _animation.value : 1.0;
-        
+
         return AnimatedOpacity(
           opacity: opacity,
           duration: widget.config.duration,
@@ -341,15 +342,15 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
-        final offset = index == lastPartIndex 
+
+        final offset = index == lastPartIndex
             ? Offset((1 - _animation.value) * 20, 0)
             : Offset.zero;
-        
+
         return Transform.translate(
           offset: offset,
           child: Text(
@@ -366,13 +367,13 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
+
         final scale = index == lastPartIndex ? _animation.value : 1.0;
-        
+
         return Transform.scale(
           scale: scale,
           child: Text(
@@ -386,18 +387,18 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
 
   Widget _buildGlowText(String displayedText, int lastPartIndex) {
     final accentColor = widget.config.accentColor ?? Colors.blue;
-    
+
     return Wrap(
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
+
         final glowIntensity = index == lastPartIndex ? _animation.value : 0.0;
-        
+
         return Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -428,15 +429,14 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
-        final scale = index == lastPartIndex 
-            ? 0.5 + (_animation.value * 0.5)
-            : 1.0;
-        
+
+        final scale =
+            index == lastPartIndex ? 0.5 + (_animation.value * 0.5) : 1.0;
+
         return Transform.scale(
           scale: scale,
           child: Text(
@@ -453,15 +453,14 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
-        final waveOffset = index == lastPartIndex 
-            ? sin(_animation.value * 2 * pi) * 3
-            : 0.0;
-        
+
+        final waveOffset =
+            index == lastPartIndex ? sin(_animation.value * 2 * pi) * 3 : 0.0;
+
         return Transform.translate(
           offset: Offset(0, waveOffset),
           child: Text(
@@ -475,18 +474,18 @@ class _StreamingTextWidgetState extends State<StreamingTextWidget>
 
   Widget _buildShimmerText(String displayedText, int lastPartIndex) {
     final accentColor = widget.config.accentColor ?? Colors.white;
-    
+
     return Wrap(
       children: _textParts.asMap().entries.map((entry) {
         final index = entry.key;
         final part = entry.value;
-        
+
         if (index >= _currentIndex) {
           return const SizedBox.shrink();
         }
-        
+
         final shimmerValue = index == lastPartIndex ? _animation.value : 0.0;
-        
+
         return ShaderMask(
           shaderCallback: (bounds) {
             return LinearGradient(

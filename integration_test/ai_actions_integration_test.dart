@@ -33,7 +33,8 @@ void main() {
       expect(find.textContaining('10 + 15'), findsOneWidget);
     });
 
-    testWidgets('should handle action execution with confirmation', (tester) async {
+    testWidgets('should handle action execution with confirmation',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TestAiActionsWidget(),
       ));
@@ -130,8 +131,10 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
       name: 'calculator',
       description: 'Perform calculation',
       parameters: [
-        ActionParameter.number(name: 'a', description: 'First number', required: true),
-        ActionParameter.number(name: 'b', description: 'Second number', required: true),
+        ActionParameter.number(
+            name: 'a', description: 'First number', required: true),
+        ActionParameter.number(
+            name: 'b', description: 'Second number', required: true),
         ActionParameter.string(
           name: 'operation',
           description: 'Operation',
@@ -143,12 +146,12 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
         final a = params['a'] as num;
         final b = params['b'] as num;
         final operation = params['operation'] as String;
-        
+
         await Future.delayed(const Duration(milliseconds: 500));
-        
+
         double result;
         String symbol;
-        
+
         switch (operation) {
           case 'add':
             result = a + b;
@@ -169,7 +172,7 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
           default:
             return ActionResult.createFailure('Invalid operation');
         }
-        
+
         return ActionResult.createSuccess({
           'result': result,
           'expression': '$a $symbol $b = $result',
@@ -241,7 +244,7 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
       'b': 15,
       'operation': 'add',
     });
-    
+
     setState(() {
       if (result.success) {
         _lastResult = result.data['expression'];
@@ -252,8 +255,9 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
   }
 
   Future<void> _executeWithConfirmation() async {
-    final result = await _actionController.executeAction('confirmed_action', {}, context: context);
-    
+    final result = await _actionController.executeAction('confirmed_action', {},
+        context: context);
+
     setState(() {
       if (result.success) {
         _lastResult = result.data['message'];
@@ -264,8 +268,9 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
   }
 
   Future<void> _executeInvalidParams() async {
-    final result = await _actionController.executeAction('param_validation', {});
-    
+    final result =
+        await _actionController.executeAction('param_validation', {});
+
     setState(() {
       if (result.success) {
         _lastResult = result.data['message'];
@@ -315,24 +320,29 @@ class _TestAiActionsWidgetState extends State<TestAiActionsWidget> {
             ),
             const SizedBox(height: 32),
             if (_lastResult.isNotEmpty) ...[
-              const Text('Result:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('Result:',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               Text(_lastResult),
               const SizedBox(height: 16),
             ],
             if (_lastError.isNotEmpty) ...[
-              const Text('Error:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+              const Text('Error:',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red)),
               Text(_lastError, style: const TextStyle(color: Colors.red)),
               const SizedBox(height: 16),
             ],
             if (_executionStarted)
               Container(
                 key: const Key('execution_started'),
-                child: const Text('Execution Started', style: TextStyle(color: Colors.blue)),
+                child: const Text('Execution Started',
+                    style: TextStyle(color: Colors.blue)),
               ),
             if (_executionCompleted)
               Container(
                 key: const Key('execution_completed'),
-                child: const Text('Execution Completed', style: TextStyle(color: Colors.green)),
+                child: const Text('Execution Completed',
+                    style: TextStyle(color: Colors.green)),
               ),
           ],
         ),

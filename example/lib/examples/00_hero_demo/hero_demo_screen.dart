@@ -20,30 +20,29 @@ class HeroDemoScreen extends StatefulWidget {
 
 class _HeroDemoScreenState extends State<HeroDemoScreen>
     with TickerProviderStateMixin {
-  
   late ChatMessagesController _chatController;
   late AnimationController _demoController;
   late example_ai.AiService _aiService;
-  
+
   // Demo state
   int _currentDemoPhase = 0;
   bool _isAutoDemoMode = true;
   Timer? _autoAdvanceTimer;
   Timer? _autoRestartTimer;
-  
+
   // Chat users
   final _currentUser = const ChatUser(id: 'user123', firstName: 'You');
   final _aiUser = const ChatUser(
-    id: 'hero_ai', 
+    id: 'hero_ai',
     firstName: 'Flutter AI',
-    avatar: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff',
   );
 
   // Theme management
   int _currentThemeIndex = 0;
   final List<BubbleTheme> _themes = [
     BubbleTheme.gradient(),
-    BubbleTheme.neon(), 
+    BubbleTheme.neon(),
     BubbleTheme.glassmorphic(),
     BubbleTheme.elegant(),
     BubbleTheme.minimal(),
@@ -73,23 +72,22 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
   void _initializeComponents() {
     _chatController = ChatMessagesController();
     _aiService = example_ai.AiService();
-    
+
     _demoController = AnimationController(
       duration: const Duration(seconds: 30),
       vsync: this,
     );
-    
-    
+
     // Add welcome message
     _chatController.addMessage(
       ChatMessage(
         text: '# Welcome to Flutter Gen AI Chat UI! 🚀\n\n'
-              'Watch this **30-second demo** showing features that make us **different**:\n\n'
-              '✨ **Unique streaming animations**\n'
-              '🎨 **5 professional themes**\n'
-              '📁 **Advanced file handling**\n'
-              '⚡ **Enterprise performance**\n\n'
-              'Sit back and watch the magic! ✨',
+            'Watch this **30-second demo** showing features that make us **different**:\n\n'
+            '✨ **Unique streaming animations**\n'
+            '🎨 **5 professional themes**\n'
+            '📁 **Advanced file handling**\n'
+            '⚡ **Enterprise performance**\n\n'
+            'Sit back and watch the magic! ✨',
         user: _aiUser,
         createdAt: DateTime.now(),
         isMarkdown: true,
@@ -104,10 +102,11 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
         description: "Watch text appear word-by-word with different styles",
         duration: const Duration(seconds: 8),
         action: _demonstrateStreamingAnimations,
-        callout: "👀 This is what makes us unique - smooth streaming like ChatGPT!",
+        callout:
+            "👀 This is what makes us unique - smooth streaming like ChatGPT!",
       ),
       DemoPhase(
-        title: "🎨 Live Theme Switching", 
+        title: "🎨 Live Theme Switching",
         description: "5 professional themes with smooth transitions",
         duration: const Duration(seconds: 6),
         action: _demonstrateThemeSwitch,
@@ -122,7 +121,7 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       ),
       DemoPhase(
         title: "⚡ Performance Excellence",
-        description: "Smooth scrolling and efficient rendering", 
+        description: "Smooth scrolling and efficient rendering",
         duration: const Duration(seconds: 6),
         action: _demonstratePerformance,
         callout: "⚡ Enterprise-grade performance optimization!",
@@ -139,9 +138,9 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
 
   void _startAutoDemo() {
     if (!_isAutoDemoMode) return;
-    
+
     _demoController.forward();
-    
+
     _runCurrentDemoPhase();
   }
 
@@ -152,10 +151,10 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     }
 
     final phase = _demoPhases[_currentDemoPhase];
-    
+
     // Execute phase action
     phase.action();
-    
+
     // Auto advance to next phase
     _autoAdvanceTimer?.cancel();
     _autoAdvanceTimer = Timer(phase.duration, () {
@@ -186,7 +185,7 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
   // Demo phase implementations
   void _demonstrateStreamingAnimations() {
     HapticFeedback.lightImpact();
-    
+
     final messages = [
       "🎯 **Typewriter Effect**: This text appears character by character with a natural typing rhythm, just like watching someone type in real-time.",
       "✨ **Fade-In Animation**: Each word gently fades into view with a smooth opacity transition that feels elegant and professional.",
@@ -196,29 +195,30 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     ];
 
     _addStreamingMessage(messages[_currentAnimationStyle % messages.length]);
-    
+
     // Cycle through animation styles
     setState(() {
-      _currentAnimationStyle = (_currentAnimationStyle + 1) % _animationStyles.length;
+      _currentAnimationStyle =
+          (_currentAnimationStyle + 1) % _animationStyles.length;
     });
   }
 
   void _demonstrateThemeSwitch() {
     HapticFeedback.mediumImpact();
-    
+
     setState(() {
       _currentThemeIndex = (_currentThemeIndex + 1) % _themes.length;
     });
-    
+
     final themeName = _themes[_currentThemeIndex].name;
     _addStreamingMessage(
       "🎨 **${themeName} Theme Activated!**\n\n"
       "Notice how the entire interface smoothly transitions with:\n"
       "• Custom bubble designs\n"
-      "• Professional color schemes\n" 
+      "• Professional color schemes\n"
       "• Gradient backgrounds\n"
       "• Consistent styling throughout\n\n"
-      "**50+ customizable properties** make this the most comprehensive theming system in Flutter!"
+      "**50+ customizable properties** make this the most comprehensive theming system in Flutter!",
     );
   }
 
@@ -226,7 +226,8 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     // Add mock file attachments
     _chatController.addMessage(
       ChatMessage(
-        text: "📁 **File Handling Demo**: Multiple file types with rich previews",
+        text:
+            "📁 **File Handling Demo**: Multiple file types with rich previews",
         user: _currentUser,
         createdAt: DateTime.now(),
         media: [
@@ -256,7 +257,7 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       "• **Drag & drop** support on web/desktop\n"
       "• **File type detection** with custom icons\n"
       "• **Progress indicators** for uploads\n\n"
-      "All with **professional UI components** you can ship immediately!"
+      "All with **professional UI components** you can ship immediately!",
     );
   }
 
@@ -265,7 +266,7 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     final performanceMessages = [
       "⚡ **Performance Optimizations:**",
       "📊 **ListView.builder** for efficient rendering",
-      "🎯 **Message caching** prevents memory leaks", 
+      "🎯 **Message caching** prevents memory leaks",
       "🔄 **Smart pagination** handles thousands of messages",
       "🎬 **Smooth animations** at 60fps consistently",
       "📱 **Responsive design** adapts to all screen sizes",
@@ -299,47 +300,31 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       "• Dynamic UI generation for results\n"
       "• CopilotKit compatibility\n"
       "• Human-in-the-loop confirmations\n\n"
-      "**Perfect for AI agents and tool use!**"
+      "**Perfect for AI agents and tool use!**",
     );
   }
 
   void _addStreamingMessage(String text, {bool fastAnimation = false}) {
-    final messageId = 'demo_${DateTime.now().millisecondsSinceEpoch}';
-    final duration = fastAnimation 
+    final duration = fastAnimation
         ? const Duration(milliseconds: 20)
         : const Duration(milliseconds: 35);
 
-    _chatController.addMessage(
-      ChatMessage(
-        text: text,
-        user: _aiUser,
-        createdAt: DateTime.now(),
-        isMarkdown: true,
-        customProperties: {
-          'id': messageId,
-          'isStreaming': true,
-          'animationStyle': _animationStyles[_currentAnimationStyle % _animationStyles.length],
-        },
-      ),
+    // Use the new streaming system
+    final message = ChatMessage(
+      text: text,
+      user: _aiUser,
+      createdAt: DateTime.now(),
+      isMarkdown: true,
     );
 
-    // Mark as complete after streaming duration
-    Timer(Duration(milliseconds: text.length * duration.inMilliseconds), () {
-      if (mounted) {
-        _chatController.updateMessage(
-          ChatMessage(
-            text: text,
-            user: _aiUser,
-            createdAt: DateTime.now(),
-            isMarkdown: true,
-            customProperties: {
-              'id': messageId,
-              'isStreaming': false,
-            },
-          ),
-        );
-      }
-    });
+    _chatController.addStreamingMessage(message);
+
+    // Simulate completion after streaming
+    final messageId = _chatController.getMessageId(message);
+    _chatController.simulateStreamingCompletion(
+      messageId,
+      delay: Duration(milliseconds: text.length * duration.inMilliseconds),
+    );
   }
 
   @override
@@ -347,8 +332,8 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     final appState = Provider.of<AppState>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentTheme = _themes[_currentThemeIndex];
-    final currentPhase = _currentDemoPhase < _demoPhases.length 
-        ? _demoPhases[_currentDemoPhase] 
+    final currentPhase = _currentDemoPhase < _demoPhases.length
+        ? _demoPhases[_currentDemoPhase]
         : _demoPhases.last;
 
     return Scaffold(
@@ -386,13 +371,11 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? const Color(0xFF1F2937).withOpacity(0.8)
             : Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFF6366F1).withOpacity(0.2),
-        ),
+        border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -497,7 +480,7 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
               ),
             ),
             Text(
-              _currentDemoPhase < _demoPhases.length 
+              _currentDemoPhase < _demoPhases.length
                   ? _demoPhases[_currentDemoPhase].title
                   : 'Complete',
               style: TextStyle(
@@ -519,8 +502,11 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     );
   }
 
-
-  Widget _buildChatContent(AppState appState, bool isDark, BubbleTheme currentTheme) {
+  Widget _buildChatContent(
+    AppState appState,
+    bool isDark,
+    BubbleTheme currentTheme,
+  ) {
     return AiChatWidget(
       key: ValueKey('${_currentThemeIndex}_${_currentAnimationStyle}'),
       currentUser: _currentUser,
@@ -529,10 +515,12 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       onSendMessage: (message) {
         // Allow manual interaction during demo
         _chatController.addMessage(message);
-        _addStreamingMessage("Thanks for trying the demo! 🎉\n\nReady to build amazing AI chat interfaces?");
+        _addStreamingMessage(
+          "Thanks for trying the demo! 🎉\n\nReady to build amazing AI chat interfaces?",
+        );
       },
       maxWidth: 800,
-      
+
       // Apply current theme
       messageOptions: MessageOptions(
         decoration: currentTheme.messageDecoration,
@@ -545,19 +533,22 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
         showTime: false,
         showCopyButton: true,
       ),
-      
+
       // Input styling
       inputOptions: InputOptions(
-        decoration: currentTheme.inputDecoration.copyWith(
-          hintText: '💬 Try typing during the demo...',
-        ),
+        decoration: currentTheme.inputDecoration?.copyWith(
+              hintText: '💬 Try typing during the demo...',
+            ) ??
+            InputDecoration(hintText: '💬 Try typing during the demo...'),
         textStyle: currentTheme.inputTextStyle,
       ),
-      
+
       // Enhanced streaming with current animation style
       enableMarkdownStreaming: true,
-      streamingDuration: _animationStyles[_currentAnimationStyle % _animationStyles.length].duration,
-      
+      streamingDuration:
+          _animationStyles[_currentAnimationStyle % _animationStyles.length]
+              .duration,
+
       // File upload for demonstration
       fileUploadOptions: const FileUploadOptions(
         enabled: true,
@@ -571,12 +562,12 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? Colors.black.withOpacity(0.3)
             : Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark 
+          color: isDark
               ? Colors.white.withOpacity(0.1)
               : Colors.black.withOpacity(0.1),
         ),
@@ -584,30 +575,20 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildControlButton(
-            'Restart Demo',
-            Icons.replay_rounded,
-            () {
-              setState(() {
-                _currentDemoPhase = 0;
-                _currentThemeIndex = 0;
-                _isAutoDemoMode = true;
-              });
-              _chatController.clearMessages();
-              _initializeComponents();
-              _startAutoDemo();
-            },
-            isDark,
-          ),
-          _buildControlButton(
-            'Try Interactive',
-            Icons.touch_app_rounded,
-            () {
-              setState(() => _isAutoDemoMode = false);
-              _autoAdvanceTimer?.cancel();
-            },
-            isDark,
-          ),
+          _buildControlButton('Restart Demo', Icons.replay_rounded, () {
+            setState(() {
+              _currentDemoPhase = 0;
+              _currentThemeIndex = 0;
+              _isAutoDemoMode = true;
+            });
+            _chatController.clearMessages();
+            _initializeComponents();
+            _startAutoDemo();
+          }, isDark),
+          _buildControlButton('Try Interactive', Icons.touch_app_rounded, () {
+            setState(() => _isAutoDemoMode = false);
+            _autoAdvanceTimer?.cancel();
+          }, isDark),
           _buildControlButton(
             'View Examples',
             Icons.apps_rounded,
@@ -619,7 +600,12 @@ class _HeroDemoScreenState extends State<HeroDemoScreen>
     );
   }
 
-  Widget _buildControlButton(String label, IconData icon, VoidCallback onPressed, bool isDark) {
+  Widget _buildControlButton(
+    String label,
+    IconData icon,
+    VoidCallback onPressed,
+    bool isDark,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -682,13 +668,7 @@ class DemoPhase {
   });
 }
 
-enum StreamingStyle {
-  typewriter,
-  fadeIn,
-  slideIn,
-  bounce,
-  glow,
-}
+enum StreamingStyle { typewriter, fadeIn, slideIn, bounce, glow }
 
 extension StreamingStyleExtension on StreamingStyle {
   Duration get duration {

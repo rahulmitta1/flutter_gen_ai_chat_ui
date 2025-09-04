@@ -7,7 +7,8 @@ class WeatherActions {
   static AiAction getCurrentWeather() {
     return AiAction(
       name: 'get_current_weather',
-      description: 'Get the current weather conditions for a specified location',
+      description:
+          'Get the current weather conditions for a specified location',
       parameters: [
         ActionParameter.string(
           name: 'location',
@@ -48,7 +49,7 @@ class WeatherActions {
       },
       render: (context, status, parameters, {result, error}) {
         final theme = Theme.of(context);
-        
+
         return Card(
           margin: const EdgeInsets.all(8),
           child: Padding(
@@ -69,7 +70,6 @@ class WeatherActions {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
                 if (status == ActionStatus.executing) ...[
                   const Row(
                     children: [
@@ -82,8 +82,10 @@ class WeatherActions {
                       Text('Fetching weather data...'),
                     ],
                   ),
-                ] else if (status == ActionStatus.completed && result?.data != null) ...[
-                  _buildWeatherDisplay(context, result!.data as Map<String, dynamic>),
+                ] else if (status == ActionStatus.completed &&
+                    result?.data != null) ...[
+                  _buildWeatherDisplay(
+                      context, result!.data as Map<String, dynamic>),
                 ] else if (status == ActionStatus.failed) ...[
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -117,7 +119,8 @@ class WeatherActions {
       },
       confirmationConfig: const ActionConfirmationConfig(
         title: 'Get Weather Information',
-        message: 'This will fetch current weather data for the specified location.',
+        message:
+            'This will fetch current weather data for the specified location.',
         required: false, // No confirmation needed for weather
       ),
     );
@@ -127,7 +130,8 @@ class WeatherActions {
   static AiAction setWeatherAlert() {
     return AiAction(
       name: 'set_weather_alert',
-      description: 'Set up weather alerts for a specific location and conditions',
+      description:
+          'Set up weather alerts for a specific location and conditions',
       parameters: [
         ActionParameter.string(
           name: 'location',
@@ -136,12 +140,12 @@ class WeatherActions {
         ),
         ActionParameter.array(
           name: 'conditions',
-          description: 'Weather conditions to alert for (rain, snow, storm, etc.)',
+          description:
+              'Weather conditions to alert for (rain, snow, storm, etc.)',
           required: true,
-          validator: (value) =>
-              (value is List && value.isNotEmpty)
-                  ? null
-                  : 'conditions must be a non-empty list',
+          validator: (value) => (value is List && value.isNotEmpty)
+              ? null
+              : 'conditions must be a non-empty list',
         ),
         ActionParameter.number(
           name: 'temperature_threshold',
@@ -159,13 +163,14 @@ class WeatherActions {
         final location = parameters['location'] as String;
         final conditions = parameters['conditions'] as List;
         final tempThreshold = parameters['temperature_threshold'] as num?;
-        final emailNotifications = parameters['email_notifications'] as bool? ?? true;
+        final emailNotifications =
+            parameters['email_notifications'] as bool? ?? true;
 
         // Simulate setting up alerts
         await Future.delayed(const Duration(seconds: 1));
 
         final alertId = 'alert_${DateTime.now().millisecondsSinceEpoch}';
-        
+
         return ActionResult.createSuccess({
           'alertId': alertId,
           'location': location,
@@ -178,7 +183,7 @@ class WeatherActions {
       },
       render: (context, status, parameters, {result, error}) {
         final theme = Theme.of(context);
-        
+
         return Card(
           margin: const EdgeInsets.all(8),
           child: Padding(
@@ -199,7 +204,6 @@ class WeatherActions {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
                 if (status == ActionStatus.executing) ...[
                   const Row(
                     children: [
@@ -212,7 +216,8 @@ class WeatherActions {
                       Text('Setting up weather alert...'),
                     ],
                   ),
-                ] else if (status == ActionStatus.completed && result?.data != null) ...[
+                ] else if (status == ActionStatus.completed &&
+                    result?.data != null) ...[
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -225,7 +230,8 @@ class WeatherActions {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.check_circle, color: Colors.green, size: 20),
+                            Icon(Icons.check_circle,
+                                color: Colors.green, size: 20),
                             SizedBox(width: 8),
                             Text(
                               'Weather alert created successfully!',
@@ -239,10 +245,13 @@ class WeatherActions {
                         const SizedBox(height: 8),
                         Text('Alert ID: ${result!.data['alertId']}'),
                         Text('Location: ${result.data['location']}'),
-                        Text('Conditions: ${result.data['conditions'].join(', ')}'),
+                        Text(
+                            'Conditions: ${result.data['conditions'].join(', ')}'),
                         if (result.data['temperatureThreshold'] != null)
-                          Text('Temperature threshold: ${result.data['temperatureThreshold']}°C'),
-                        Text('Email notifications: ${result.data['emailNotifications'] ? 'Enabled' : 'Disabled'}'),
+                          Text(
+                              'Temperature threshold: ${result.data['temperatureThreshold']}°C'),
+                        Text(
+                            'Email notifications: ${result.data['emailNotifications'] ? 'Enabled' : 'Disabled'}'),
                       ],
                     ),
                   ),
@@ -254,18 +263,20 @@ class WeatherActions {
       },
       confirmationConfig: const ActionConfirmationConfig(
         title: 'Create Weather Alert',
-        message: 'This will create a new weather alert that may send you notifications.',
+        message:
+            'This will create a new weather alert that may send you notifications.',
         required: true, // Confirmation required for alert setup
       ),
     );
   }
 
-  static Widget _buildWeatherDisplay(BuildContext context, Map<String, dynamic> data) {
+  static Widget _buildWeatherDisplay(
+      BuildContext context, Map<String, dynamic> data) {
     final theme = Theme.of(context);
     final temp = data['temperature'];
     final units = data['units'];
     final unitSymbol = units == 'celsius' ? '°C' : '°F';
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

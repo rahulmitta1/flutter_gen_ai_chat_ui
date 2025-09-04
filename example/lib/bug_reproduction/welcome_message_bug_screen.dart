@@ -7,7 +7,8 @@ class WelcomeMessageBugScreen extends StatefulWidget {
   const WelcomeMessageBugScreen({super.key});
 
   @override
-  State<WelcomeMessageBugScreen> createState() => _WelcomeMessageBugScreenState();
+  State<WelcomeMessageBugScreen> createState() =>
+      _WelcomeMessageBugScreenState();
 }
 
 class _WelcomeMessageBugScreenState extends State<WelcomeMessageBugScreen> {
@@ -38,7 +39,7 @@ class _WelcomeMessageBugScreenState extends State<WelcomeMessageBugScreen> {
         createdAt: DateTime.now(),
       );
       _controller.addMessage(aiResponse);
-      
+
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -110,7 +111,8 @@ class _WelcomeMessageBugScreenState extends State<WelcomeMessageBugScreen> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 20),
                   border: InputBorder.none,
                 ),
-                containerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                containerPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 containerDecoration: BoxDecoration(
                   color: Colors.grey.shade300,
                   borderRadius: const BorderRadius.all(Radius.circular(30)),

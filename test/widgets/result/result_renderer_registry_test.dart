@@ -12,14 +12,13 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(home: registry));
 
-    final built =
-        ResultRendererRegistry.of(
-          tester.element(find.byType(SizedBox)),
-        ).buildResult(tester.element(find.byType(SizedBox)), kind, {
-          'title': 'Analysis',
-          'subtitle': 'Quick summary',
-          'body': 'Everything looks good.',
-        });
+    final built = ResultRendererRegistry.of(
+      tester.element(find.byType(SizedBox)),
+    ).buildResult(tester.element(find.byType(SizedBox)), kind, {
+      'title': 'Analysis',
+      'subtitle': 'Quick summary',
+      'body': 'Everything looks good.',
+    });
 
     expect(built, isA<ResultCard>());
   });

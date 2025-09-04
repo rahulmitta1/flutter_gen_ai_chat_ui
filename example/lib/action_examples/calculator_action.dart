@@ -9,7 +9,8 @@ class CalculatorActions {
   static AiAction basicCalculator() {
     return AiAction(
       name: 'calculate',
-      description: 'Perform basic mathematical calculations (add, subtract, multiply, divide)',
+      description:
+          'Perform basic mathematical calculations (add, subtract, multiply, divide)',
       parameters: [
         ActionParameter.number(
           name: 'a',
@@ -89,7 +90,8 @@ class CalculatorActions {
   static AiAction advancedMath() {
     return AiAction(
       name: 'advanced_math',
-      description: 'Perform advanced mathematical calculations (sin, cos, log, sqrt, power)',
+      description:
+          'Perform advanced mathematical calculations (sin, cos, log, sqrt, power)',
       parameters: [
         ActionParameter.number(
           name: 'value',
@@ -100,7 +102,18 @@ class CalculatorActions {
           name: 'function',
           description: 'Mathematical function to apply',
           required: true,
-          enumValues: ['sin', 'cos', 'tan', 'log', 'ln', 'sqrt', 'abs', 'round', 'floor', 'ceil'],
+          enumValues: [
+            'sin',
+            'cos',
+            'tan',
+            'log',
+            'ln',
+            'sqrt',
+            'abs',
+            'round',
+            'floor',
+            'ceil'
+          ],
         ),
         ActionParameter.number(
           name: 'power',
@@ -134,21 +147,24 @@ class CalculatorActions {
               break;
             case 'log':
               if (value <= 0) {
-                return ActionResult.createFailure('Logarithm undefined for non-positive numbers');
+                return ActionResult.createFailure(
+                    'Logarithm undefined for non-positive numbers');
               }
               result = math.log(value.toDouble()) / math.log(10);
               expression = 'log₁₀($value)';
               break;
             case 'ln':
               if (value <= 0) {
-                return ActionResult.createFailure('Natural logarithm undefined for non-positive numbers');
+                return ActionResult.createFailure(
+                    'Natural logarithm undefined for non-positive numbers');
               }
               result = math.log(value.toDouble());
               expression = 'ln($value)';
               break;
             case 'sqrt':
               if (value < 0) {
-                return ActionResult.createFailure('Square root undefined for negative numbers');
+                return ActionResult.createFailure(
+                    'Square root undefined for negative numbers');
               }
               result = math.sqrt(value.toDouble());
               expression = '√$value';
@@ -171,7 +187,8 @@ class CalculatorActions {
               break;
             case 'power':
               if (power == null) {
-                return ActionResult.createFailure('Power parameter required for power function');
+                return ActionResult.createFailure(
+                    'Power parameter required for power function');
               }
               result = math.pow(value.toDouble(), power.toDouble()).toDouble();
               expression = '$value^$power';
@@ -188,7 +205,8 @@ class CalculatorActions {
             if (power != null) 'power': power,
           });
         } catch (e) {
-          return ActionResult.createFailure('Calculation error: ${e.toString()}');
+          return ActionResult.createFailure(
+              'Calculation error: ${e.toString()}');
         }
       },
       render: (context, status, parameters, {result, error}) {
@@ -220,13 +238,35 @@ class CalculatorActions {
           name: 'from_unit',
           description: 'Unit to convert from',
           required: true,
-          enumValues: ['celsius', 'fahrenheit', 'kelvin', 'meters', 'feet', 'inches', 'km', 'miles', 'kg', 'pounds'],
+          enumValues: [
+            'celsius',
+            'fahrenheit',
+            'kelvin',
+            'meters',
+            'feet',
+            'inches',
+            'km',
+            'miles',
+            'kg',
+            'pounds'
+          ],
         ),
         ActionParameter.string(
           name: 'to_unit',
           description: 'Unit to convert to',
           required: true,
-          enumValues: ['celsius', 'fahrenheit', 'kelvin', 'meters', 'feet', 'inches', 'km', 'miles', 'kg', 'pounds'],
+          enumValues: [
+            'celsius',
+            'fahrenheit',
+            'kelvin',
+            'meters',
+            'feet',
+            'inches',
+            'km',
+            'miles',
+            'kg',
+            'pounds'
+          ],
         ),
       ],
       handler: (parameters) async {
@@ -238,7 +278,7 @@ class CalculatorActions {
 
         try {
           final result = _convertUnits(value, fromUnit, toUnit);
-          
+
           return ActionResult.createSuccess({
             'result': result,
             'conversion': '$value $fromUnit = $result $toUnit',
@@ -247,7 +287,8 @@ class CalculatorActions {
             'toUnit': toUnit,
           });
         } catch (e) {
-          return ActionResult.createFailure('Conversion error: ${e.toString()}');
+          return ActionResult.createFailure(
+              'Conversion error: ${e.toString()}');
         }
       },
       render: (context, status, parameters, {result, error}) {
@@ -301,7 +342,6 @@ class CalculatorActions {
               ],
             ),
             const SizedBox(height: 16),
-
             if (status == ActionStatus.executing) ...[
               const Row(
                 children: [
@@ -314,7 +354,8 @@ class CalculatorActions {
                   Text('Calculating...'),
                 ],
               ),
-            ] else if (status == ActionStatus.completed && result?.data != null) ...[
+            ] else if (status == ActionStatus.completed &&
+                result?.data != null) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -357,10 +398,10 @@ class CalculatorActions {
                         textAlign: TextAlign.center,
                       ),
                     ],
-                    
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: theme.primaryColor,
                         borderRadius: BorderRadius.circular(20),
@@ -426,7 +467,8 @@ class CalculatorActions {
       return _convertWeight(value, fromUnit, toUnit);
     }
 
-    throw Exception('Cannot convert between $fromUnit and $toUnit - incompatible unit types');
+    throw Exception(
+        'Cannot convert between $fromUnit and $toUnit - incompatible unit types');
   }
 
   static bool _isTemperatureUnit(String unit) =>

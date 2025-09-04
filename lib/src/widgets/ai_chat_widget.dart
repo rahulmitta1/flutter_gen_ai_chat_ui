@@ -165,7 +165,6 @@ class _AiChatWidgetState extends State<AiChatWidget>
   bool _isComposing = false;
   VoidCallback? _textControllerListener;
 
-
   @override
   void initState() {
     super.initState();
@@ -316,40 +315,41 @@ class _AiChatWidgetState extends State<AiChatWidget>
               ],
               Expanded(
                 child: CustomChatWidget(
-                    controller: widget.controller,
-                    currentUser: widget.currentUser,
-                    messages: widget.messages ?? widget.controller.messages,
-                    onSend: _handleSend,
-                    messageOptions:
-                        widget.messageOptions ?? const MessageOptions(),
-                    inputOptions: widget.inputOptions ?? const InputOptions(),
-                    typingUsers: _getEffectiveTypingUsers(),
-                    messageListOptions: (widget.messageListOptions ??
-                            const MessageListOptions())
-                        .copyWith(
-                      scrollController: _effectiveScrollController,
-                    ),
-                    readOnly: widget.readOnly,
-                    quickReplyOptions:
-                        widget.quickReplyOptions ?? const QuickReplyOptions(),
-                    scrollToBottomOptions: widget.scrollToBottomOptions ??
-                        const ScrollToBottomOptions(),
-                    typingIndicator: (widget.loadingConfig?.isLoading ?? false)
-                        ? widget.loadingConfig?.loadingIndicator
-                        : null,
-                    welcomeMessageConfig: widget.welcomeMessageConfig,
-                    exampleQuestions: widget.exampleQuestions,
-                    // Pass streaming configuration down to the renderer
-                    streamingTypingSpeed: widget.streamingDuration,
-                    streamingEnabled: widget.enableMarkdownStreaming,
-                    streamingFadeInEnabled: widget.streamingFadeInEnabled ?? false,
-                    streamingFadeInDuration:
-                        widget.streamingFadeInDuration ?? const Duration(milliseconds: 260),
-                    streamingFadeInCurve:
-                        widget.streamingFadeInCurve ?? Curves.easeInOut,
-                    streamingWordByWord: widget.streamingWordByWord ?? false,
+                  controller: widget.controller,
+                  currentUser: widget.currentUser,
+                  messages: widget.messages ?? widget.controller.messages,
+                  onSend: _handleSend,
+                  messageOptions:
+                      widget.messageOptions ?? const MessageOptions(),
+                  inputOptions: widget.inputOptions ?? const InputOptions(),
+                  typingUsers: _getEffectiveTypingUsers(),
+                  messageListOptions:
+                      (widget.messageListOptions ?? const MessageListOptions())
+                          .copyWith(
+                    scrollController: _effectiveScrollController,
                   ),
+                  readOnly: widget.readOnly,
+                  quickReplyOptions:
+                      widget.quickReplyOptions ?? const QuickReplyOptions(),
+                  scrollToBottomOptions: widget.scrollToBottomOptions ??
+                      const ScrollToBottomOptions(),
+                  typingIndicator: (widget.loadingConfig?.isLoading ?? false)
+                      ? widget.loadingConfig?.loadingIndicator
+                      : null,
+                  welcomeMessageConfig: widget.welcomeMessageConfig,
+                  exampleQuestions: widget.exampleQuestions,
+                  // Pass streaming configuration down to the renderer
+                  streamingTypingSpeed: widget.streamingDuration,
+                  streamingEnabled: widget.enableMarkdownStreaming,
+                  streamingFadeInEnabled:
+                      widget.streamingFadeInEnabled ?? false,
+                  streamingFadeInDuration: widget.streamingFadeInDuration ??
+                      const Duration(milliseconds: 260),
+                  streamingFadeInCurve:
+                      widget.streamingFadeInCurve ?? Curves.easeInOut,
+                  streamingWordByWord: widget.streamingWordByWord ?? false,
                 ),
+              ),
               // Loading indicator overlay
               if ((widget.loadingConfig?.isLoading ?? false) &&
                   (widget.loadingConfig?.showCenteredIndicator ?? false))

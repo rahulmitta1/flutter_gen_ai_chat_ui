@@ -7,7 +7,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('AI Context Integration Tests', () {
-    testWidgets('should provide and access context throughout widget tree', (tester) async {
+    testWidgets('should provide and access context throughout widget tree',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TestContextAwareApp(),
       ));
@@ -36,7 +37,8 @@ void main() {
       expect(find.textContaining('User: Jane Smith'), findsOneWidget);
     });
 
-    testWidgets('should integrate actions with context awareness', (tester) async {
+    testWidgets('should integrate actions with context awareness',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TestContextAwareApp(),
       ));
@@ -129,7 +131,7 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
   late ValueNotifier<Map<String, dynamic>> _userProfile;
   late ValueNotifier<String> _currentPage;
   late ValueNotifier<List<String>> _shoppingCart;
-  
+
   String _lastActionResult = '';
   String _contextSummary = '';
   List<String> _events = [];
@@ -158,7 +160,7 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
       'email': 'john@example.com',
       'role': 'user',
     });
-    
+
     _contextController.watchNotifier(
       contextId: 'user_profile',
       contextName: 'User Profile',
@@ -200,12 +202,12 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
         final context = _contextController.getContextForPrompt();
         final userProfile = context['user_profile'] as Map<String, dynamic>?;
         final currentPage = context['current_page'] as Map<String, dynamic>?;
-        
+
         final userName = userProfile?['data']['name'] ?? 'User';
         final page = currentPage?['data'] ?? 'unknown page';
-        
+
         await Future.delayed(const Duration(milliseconds: 500));
-        
+
         return ActionResult.createSuccess({
           'greeting': 'Hello $userName! I see you\'re on the $page.',
         });
@@ -232,7 +234,8 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
   Future<void> _executeContextAwareAction() async {
     final result = await _actionController.executeAction('greet_user', {});
     setState(() {
-      _lastActionResult = result.success ? result.data['greeting'] : result.error ?? 'Error';
+      _lastActionResult =
+          result.success ? result.data['greeting'] : result.error ?? 'Error';
     });
   }
 
@@ -312,7 +315,8 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Current Context:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text('Current Context:',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Text('User: ${_userProfile.value['name']}'),
                         Text('Page: ${_currentPage.value}'),
                         Text('Items in cart: ${_shoppingCart.value.length}'),
@@ -321,7 +325,7 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Action buttons
                 Wrap(
                   spacing: 8,
@@ -365,7 +369,7 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Results display
                 if (_lastActionResult.isNotEmpty) ...[
                   Card(
@@ -374,7 +378,8 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Action Result:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text('Action Result:',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           Text(_lastActionResult),
                         ],
                       ),
@@ -382,7 +387,7 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                
+
                 if (_contextSummary.isNotEmpty) ...[
                   Card(
                     child: Padding(
@@ -390,7 +395,8 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Context Summary:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text('Context Summary:',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           Text(_contextSummary),
                         ],
                       ),
@@ -398,19 +404,21 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                
+
                 // Event indicators
                 if (_events.contains('added: new_context'))
                   Container(
                     key: const Key('context_added_event'),
-                    child: const Text('Context Added Event', style: TextStyle(color: Colors.green)),
+                    child: const Text('Context Added Event',
+                        style: TextStyle(color: Colors.green)),
                   ),
                 if (_events.contains('updated: new_context'))
                   Container(
                     key: const Key('context_updated_event'),
-                    child: const Text('Context Updated Event', style: TextStyle(color: Colors.blue)),
+                    child: const Text('Context Updated Event',
+                        style: TextStyle(color: Colors.blue)),
                   ),
-                
+
                 // Debug info
                 if (_events.isNotEmpty) ...[
                   const SizedBox(height: 16),
@@ -420,7 +428,8 @@ class _TestContextAwareAppState extends State<TestContextAwareApp> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Events:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text('Events:',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           ...(_events.take(5).map((event) => Text('• $event'))),
                         ],
                       ),

@@ -98,7 +98,7 @@ class _SmartChatInputState extends State<SmartChatInput>
       setState(() {
         _isFocused = isFocused;
       });
-      
+
       if (isFocused) {
         _glowController.repeat(reverse: true);
       } else {
@@ -150,7 +150,8 @@ class _SmartChatInputState extends State<SmartChatInput>
         boxShadow: [
           if (_isFocused)
             BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               blurRadius: 12,
               spreadRadius: 2,
             ),
@@ -241,8 +242,14 @@ class _SmartChatInputState extends State<SmartChatInput>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.1),
-            Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.1),
+            Theme.of(context)
+                .colorScheme
+                .primaryContainer
+                .withValues(alpha: 0.1),
+            Theme.of(context)
+                .colorScheme
+                .secondaryContainer
+                .withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -285,15 +292,16 @@ class _SmartChatInputState extends State<SmartChatInput>
             maxLines: widget.maxLines,
             minLines: 1,
             style: TextStyle(color: textColor),
-            decoration: (widget.decoration ?? InputDecoration(
-              hintText: widget.hintText ?? 'Type a message...',
-              hintStyle: TextStyle(color: hintColor),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-            )),
+            decoration: (widget.decoration ??
+                InputDecoration(
+                  hintText: widget.hintText ?? 'Type a message...',
+                  hintStyle: TextStyle(color: hintColor),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                )),
             onSubmitted: (_) => _handleSend(),
           ),
         ),
@@ -432,16 +440,15 @@ class _AttachmentButtonState extends State<AttachmentButton>
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: widget.options
-                    .map(_buildOptionButton)
-                    .toList(),
+                children: widget.options.map(_buildOptionButton).toList(),
               ),
             ),
           ),
 
         // Main attachment button
         IconButton(
-          onPressed: widget.options.isEmpty ? widget.onPressed : _toggleExpansion,
+          onPressed:
+              widget.options.isEmpty ? widget.onPressed : _toggleExpansion,
           icon: AnimatedRotation(
             turns: _isExpanded ? 0.125 : 0,
             duration: const Duration(milliseconds: 300),
@@ -565,7 +572,10 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
               decoration: BoxDecoration(
                 color: widget.isRecording
                     ? Colors.red.withValues(alpha: 0.2)
-                    : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                    : Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 border: widget.isRecording
                     ? Border.all(color: Colors.red, width: 2)
@@ -656,7 +666,10 @@ class _TypingIndicatorState extends State<TypingIndicator>
               decoration: BoxDecoration(
                 color: index == _currentDot
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                    : Theme.of(context)
+                        .colorScheme
+                        .outline
+                        .withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
             );

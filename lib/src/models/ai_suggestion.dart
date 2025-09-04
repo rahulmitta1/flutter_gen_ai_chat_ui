@@ -46,11 +46,11 @@ class AiSuggestion {
 
 /// Types of AI suggestions available
 enum AiSuggestionType {
-  completion,    // Autocomplete current word/sentence
-  enhancement,   // Improve existing text
-  grammar,       // Grammar corrections
-  style,         // Style improvements
-  draft,         // Generate complete draft
+  completion, // Autocomplete current word/sentence
+  enhancement, // Improve existing text
+  grammar, // Grammar corrections
+  style, // Style improvements
+  draft, // Generate complete draft
 }
 
 /// Configuration for AI-enhanced text input behavior
@@ -95,9 +95,11 @@ class AiTextInputConfig {
       enableAutoDrafts: enableAutoDrafts ?? this.enableAutoDrafts,
       enableGrammarCheck: enableGrammarCheck ?? this.enableGrammarCheck,
       suggestionDelay: suggestionDelay ?? this.suggestionDelay,
-      minCharactersForSuggestion: minCharactersForSuggestion ?? this.minCharactersForSuggestion,
+      minCharactersForSuggestion:
+          minCharactersForSuggestion ?? this.minCharactersForSuggestion,
       maxSuggestions: maxSuggestions ?? this.maxSuggestions,
-      enabledSuggestionTypes: enabledSuggestionTypes ?? this.enabledSuggestionTypes,
+      enabledSuggestionTypes:
+          enabledSuggestionTypes ?? this.enabledSuggestionTypes,
     );
   }
 }

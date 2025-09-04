@@ -39,7 +39,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Theme Selection Section
               const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -51,7 +51,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // Theme Options
               ...themeProvider.availableThemes.map((themeKey) {
                 return RadioListTile<String>(
@@ -66,9 +66,9 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   },
                 );
               }).toList(),
-              
+
               const Divider(),
-              
+
               // Dark Mode Toggle
               SwitchListTile(
                 title: const Text('Dark Mode'),
@@ -81,9 +81,9 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
                 ),
               ),
-              
+
               const Divider(),
-              
+
               // Additional Settings
               const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -95,7 +95,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               ListTile(
                 leading: const Icon(Icons.speed),
                 title: const Text('Animation Speed'),
@@ -105,7 +105,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   _showAnimationSpeedDialog(context);
                 },
               ),
-              
+
               ListTile(
                 leading: const Icon(Icons.text_fields),
                 title: const Text('Font Size'),
@@ -115,7 +115,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   _showFontSizeDialog(context);
                 },
               ),
-              
+
               ListTile(
                 leading: const Icon(Icons.palette),
                 title: const Text('Custom Colors'),
@@ -125,9 +125,9 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   _showColorCustomizationDialog(context);
                 },
               ),
-              
+
               const Divider(),
-              
+
               // Reset Settings
               ListTile(
                 leading: const Icon(Icons.restore, color: Colors.red),
@@ -140,7 +140,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                   _showResetConfirmationDialog(context, themeProvider);
                 },
               ),
-              
+
               // About
               const AboutListTile(
                 icon: Icon(Icons.info),
@@ -148,7 +148,8 @@ class AdvancedSettingsDrawer extends StatelessWidget {
                 applicationVersion: '2.5.2',
                 aboutBoxChildren: [
                   Text('Advanced chat UI components for AI applications.'),
-                  Text('Built with Flutter and designed for seamless AI integration.'),
+                  Text(
+                      'Built with Flutter and designed for seamless AI integration.'),
                 ],
               ),
             ],
@@ -179,7 +180,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
       default:
         description = 'Custom theme configuration';
     }
-    
+
     return Text(
       description,
       style: const TextStyle(fontSize: 12),
@@ -268,7 +269,8 @@ class AdvancedSettingsDrawer extends StatelessWidget {
           children: [
             Text('Color customization is available in the premium version.'),
             SizedBox(height: 16),
-            Text('Choose from predefined themes or create your own color palette.'),
+            Text(
+                'Choose from predefined themes or create your own color palette.'),
           ],
         ),
         actions: [
@@ -281,7 +283,8 @@ class AdvancedSettingsDrawer extends StatelessWidget {
     );
   }
 
-  void _showResetConfirmationDialog(BuildContext context, AdvancedThemeProvider themeProvider) {
+  void _showResetConfirmationDialog(
+      BuildContext context, AdvancedThemeProvider themeProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -300,7 +303,7 @@ class AdvancedSettingsDrawer extends StatelessWidget {
               themeProvider.setTheme(AdvancedTheme.gradient);
               themeProvider.setDarkMode(false);
               Navigator.pop(context);
-              
+
               // Show confirmation
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(

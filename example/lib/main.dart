@@ -48,7 +48,8 @@ class ExampleApp extends StatelessWidget {
             ),
             themeMode: appState.themeMode,
             // Define streamlined routes with Hero Demo
-            initialRoute: '/hero-demo', // Start with Hero Demo for immediate impact
+            initialRoute:
+                '/hero-demo', // Start with Hero Demo for immediate impact
             routes: {
               '/': (context) => const ExamplesHomeScreen(),
               '/hero-demo': (context) => const HeroDemoScreen(),

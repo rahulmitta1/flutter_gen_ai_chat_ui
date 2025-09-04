@@ -96,23 +96,23 @@ class MarkdownContent extends StatelessWidget {
   Widget _buildMarkdownContent(BuildContext context) {
     final baseStyle = textStyle ?? Theme.of(context).textTheme.bodyMedium!;
     final spans = <InlineSpan>[];
-    
+
     // Simple markdown parsing for common patterns
     final lines = markdown.split('\n');
-    
+
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i];
-      
+
       if (line.startsWith('```')) {
         // Code block
         final codeLines = <String>[];
         i++; // Skip the opening ```
-        
+
         while (i < lines.length && !lines[i].startsWith('```')) {
           codeLines.add(lines[i]);
           i++;
         }
-        
+
         spans.add(WidgetSpan(
           child: _buildCodeBlock(codeLines.join('\n'), context),
         ));
@@ -145,7 +145,7 @@ class MarkdownContent extends StatelessWidget {
         spans.add(_parseInlineMarkdown(line + '\n', baseStyle));
       }
     }
-    
+
     return RichText(
       text: TextSpan(children: spans),
     );
@@ -157,11 +157,11 @@ class MarkdownContent extends StatelessWidget {
     bool inBold = false;
     bool inItalic = false;
     bool inCode = false;
-    
+
     for (int i = 0; i < text.length; i++) {
       final char = text[i];
       final nextChar = i + 1 < text.length ? text[i + 1] : '';
-      
+
       if (char == '*' && nextChar == '*' && !inCode) {
         // Bold
         if (buffer.isNotEmpty) {
@@ -197,14 +197,14 @@ class MarkdownContent extends StatelessWidget {
         buffer.write(char);
       }
     }
-    
+
     if (buffer.isNotEmpty) {
       spans.add(TextSpan(
         text: buffer.toString(),
         style: _getCurrentStyle(baseStyle, inBold, inItalic, inCode),
       ));
     }
-    
+
     return TextSpan(children: spans);
   }
 
@@ -215,7 +215,7 @@ class MarkdownContent extends StatelessWidget {
     bool code,
   ) {
     TextStyle style = base;
-    
+
     if (bold) {
       style = style.copyWith(fontWeight: FontWeight.bold);
     }
@@ -228,7 +228,7 @@ class MarkdownContent extends StatelessWidget {
         backgroundColor: Colors.grey.withValues(alpha: 0.1),
       );
     }
-    
+
     return style;
   }
 
@@ -303,7 +303,9 @@ class InteractiveContent extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 4,
-            children: actions.map((action) => _buildActionButton(action, context)).toList(),
+            children: actions
+                .map((action) => _buildActionButton(action, context))
+                .toList(),
           ),
         ],
       ],
@@ -433,8 +435,8 @@ class _CollapsibleContentState extends State<CollapsibleContent>
                     widget.title,
                     style: widget.titleStyle ??
                         Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                   ),
                 ),
               ],

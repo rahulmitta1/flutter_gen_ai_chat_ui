@@ -47,8 +47,8 @@ class ActionConsole extends StatelessWidget {
                   Text(
                     'No actions running.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   )
                 else
                   ListView.separated(

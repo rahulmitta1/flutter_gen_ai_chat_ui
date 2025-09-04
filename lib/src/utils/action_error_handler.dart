@@ -26,7 +26,8 @@ class ActionErrorHandler {
       userMessage = 'Action timed out. Please try again.';
       errorCode = 'TIMEOUT';
     } else if (error is NetworkException) {
-      userMessage = 'Network error occurred. Check your connection and try again.';
+      userMessage =
+          'Network error occurred. Check your connection and try again.';
       errorCode = 'NETWORK_ERROR';
     } else {
       userMessage = 'An unexpected error occurred while executing the action';
@@ -99,7 +100,8 @@ class ActionException implements Exception {
   });
 
   @override
-  String toString() => 'ActionException: $message${code != null ? ' ($code)' : ''}';
+  String toString() =>
+      'ActionException: $message${code != null ? ' ($code)' : ''}';
 }
 
 /// Exception for network-related errors
@@ -111,8 +113,7 @@ class NetworkException extends ActionException {
 class TimeoutException extends ActionException {
   final Duration timeout;
 
-  const TimeoutException(super.message, this.timeout)
-      : super(code: 'TIMEOUT');
+  const TimeoutException(super.message, this.timeout) : super(code: 'TIMEOUT');
 }
 
 /// Exception for parameter validation errors

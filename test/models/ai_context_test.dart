@@ -183,7 +183,8 @@ void main() {
 
         final aiString = context.toAiString();
 
-        expect(aiString, equals('User Data: {name: John, age: 30, active: true}'));
+        expect(
+            aiString, equals('User Data: {name: John, age: 30, active: true}'));
       });
 
       test('should serialize list data correctly', () {

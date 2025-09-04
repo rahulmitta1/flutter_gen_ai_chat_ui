@@ -19,19 +19,19 @@ abstract class AIAgent {
 
   /// Process a request and return a response
   Future<AgentResponse> processRequest(AgentRequest request);
-  
+
   /// Stream agent state for real-time updates
   Stream<AgentState> streamState();
-  
+
   /// Check if this agent can handle a specific request
   bool canHandle(AgentRequest request);
-  
+
   /// Get current agent status
   AgentStatus get status;
-  
+
   /// Initialize agent with configuration
   Future<void> initialize(Map<String, dynamic> config);
-  
+
   /// Clean up agent resources
   Future<void> dispose();
 }

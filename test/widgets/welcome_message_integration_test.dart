@@ -18,7 +18,9 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('Welcome message should be integrated in message list, not overlay', (tester) async {
+    testWidgets(
+        'Welcome message should be integrated in message list, not overlay',
+        (tester) async {
       // Set welcome message to show
       controller.showWelcomeMessage = true;
 
@@ -45,12 +47,14 @@ void main() {
 
       // Verify it's not in an overlay (no semi-transparent background container)
       expect(find.byType(Container).first, isNotNull);
-      
+
       // The welcome message should be part of the scrollable list
       expect(find.byType(ListView), findsOneWidget);
     });
 
-    testWidgets('Welcome message should hide when user sends first message through input', (tester) async {
+    testWidgets(
+        'Welcome message should hide when user sends first message through input',
+        (tester) async {
       controller.showWelcomeMessage = true;
       var messageReceived = false;
 
@@ -88,7 +92,8 @@ void main() {
       expect(find.text('Welcome to the chat!'), findsNothing);
     });
 
-    testWidgets('Welcome message should not show when messages already exist', (tester) async {
+    testWidgets('Welcome message should not show when messages already exist',
+        (tester) async {
       // Add an existing message first
       controller.addMessage(ChatMessage(
         text: 'Existing message',

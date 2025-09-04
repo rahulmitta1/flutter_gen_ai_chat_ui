@@ -106,7 +106,8 @@ class _FileMediaChatState extends State<FileMediaChat>
           createdAt: DateTime.now().subtract(const Duration(minutes: 8)),
           media: [
             ChatMedia(
-              url: 'https://file-examples.com/storage/fe13fb068fd4006a98ec0c5/2017/04/file_example_MP4_480_1_5MG.mp4',
+              url:
+                  'https://file-examples.com/storage/fe13fb068fd4006a98ec0c5/2017/04/file_example_MP4_480_1_5MG.mp4',
               type: ChatMediaType.video,
               fileName: 'presentation_demo.mp4',
               size: (1024 * 1024 * 2.1).toInt(),
@@ -124,7 +125,8 @@ class _FileMediaChatState extends State<FileMediaChat>
               size: (1024 * 1024 * 3.7).toInt(),
             ),
             ChatMedia(
-              url: 'https://file-examples.com/storage/fe13fb068fd4006a98ec0c5/2017/11/file_example_MP3_700KB.mp3',
+              url:
+                  'https://file-examples.com/storage/fe13fb068fd4006a98ec0c5/2017/11/file_example_MP3_700KB.mp3',
               type: ChatMediaType.audio,
               fileName: 'voice_memo.mp3',
               size: 1024 * 850,
@@ -160,7 +162,8 @@ class _FileMediaChatState extends State<FileMediaChat>
           ChatMedia(
             url: 'https://picsum.photos/1200/800',
             type: ChatMediaType.image,
-            fileName: 'high_res_photo_${DateTime.now().millisecondsSinceEpoch}.jpg',
+            fileName:
+                'high_res_photo_${DateTime.now().millisecondsSinceEpoch}.jpg',
             size: (1024 * 1024 * 1.8).toInt(),
             metadata: {'width': '1200', 'height': '800', 'format': 'JPEG'},
           ),
@@ -203,7 +206,11 @@ class _FileMediaChatState extends State<FileMediaChat>
             type: ChatMediaType.audio,
             fileName: 'recording_${DateTime.now().millisecondsSinceEpoch}.wav',
             size: (1024 * 1024 * 8.3).toInt(),
-            metadata: {'duration': '03:21', 'quality': 'High', 'channels': 'Stereo'},
+            metadata: {
+              'duration': '03:21',
+              'quality': 'High',
+              'channels': 'Stereo'
+            },
           ),
         ];
         break;
@@ -286,7 +293,9 @@ class _FileMediaChatState extends State<FileMediaChat>
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: isDarkMode ? const Color(0xFF374151) : const Color(0xFFD1D5DB),
+              color: isDarkMode
+                  ? const Color(0xFF374151)
+                  : const Color(0xFFD1D5DB),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -294,7 +303,9 @@ class _FileMediaChatState extends State<FileMediaChat>
           Text(
             'Real Upload Options',
             style: TextStyle(
-              color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+              color: isDarkMode
+                  ? const Color(0xFFF3F4F6)
+                  : const Color(0xFF1F2937),
               fontSize: 20,
               fontWeight: FontWeight.w600,
             ),
@@ -303,7 +314,9 @@ class _FileMediaChatState extends State<FileMediaChat>
           Text(
             'Choose how you want to upload files',
             style: TextStyle(
-              color: isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+              color: isDarkMode
+                  ? const Color(0xFF6B7280)
+                  : const Color(0xFF9CA3AF),
               fontSize: 14,
             ),
           ),
@@ -437,7 +450,9 @@ class _FileMediaChatState extends State<FileMediaChat>
                 Text(
                   title,
                   style: TextStyle(
-                    color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+                    color: isDarkMode
+                        ? const Color(0xFFF3F4F6)
+                        : const Color(0xFF1F2937),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -446,7 +461,9 @@ class _FileMediaChatState extends State<FileMediaChat>
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+                    color: isDarkMode
+                        ? const Color(0xFF6B7280)
+                        : const Color(0xFF9CA3AF),
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
@@ -488,23 +505,30 @@ class _FileMediaChatState extends State<FileMediaChat>
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: isDarkMode ? const Color(0xFF1A1B23) : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             'Add Caption',
             style: TextStyle(
-              color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+              color: isDarkMode
+                  ? const Color(0xFFF3F4F6)
+                  : const Color(0xFF1F2937),
               fontWeight: FontWeight.w600,
             ),
           ),
           content: TextField(
             controller: captionController,
             style: TextStyle(
-              color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+              color: isDarkMode
+                  ? const Color(0xFFF3F4F6)
+                  : const Color(0xFF1F2937),
             ),
             decoration: InputDecoration(
               hintText: 'Enter caption for your file...',
               hintStyle: TextStyle(
-                color: isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+                color: isDarkMode
+                    ? const Color(0xFF6B7280)
+                    : const Color(0xFF9CA3AF),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -518,15 +542,19 @@ class _FileMediaChatState extends State<FileMediaChat>
               child: Text(
                 'Skip',
                 style: TextStyle(
-                  color: isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+                  color: isDarkMode
+                      ? const Color(0xFF6B7280)
+                      : const Color(0xFF9CA3AF),
                 ),
               ),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(captionController.text),
+              onPressed: () =>
+                  Navigator.of(context).pop(captionController.text),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6366F1),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
               child: const Text('Add', style: TextStyle(color: Colors.white)),
             ),
@@ -577,10 +605,12 @@ class _FileMediaChatState extends State<FileMediaChat>
       for (File file in files) {
         String fileName = path.basename(file.path);
         int fileSize = await file.length();
-        String fileExtension = path.extension(file.path).toLowerCase().replaceAll('.', '');
+        String fileExtension =
+            path.extension(file.path).toLowerCase().replaceAll('.', '');
 
         final Directory appDocDir = await getApplicationDocumentsDirectory();
-        final String destFilePath = '${appDocDir.path}/${DateTime.now().millisecondsSinceEpoch}_$fileName';
+        final String destFilePath =
+            '${appDocDir.path}/${DateTime.now().millisecondsSinceEpoch}_$fileName';
         final File destFile = await file.copy(destFilePath);
         _temporaryFiles.add(destFile);
 
@@ -622,7 +652,8 @@ class _FileMediaChatState extends State<FileMediaChat>
       return ChatMediaType.video;
     } else if (['mp3', 'wav', 'ogg', 'm4a'].contains(extension)) {
       return ChatMediaType.audio;
-    } else if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].contains(extension)) {
+    } else if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt']
+        .contains(extension)) {
       return ChatMediaType.document;
     }
     return ChatMediaType.other;
@@ -652,25 +683,36 @@ class _FileMediaChatState extends State<FileMediaChat>
   String _buildResponseText(List<ChatMedia> attachments, String mode) {
     final isReal = mode == 'real';
     final prefix = isReal ? '**Real Upload**' : '**Mock Demo**';
-    
+
     if (attachments.length == 1) {
       final media = attachments.first;
       final sizeText = _formatFileSize(media.size!);
-      
+
       switch (media.type) {
         case ChatMediaType.image:
-          return '$prefix: Received ${media.extension?.toUpperCase()} image "${{media.fileName}}" (${sizeText}). ${isReal ? 'This is an actual file from your device!' : 'This demonstrates image preview capabilities.'}';
+          return '$prefix: Received ${media.extension?.toUpperCase()} image "${{
+            media.fileName
+          }}" (${sizeText}). ${isReal ? 'This is an actual file from your device!' : 'This demonstrates image preview capabilities.'}';
         case ChatMediaType.document:
-          return '$prefix: Received ${media.extension?.toUpperCase()} document "${{media.fileName}}" (${sizeText}). ${isReal ? 'Real document analysis available!' : 'Shows document attachment UI.'}';
+          return '$prefix: Received ${media.extension?.toUpperCase()} document "${{
+            media.fileName
+          }}" (${sizeText}). ${isReal ? 'Real document analysis available!' : 'Shows document attachment UI.'}';
         case ChatMediaType.video:
-          return '$prefix: Received video "${{media.fileName}}" (${sizeText}). ${isReal ? 'Actual video processing ready!' : 'Video preview demonstration.'}';
+          return '$prefix: Received video "${{
+            media.fileName
+          }}" (${sizeText}). ${isReal ? 'Actual video processing ready!' : 'Video preview demonstration.'}';
         case ChatMediaType.audio:
-          return '$prefix: Received audio "${{media.fileName}}" (${sizeText}). ${isReal ? 'Real audio transcription possible!' : 'Audio file UI demonstration.'}';
+          return '$prefix: Received audio "${{
+            media.fileName
+          }}" (${sizeText}). ${isReal ? 'Real audio transcription possible!' : 'Audio file UI demonstration.'}';
         default:
-          return '$prefix: Received file "${{media.fileName}}" (${sizeText}). ${isReal ? 'Ready for processing!' : 'File attachment demo.'}';
+          return '$prefix: Received file "${{
+            media.fileName
+          }}" (${sizeText}). ${isReal ? 'Ready for processing!' : 'File attachment demo.'}';
       }
     } else {
-      final totalSize = attachments.fold<int>(0, (sum, media) => sum + (media.size ?? 0));
+      final totalSize =
+          attachments.fold<int>(0, (sum, media) => sum + (media.size ?? 0));
       final types = attachments.map((m) => m.type.name).toSet().join(', ');
       return '$prefix: Received ${attachments.length} files (${_formatFileSize(totalSize)}) including: $types. ${isReal ? 'All files are real and ready for processing!' : 'Multiple file attachment demonstration complete.'}';
     }
@@ -679,7 +721,7 @@ class _FileMediaChatState extends State<FileMediaChat>
   /// Handle text message sending
   Future<void> _handleSendMessage(ChatMessage message) async {
     setState(() => _isGenerating = true);
-    
+
     await Future.delayed(const Duration(milliseconds: 800));
 
     _chatController.addMessage(
@@ -701,7 +743,8 @@ class _FileMediaChatState extends State<FileMediaChat>
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 
@@ -725,7 +768,8 @@ class _FileMediaChatState extends State<FileMediaChat>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
+        backgroundColor:
+            isDarkMode ? const Color(0xFF0A0A0F) : const Color(0xFFF8F9FF),
         appBar: _buildAppBar(context, appState, isDarkMode),
         body: Column(
           children: [
@@ -746,7 +790,8 @@ class _FileMediaChatState extends State<FileMediaChat>
   }
 
   /// Build app bar
-  PreferredSizeWidget _buildAppBar(BuildContext context, AppState appState, bool isDarkMode) {
+  PreferredSizeWidget _buildAppBar(
+      BuildContext context, AppState appState, bool isDarkMode) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -754,8 +799,14 @@ class _FileMediaChatState extends State<FileMediaChat>
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDarkMode
-                ? [const Color(0xFF0A0A0F), const Color(0xFF1A1B23).withOpacity(0.8)]
-                : [const Color(0xFFF8F9FF), const Color(0xFFFFFFFF).withOpacity(0.9)],
+                ? [
+                    const Color(0xFF0A0A0F),
+                    const Color(0xFF1A1B23).withOpacity(0.8)
+                  ]
+                : [
+                    const Color(0xFFF8F9FF),
+                    const Color(0xFFFFFFFF).withOpacity(0.9)
+                  ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -764,16 +815,21 @@ class _FileMediaChatState extends State<FileMediaChat>
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isDarkMode ? const Color(0xFF1A1B23).withOpacity(0.6) : const Color(0xFFFFFFFF).withOpacity(0.8),
+          color: isDarkMode
+              ? const Color(0xFF1A1B23).withOpacity(0.6)
+              : const Color(0xFFFFFFFF).withOpacity(0.8),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDarkMode ? const Color(0xFF374151).withOpacity(0.3) : const Color(0xFFE5E7EB),
+            color: isDarkMode
+                ? const Color(0xFF374151).withOpacity(0.3)
+                : const Color(0xFFE5E7EB),
           ),
         ),
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_rounded,
-            color: isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
+            color:
+                isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
             size: 18,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -794,13 +850,17 @@ class _FileMediaChatState extends State<FileMediaChat>
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: (isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1)).withOpacity(0.3),
+                  color: (isDarkMode
+                          ? const Color(0xFF00D4FF)
+                          : const Color(0xFF6366F1))
+                      .withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: const Icon(Icons.folder_shared_rounded, color: Colors.white, size: 18),
+            child: const Icon(Icons.folder_shared_rounded,
+                color: Colors.white, size: 18),
           ),
           const SizedBox(width: 12),
           Column(
@@ -809,7 +869,9 @@ class _FileMediaChatState extends State<FileMediaChat>
               Text(
                 'File & Media Chat',
                 style: TextStyle(
-                  color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+                  color: isDarkMode
+                      ? const Color(0xFFF3F4F6)
+                      : const Color(0xFF1F2937),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -817,7 +879,9 @@ class _FileMediaChatState extends State<FileMediaChat>
               Text(
                 'Mock + Real uploads',
                 style: TextStyle(
-                  color: isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+                  color: isDarkMode
+                      ? const Color(0xFF6B7280)
+                      : const Color(0xFF9CA3AF),
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                 ),
@@ -835,7 +899,9 @@ class _FileMediaChatState extends State<FileMediaChat>
               child: Icon(
                 isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
                 key: ValueKey(isDarkMode),
-                color: isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
+                color: isDarkMode
+                    ? const Color(0xFF00D4FF)
+                    : const Color(0xFF6366F1),
                 size: 22,
               ),
             ),
@@ -852,10 +918,14 @@ class _FileMediaChatState extends State<FileMediaChat>
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF1F2937).withValues(alpha: 0.8) : const Color(0xFFFFFFFF).withValues(alpha: 0.9),
+        color: isDarkMode
+            ? const Color(0xFF1F2937).withValues(alpha: 0.8)
+            : const Color(0xFFFFFFFF).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDarkMode ? const Color(0xFF374151).withValues(alpha: 0.5) : const Color(0xFFE5E7EB),
+          color: isDarkMode
+              ? const Color(0xFF374151).withValues(alpha: 0.5)
+              : const Color(0xFFE5E7EB),
           width: 1,
         ),
         boxShadow: [
@@ -877,7 +947,10 @@ class _FileMediaChatState extends State<FileMediaChat>
           ),
           boxShadow: [
             BoxShadow(
-              color: (isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1)).withValues(alpha: 0.3),
+              color: (isDarkMode
+                      ? const Color(0xFF00D4FF)
+                      : const Color(0xFF6366F1))
+                  .withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -886,7 +959,8 @@ class _FileMediaChatState extends State<FileMediaChat>
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
         labelColor: Colors.white,
-        unselectedLabelColor: isDarkMode ? const Color(0xFFD1D5DB) : const Color(0xFF6B7280),
+        unselectedLabelColor:
+            isDarkMode ? const Color(0xFFD1D5DB) : const Color(0xFF6B7280),
         labelStyle: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 14,
@@ -902,7 +976,7 @@ class _FileMediaChatState extends State<FileMediaChat>
             height: 44,
           ),
           Tab(
-            text: 'Real Mode', 
+            text: 'Real Mode',
             height: 44,
           ),
         ],
@@ -920,7 +994,8 @@ class _FileMediaChatState extends State<FileMediaChat>
       maxWidth: appState.chatMaxWidth,
       loadingConfig: LoadingConfig(
         isLoading: _isGenerating,
-        loadingIndicator: _isGenerating ? _buildLoadingIndicator(isDarkMode) : null,
+        loadingIndicator:
+            _isGenerating ? _buildLoadingIndicator(isDarkMode) : null,
       ),
       messageOptions: MessageOptions(
         showUserName: true,
@@ -930,21 +1005,29 @@ class _FileMediaChatState extends State<FileMediaChat>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Preview: ${media.fileName ?? 'File'}'),
-              backgroundColor: isDarkMode ? const Color(0xFF1A1B23) : const Color(0xFF6366F1),
+              backgroundColor: isDarkMode
+                  ? const Color(0xFF1A1B23)
+                  : const Color(0xFF6366F1),
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
         bubbleStyle: BubbleStyle(
-          userBubbleColor: isDarkMode ? const Color(0xFF1A1B23).withOpacity(0.6) : const Color(0xFF6366F1).withOpacity(0.1),
-          aiBubbleColor: isDarkMode ? const Color(0xFF0F1419).withOpacity(0.8) : const Color(0xFFFFFFFF).withOpacity(0.9),
+          userBubbleColor: isDarkMode
+              ? const Color(0xFF1A1B23).withOpacity(0.6)
+              : const Color(0xFF6366F1).withOpacity(0.1),
+          aiBubbleColor: isDarkMode
+              ? const Color(0xFF0F1419).withOpacity(0.8)
+              : const Color(0xFFFFFFFF).withOpacity(0.9),
         ),
       ),
       fileUploadOptions: FileUploadOptions(
         enabled: true,
         uploadIcon: Icons.add_circle_outline_rounded,
-        uploadIconColor: isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
+        uploadIconColor:
+            isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
         uploadTooltip: 'Mock file demo',
         onFilesSelected: _handleMockFileUpload,
         maxFilesPerMessage: 5,
@@ -963,7 +1046,8 @@ class _FileMediaChatState extends State<FileMediaChat>
       maxWidth: appState.chatMaxWidth,
       loadingConfig: LoadingConfig(
         isLoading: _isGenerating,
-        loadingIndicator: _isGenerating ? _buildLoadingIndicator(isDarkMode) : null,
+        loadingIndicator:
+            _isGenerating ? _buildLoadingIndicator(isDarkMode) : null,
       ),
       messageOptions: MessageOptions(
         showUserName: true,
@@ -973,26 +1057,35 @@ class _FileMediaChatState extends State<FileMediaChat>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Real file: ${media.fileName ?? 'File'}'),
-              backgroundColor: isDarkMode ? const Color(0xFF1A1B23) : const Color(0xFF6366F1),
+              backgroundColor: isDarkMode
+                  ? const Color(0xFF1A1B23)
+                  : const Color(0xFF6366F1),
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
         bubbleStyle: BubbleStyle(
-          userBubbleColor: isDarkMode ? const Color(0xFF1A1B23).withOpacity(0.6) : const Color(0xFF6366F1).withOpacity(0.1),
-          aiBubbleColor: isDarkMode ? const Color(0xFF0F1419).withOpacity(0.8) : const Color(0xFFFFFFFF).withOpacity(0.9),
+          userBubbleColor: isDarkMode
+              ? const Color(0xFF1A1B23).withOpacity(0.6)
+              : const Color(0xFF6366F1).withOpacity(0.1),
+          aiBubbleColor: isDarkMode
+              ? const Color(0xFF0F1419).withOpacity(0.8)
+              : const Color(0xFFFFFFFF).withOpacity(0.9),
         ),
       ),
       fileUploadOptions: FileUploadOptions(
         enabled: true,
         uploadIcon: Icons.cloud_upload_rounded,
-        uploadIconColor: isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
+        uploadIconColor:
+            isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
         uploadTooltip: 'Upload real files',
         onFilesSelected: _handleRealFileUpload,
         maxFilesPerMessage: 10,
       ),
-      inputOptions: _buildInputOptions(isDarkMode, 'Upload real files from device...'),
+      inputOptions:
+          _buildInputOptions(isDarkMode, 'Upload real files from device...'),
     );
   }
 
@@ -1012,25 +1105,33 @@ class _FileMediaChatState extends State<FileMediaChat>
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: isDarkMode ? const Color(0xFF1F2937).withOpacity(0.6) : const Color(0xFFE5E7EB),
+            color: isDarkMode
+                ? const Color(0xFF1F2937).withOpacity(0.6)
+                : const Color(0xFFE5E7EB),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: isDarkMode ? const Color(0xFF1F2937).withOpacity(0.6) : const Color(0xFFE5E7EB),
+            color: isDarkMode
+                ? const Color(0xFF1F2937).withOpacity(0.6)
+                : const Color(0xFFE5E7EB),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
+            color:
+                isDarkMode ? const Color(0xFF00D4FF) : const Color(0xFF6366F1),
             width: 2,
           ),
         ),
         filled: true,
-        fillColor: isDarkMode ? const Color(0xFF0F1419).withOpacity(0.8) : const Color(0xFFFFFFFF).withOpacity(0.9),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        fillColor: isDarkMode
+            ? const Color(0xFF0F1419).withOpacity(0.8)
+            : const Color(0xFFFFFFFF).withOpacity(0.9),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       ),
       textStyle: TextStyle(
         color: isDarkMode ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
@@ -1049,7 +1150,8 @@ class _FileMediaChatState extends State<FileMediaChat>
         "Generating response...",
         "Ready to assist...",
       ],
-      shimmerBaseColor: isDarkMode ? const Color(0xFF1F2937) : const Color(0xFFE5E7EB),
+      shimmerBaseColor:
+          isDarkMode ? const Color(0xFF1F2937) : const Color(0xFFE5E7EB),
       shimmerHighlightColor: isDarkMode
           ? const Color(0xFF00D4FF).withOpacity(0.3)
           : const Color(0xFF6366F1).withOpacity(0.2),

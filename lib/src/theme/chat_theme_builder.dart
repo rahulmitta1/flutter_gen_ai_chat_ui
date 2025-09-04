@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'advanced_chat_theme.dart';
@@ -27,7 +26,7 @@ class ChatThemeBuilder {
     // Generate complementary colors
     final primary = primaryColor;
     final secondary = secondaryColor;
-    final surface = isDark 
+    final surface = isDark
         ? Color.lerp(baseBackground, primary, 0.05)!
         : Color.lerp(baseBackground, primary, 0.02)!;
 
@@ -101,7 +100,7 @@ class ChatThemeBuilder {
     Brightness brightness = Brightness.light,
   }) {
     final isDark = brightness == Brightness.dark;
-    
+
     if (isDark) {
       return ChatThemeBuilder._internal(const AdvancedChatTheme(
         backgroundGradient: [
@@ -178,7 +177,7 @@ class ChatThemeBuilder {
     Brightness brightness = Brightness.light,
   }) {
     final isDark = brightness == Brightness.dark;
-    
+
     if (isDark) {
       return ChatThemeBuilder._internal(const AdvancedChatTheme(
         backgroundGradient: [
@@ -402,7 +401,8 @@ class ChatThemeBuilder {
     )
         .withAnimations(ChatAnimationPresets.chatGptStyle)
         .withBorderRadius(
-          messageBubbleBorderRadius: const BorderRadius.all(Radius.circular(12)),
+          messageBubbleBorderRadius:
+              const BorderRadius.all(Radius.circular(12)),
           userBubbleBorderRadius: const BorderRadius.all(Radius.circular(12)),
           inputFieldBorderRadius: const BorderRadius.all(Radius.circular(8)),
         )
@@ -417,7 +417,8 @@ class ChatThemeBuilder {
     )
         .withAnimations(ChatAnimationPresets.claudeStyle)
         .withBorderRadius(
-          messageBubbleBorderRadius: const BorderRadius.all(Radius.circular(16)),
+          messageBubbleBorderRadius:
+              const BorderRadius.all(Radius.circular(16)),
           userBubbleBorderRadius: const BorderRadius.all(Radius.circular(16)),
           inputFieldBorderRadius: const BorderRadius.all(Radius.circular(12)),
         )
@@ -431,7 +432,8 @@ class ChatThemeBuilder {
       backgroundColor: const Color(0xFFFFFFFF),
     )
         .withBorderRadius(
-          messageBubbleBorderRadius: const BorderRadius.all(Radius.circular(18)),
+          messageBubbleBorderRadius:
+              const BorderRadius.all(Radius.circular(18)),
           userBubbleBorderRadius: const BorderRadius.all(Radius.circular(18)),
           inputFieldBorderRadius: const BorderRadius.all(Radius.circular(24)),
         )

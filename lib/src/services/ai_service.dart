@@ -73,7 +73,7 @@ class AiFunctionCall {
   factory AiFunctionCall.fromJson(Map<String, dynamic> json) {
     return AiFunctionCall(
       name: json['name'] as String,
-      arguments: json['arguments'] is String 
+      arguments: json['arguments'] is String
           ? jsonDecode(json['arguments'] as String) as Map<String, dynamic>
           : json['arguments'] as Map<String, dynamic>,
       id: json['id'] as String?,
@@ -81,10 +81,10 @@ class AiFunctionCall {
   }
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'arguments': arguments,
-    if (id != null) 'id': id,
-  };
+        'name': name,
+        'arguments': arguments,
+        if (id != null) 'id': id,
+      };
 }
 
 /// Configuration for AI services
@@ -117,7 +117,8 @@ class AiServiceException implements Exception {
   });
 
   @override
-  String toString() => 'AiServiceException: $message${code != null ? ' ($code)' : ''}';
+  String toString() =>
+      'AiServiceException: $message${code != null ? ' ($code)' : ''}';
 }
 
 /// Mock AI service for testing and development
@@ -133,7 +134,7 @@ class MockAiService extends AiService {
   @override
   Future<String> sendMessage(String message) async {
     await Future<void>.delayed(delay);
-    
+
     if (shouldFail) {
       throw const AiServiceException('Mock service error');
     }
@@ -162,14 +163,14 @@ class MockAiService extends AiService {
     List<AiAction> availableActions,
   ) async {
     await Future<void>.delayed(delay);
-    
+
     if (shouldFail) {
       throw const AiServiceException('Mock service error');
     }
 
     // Simple pattern matching to simulate function calling
     final lowerMessage = message.toLowerCase();
-    
+
     if (lowerMessage.contains('calculate') || lowerMessage.contains('math')) {
       return const AiFunctionCallResult(
         functionCall: AiFunctionCall(
@@ -202,9 +203,9 @@ class MockAiService extends AiService {
 
     // Simulate thinking
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    
+
     final lowerMessage = message.toLowerCase();
-    
+
     if (lowerMessage.contains('calculate') || lowerMessage.contains('math')) {
       yield const AiFunctionCallStreamResult(
         type: AiFunctionCallResultType.functionCall,
@@ -264,23 +265,26 @@ class AiServiceIntegration {
   Future<String> processMessageWithActions(
     String message,
     List<AiAction> availableActions,
-    Future<ActionResult> Function(String actionName, Map<String, dynamic> parameters) executeAction,
+    Future<ActionResult> Function(
+            String actionName, Map<String, dynamic> parameters)
+        executeAction,
   ) async {
-    final result = await aiService.sendMessageWithFunctions(message, availableActions);
-    
+    final result =
+        await aiService.sendMessageWithFunctions(message, availableActions);
+
     if (result.functionCall != null) {
       final actionResult = await executeAction(
         result.functionCall!.name,
         result.functionCall!.arguments,
       );
-      
+
       if (actionResult.success) {
         return 'Action executed successfully: ${actionResult.data}';
       } else {
         return 'Action failed: ${actionResult.error}';
       }
     }
-    
+
     return result.textResponse ?? 'No response from AI service';
   }
 
@@ -288,9 +292,12 @@ class AiServiceIntegration {
   Stream<String> processMessageWithActionsStream(
     String message,
     List<AiAction> availableActions,
-    Future<ActionResult> Function(String actionName, Map<String, dynamic> parameters) executeAction,
+    Future<ActionResult> Function(
+            String actionName, Map<String, dynamic> parameters)
+        executeAction,
   ) async* {
-    await for (final result in aiService.sendMessageWithFunctionsStream(message, availableActions)) {
+    await for (final result in aiService.sendMessageWithFunctionsStream(
+        message, availableActions)) {
       switch (result.type) {
         case AiFunctionCallResultType.textChunk:
           if (result.textChunk != null) {
@@ -300,13 +307,13 @@ class AiServiceIntegration {
         case AiFunctionCallResultType.functionCall:
           if (result.functionCall != null) {
             yield '\n\n🔄 Executing ${result.functionCall!.name}...\n\n';
-            
+
             try {
               final actionResult = await executeAction(
                 result.functionCall!.name,
                 result.functionCall!.arguments,
               );
-              
+
               if (actionResult.success) {
                 yield 'Action completed: ${actionResult.data}';
               } else {

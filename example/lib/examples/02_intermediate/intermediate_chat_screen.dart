@@ -185,7 +185,9 @@ class _IntermediateChatScreenState extends State<IntermediateChatScreen>
 - Improve clarity and structure
 
 Feel free to ask me anything - I'm here to help make your tasks easier!''';
-    } else if (input.contains('flutter') || input.contains('mobile') || input.contains('app')) {
+    } else if (input.contains('flutter') ||
+        input.contains('mobile') ||
+        input.contains('app')) {
       return '''**Flutter** is Google's UI toolkit for building beautiful, natively compiled applications! Here's what makes it great:
 
 ## 🚀 **Why Flutter?**
@@ -461,9 +463,8 @@ Feel free to ask me anything - I'm designed to be helpful, informative, and enga
                                   titleStyle: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? Colors.white
-                                        : Colors.black87,
+                                    color:
+                                        isDark ? Colors.white : Colors.black87,
                                   ),
                                   containerPadding: const EdgeInsets.symmetric(
                                     horizontal: 24,
@@ -517,9 +518,8 @@ Feel free to ask me anything - I'm designed to be helpful, informative, and enga
             ),
             boxShadow: [
               BoxShadow(
-                color: isDark
-                    ? const Color(0x201F2687)
-                    : const Color(0x20000000),
+                color:
+                    isDark ? const Color(0x201F2687) : const Color(0x20000000),
                 blurRadius: 32,
                 offset: const Offset(0, 8),
               ),
@@ -617,9 +617,8 @@ Feel free to ask me anything - I'm designed to be helpful, informative, and enga
                             ),
                             child: Icon(
                               Icons.auto_awesome,
-                              color: isDark
-                                  ? Colors.blue[300]
-                                  : Colors.blue[600],
+                              color:
+                                  isDark ? Colors.blue[300] : Colors.blue[600],
                               size: 14,
                             ),
                           ),
@@ -634,9 +633,8 @@ Feel free to ask me anything - I'm designed to be helpful, informative, and enga
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: isDark
-                                        ? Colors.white
-                                        : Colors.black87,
+                                    color:
+                                        isDark ? Colors.white : Colors.black87,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),

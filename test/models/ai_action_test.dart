@@ -20,7 +20,9 @@ void main() {
       });
 
       test('should create action with optional render function', () {
-        Widget renderFunction(BuildContext context, ActionStatus status, Map<String, dynamic> params, {ActionResult? result, String? error}) {
+        Widget renderFunction(BuildContext context, ActionStatus status,
+            Map<String, dynamic> params,
+            {ActionResult? result, String? error}) {
           return const Text('Rendered');
         }
 
@@ -80,19 +82,20 @@ void main() {
         expect(schema['name'], equals('calculate'));
         expect(schema['description'], equals('Perform calculation'));
         expect(schema['parameters']['type'], equals('object'));
-        
-        final properties = schema['parameters']['properties'] as Map<String, dynamic>;
+
+        final properties =
+            schema['parameters']['properties'] as Map<String, dynamic>;
         expect(properties.containsKey('a'), isTrue);
         expect(properties.containsKey('operation'), isTrue);
-        
+
         final aParam = properties['a'] as Map<String, dynamic>;
         expect(aParam['type'], equals('number'));
         expect(aParam['description'], equals('First number'));
-        
+
         final operationParam = properties['operation'] as Map<String, dynamic>;
         expect(operationParam['type'], equals('string'));
         expect(operationParam['enum'], equals(['add', 'subtract']));
-        
+
         final required = schema['parameters']['required'] as List;
         expect(required, contains('a'));
         expect(required, contains('operation'));
@@ -145,7 +148,8 @@ void main() {
         );
 
         expect(param.validate('option1'), isNull);
-        expect(param.validate('invalid'), equals('choice must be one of: option1, option2'));
+        expect(param.validate('invalid'),
+            equals('choice must be one of: option1, option2'));
       });
     });
 
@@ -173,7 +177,8 @@ void main() {
         expect(param.validate(42), isNull);
         expect(param.validate(3.14), isNull);
         expect(param.validate(null), equals('count is required'));
-        expect(param.validate('not a number'), equals('count must be a number'));
+        expect(
+            param.validate('not a number'), equals('count must be a number'));
       });
     });
 
@@ -199,7 +204,8 @@ void main() {
         expect(param.validate(true), isNull);
         expect(param.validate(false), isNull);
         expect(param.validate(null), equals('enabled is required'));
-        expect(param.validate('not a boolean'), equals('enabled must be a boolean'));
+        expect(param.validate('not a boolean'),
+            equals('enabled must be a boolean'));
       });
     });
 
@@ -226,8 +232,10 @@ void main() {
 
         expect(param.validate(['item1', 'item2']), isNull);
         expect(param.validate(null), equals('items is required'));
-        expect(param.validate('not an array'), equals('items must be an array'));
-        expect(param.validate([1, 2]), equals('All items in items must be string'));
+        expect(
+            param.validate('not an array'), equals('items must be an array'));
+        expect(param.validate([1, 2]),
+            equals('All items in items must be string'));
       });
     });
 

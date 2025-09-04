@@ -184,8 +184,7 @@ This showcase demonstrates the **professional capabilities** and **design flexib
     final currentTheme = _themes[_currentThemeIndex];
     _chatController.addMessage(
       ChatMessage(
-        text:
-            '🎨 **Theme Updated: ${currentTheme.name}**\n\n'
+        text: '🎨 **Theme Updated: ${currentTheme.name}**\n\n'
             'This theme demonstrates our **harmonized design system**:\n\n'
             '• **Color Harmony**: ${currentTheme.description}\n'
             '• **Typography**: ${currentTheme.typographyDescription}\n'
@@ -207,8 +206,7 @@ This showcase demonstrates the **professional capabilities** and **design flexib
 
     _chatController.addMessage(
       ChatMessage(
-        text:
-            '✨ **Feature Demonstration**\n\n'
+        text: '✨ **Feature Demonstration**\n\n'
             '**Advanced Capabilities:**\n\n'
             '• **Streaming Text**: Real-time response generation\n'
             '• **Smart Scrolling**: Intelligent conversation navigation\n'
@@ -416,20 +414,20 @@ This showcase demonstrates the **professional capabilities** and **design flexib
               children: [
                 Text(
                   'Complete Showcase (${_currentThemeIndex + 1}/${_themes.length})',
-                  style: currentTheme.advancedTheme.typography.titleLarge
-                      .copyWith(
-                        color: currentTheme.advancedTheme.primaryActionColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style:
+                      currentTheme.advancedTheme.typography.titleLarge.copyWith(
+                    color: currentTheme.advancedTheme.primaryActionColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   currentTheme.name,
-                  style: currentTheme.advancedTheme.typography.bodyMedium
-                      .copyWith(
-                        color: currentTheme.advancedTheme.secondaryActionColor,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style:
+                      currentTheme.advancedTheme.typography.bodyMedium.copyWith(
+                    color: currentTheme.advancedTheme.secondaryActionColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -636,15 +634,15 @@ class HarmonizedTheme {
 
   // Get Flutter ThemeData for consistent theming
   ThemeData get themeData => ThemeData(
-    useMaterial3: true,
-    brightness: _getBrightness(),
-    primaryColor: advancedTheme.primaryActionColor,
-    scaffoldBackgroundColor: advancedTheme.backgroundGradient.first,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: advancedTheme.primaryActionColor,
-      brightness: _getBrightness(),
-    ),
-  );
+        useMaterial3: true,
+        brightness: _getBrightness(),
+        primaryColor: advancedTheme.primaryActionColor,
+        scaffoldBackgroundColor: advancedTheme.backgroundGradient.first,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: advancedTheme.primaryActionColor,
+          brightness: _getBrightness(),
+        ),
+      );
 
   Brightness _getBrightness() {
     // Determine brightness based on background colors
@@ -654,38 +652,33 @@ class HarmonizedTheme {
   }
 
   factory HarmonizedTheme.modern() {
-    final theme =
-        ChatThemeBuilder.fromBrand(
-              primaryColor: const Color(0xFF3B82F6),
-              secondaryColor: const Color(0xFF6366F1),
-              backgroundColor: const Color(0xFFFAFBFC),
-            )
-            .withBackgroundGradient([
-              const Color(0xFFFAFBFC),
-              const Color(0xFFF1F5F9),
-            ])
-            .withMessageBubbleGradient([Colors.white, const Color(0xFFF8FAFC)])
-            .withUserBubbleGradient([
-              const Color(0xFF3B82F6),
-              const Color(0xFF2563EB),
-            ])
-            .withShadows(
-              messageBubbleShadows: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-              userBubbleShadows: [
-                BoxShadow(
-                  color: const Color(0xFF3B82F6).withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            )
-            .build();
+    final theme = ChatThemeBuilder.fromBrand(
+      primaryColor: const Color(0xFF3B82F6),
+      secondaryColor: const Color(0xFF6366F1),
+      backgroundColor: const Color(0xFFFAFBFC),
+    ).withBackgroundGradient([
+      const Color(0xFFFAFBFC),
+      const Color(0xFFF1F5F9),
+    ]).withMessageBubbleGradient(
+        [Colors.white, const Color(0xFFF8FAFC)]).withUserBubbleGradient([
+      const Color(0xFF3B82F6),
+      const Color(0xFF2563EB),
+    ]).withShadows(
+      messageBubbleShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+      userBubbleShadows: [
+        BoxShadow(
+          color: const Color(0xFF3B82F6).withOpacity(0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ).build();
 
     return HarmonizedTheme(
       name: 'Modern',
@@ -737,38 +730,33 @@ class HarmonizedTheme {
   }
 
   factory HarmonizedTheme.classic() {
-    final theme =
-        ChatThemeBuilder.fromBrand(
-              primaryColor: const Color(0xFFD4AF37),
-              secondaryColor: const Color(0xFF8B7355),
-              backgroundColor: const Color(0xFFF8F6F1),
-            )
-            .withBackgroundGradient([
-              const Color(0xFFF8F6F1),
-              const Color(0xFFF0E6D6),
-            ])
-            .withMessageBubbleGradient([Colors.white, const Color(0xFFFFFEFC)])
-            .withUserBubbleGradient([
-              const Color(0xFFD4AF37),
-              const Color(0xFFB8941F),
-            ])
-            .withShadows(
-              messageBubbleShadows: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-              userBubbleShadows: [
-                BoxShadow(
-                  color: const Color(0xFFD4AF37).withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            )
-            .build();
+    final theme = ChatThemeBuilder.fromBrand(
+      primaryColor: const Color(0xFFD4AF37),
+      secondaryColor: const Color(0xFF8B7355),
+      backgroundColor: const Color(0xFFF8F6F1),
+    ).withBackgroundGradient([
+      const Color(0xFFF8F6F1),
+      const Color(0xFFF0E6D6),
+    ]).withMessageBubbleGradient(
+        [Colors.white, const Color(0xFFFFFEFC)]).withUserBubbleGradient([
+      const Color(0xFFD4AF37),
+      const Color(0xFFB8941F),
+    ]).withShadows(
+      messageBubbleShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.06),
+          blurRadius: 16,
+          offset: const Offset(0, 6),
+        ),
+      ],
+      userBubbleShadows: [
+        BoxShadow(
+          color: const Color(0xFFD4AF37).withOpacity(0.3),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ).build();
 
     return HarmonizedTheme(
       name: 'Classic',
@@ -820,38 +808,33 @@ class HarmonizedTheme {
   }
 
   factory HarmonizedTheme.minimal() {
-    final theme =
-        ChatThemeBuilder.fromBrand(
-              primaryColor: const Color(0xFF007BFF),
-              secondaryColor: const Color(0xFF6C757D),
-              backgroundColor: Colors.white,
-            )
-            .withBackgroundGradient([Colors.white, const Color(0xFFF8F9FA)])
-            .withMessageBubbleGradient([
-              const Color(0xFFF8F9FA),
-              const Color(0xFFF1F3F4),
-            ])
-            .withUserBubbleGradient([
-              const Color(0xFF007BFF),
-              const Color(0xFF0056CC),
-            ])
-            .withShadows(
-              messageBubbleShadows: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-              userBubbleShadows: [
-                BoxShadow(
-                  color: const Color(0xFF007BFF).withOpacity(0.15),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            )
-            .build();
+    final theme = ChatThemeBuilder.fromBrand(
+      primaryColor: const Color(0xFF007BFF),
+      secondaryColor: const Color(0xFF6C757D),
+      backgroundColor: Colors.white,
+    ).withBackgroundGradient(
+        [Colors.white, const Color(0xFFF8F9FA)]).withMessageBubbleGradient([
+      const Color(0xFFF8F9FA),
+      const Color(0xFFF1F3F4),
+    ]).withUserBubbleGradient([
+      const Color(0xFF007BFF),
+      const Color(0xFF0056CC),
+    ]).withShadows(
+      messageBubbleShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.02),
+          blurRadius: 4,
+          offset: const Offset(0, 1),
+        ),
+      ],
+      userBubbleShadows: [
+        BoxShadow(
+          color: const Color(0xFF007BFF).withOpacity(0.15),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ).build();
 
     return HarmonizedTheme(
       name: 'Minimal',
@@ -891,41 +874,35 @@ class HarmonizedTheme {
   }
 
   factory HarmonizedTheme.dark() {
-    final theme =
-        ChatThemeBuilder.fromBrand(
-              primaryColor: const Color(0xFF00D4FF),
-              secondaryColor: const Color(0xFF999999),
-              backgroundColor: const Color(0xFF0A0A0A),
-            )
-            .withBackgroundGradient([
-              const Color(0xFF0A0A0A),
-              const Color(0xFF1A1A1A),
-            ])
-            .withMessageBubbleGradient([
-              const Color(0xFF1A1A1A),
-              const Color(0xFF2D2D2D),
-            ])
-            .withUserBubbleGradient([
-              const Color(0xFF00D4FF),
-              const Color(0xFF0099CC),
-            ])
-            .withShadows(
-              messageBubbleShadows: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-              userBubbleShadows: [
-                BoxShadow(
-                  color: const Color(0xFF00D4FF).withOpacity(0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            )
-            .build();
+    final theme = ChatThemeBuilder.fromBrand(
+      primaryColor: const Color(0xFF00D4FF),
+      secondaryColor: const Color(0xFF999999),
+      backgroundColor: const Color(0xFF0A0A0A),
+    ).withBackgroundGradient([
+      const Color(0xFF0A0A0A),
+      const Color(0xFF1A1A1A),
+    ]).withMessageBubbleGradient([
+      const Color(0xFF1A1A1A),
+      const Color(0xFF2D2D2D),
+    ]).withUserBubbleGradient([
+      const Color(0xFF00D4FF),
+      const Color(0xFF0099CC),
+    ]).withShadows(
+      messageBubbleShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+      userBubbleShadows: [
+        BoxShadow(
+          color: const Color(0xFF00D4FF).withOpacity(0.4),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ).build();
 
     return HarmonizedTheme(
       name: 'Dark',
@@ -977,38 +954,33 @@ class HarmonizedTheme {
   }
 
   factory HarmonizedTheme.enterprise() {
-    final theme =
-        ChatThemeBuilder.fromBrand(
-              primaryColor: const Color(0xFF3498DB),
-              secondaryColor: const Color(0xFF7F8C8D),
-              backgroundColor: const Color(0xFFF5F7FA),
-            )
-            .withBackgroundGradient([
-              const Color(0xFFF5F7FA),
-              const Color(0xFFECF0F1),
-            ])
-            .withMessageBubbleGradient([Colors.white, const Color(0xFFF8F9FA)])
-            .withUserBubbleGradient([
-              const Color(0xFF3498DB),
-              const Color(0xFF2980B9),
-            ])
-            .withShadows(
-              messageBubbleShadows: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-              userBubbleShadows: [
-                BoxShadow(
-                  color: const Color(0xFF3498DB).withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            )
-            .build();
+    final theme = ChatThemeBuilder.fromBrand(
+      primaryColor: const Color(0xFF3498DB),
+      secondaryColor: const Color(0xFF7F8C8D),
+      backgroundColor: const Color(0xFFF5F7FA),
+    ).withBackgroundGradient([
+      const Color(0xFFF5F7FA),
+      const Color(0xFFECF0F1),
+    ]).withMessageBubbleGradient(
+        [Colors.white, const Color(0xFFF8F9FA)]).withUserBubbleGradient([
+      const Color(0xFF3498DB),
+      const Color(0xFF2980B9),
+    ]).withShadows(
+      messageBubbleShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+      userBubbleShadows: [
+        BoxShadow(
+          color: const Color(0xFF3498DB).withOpacity(0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ).build();
 
     return HarmonizedTheme(
       name: 'Enterprise',

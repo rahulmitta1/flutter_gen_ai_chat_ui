@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 class PlatformThemeVariants {
   /// iOS-specific theming
   final IOSThemeVariant ios;
-  
+
   /// Android-specific theming
   final AndroidThemeVariant android;
-  
+
   /// Web-specific theming
   final WebThemeVariant web;
-  
+
   /// Desktop-specific theming (Windows, macOS, Linux)
   final DesktopThemeVariant desktop;
 
@@ -70,22 +70,22 @@ class PlatformThemeVariants {
 class IOSThemeVariant {
   /// Use SF Symbols when available
   final bool useSFSymbols;
-  
+
   /// iOS haptic feedback settings
   final bool enableHapticFeedback;
-  
+
   /// iOS scroll behavior
   final ScrollPhysics scrollPhysics;
-  
+
   /// iOS blur effect strength
   final double blurEffectStrength;
-  
+
   /// iOS corner radius style
   final double cornerRadiusScale;
-  
+
   /// iOS shadows (lighter on iOS)
   final double shadowOpacity;
-  
+
   /// iOS color intensity
   final double colorSaturation;
 
@@ -122,12 +122,19 @@ class IOSThemeVariant {
   IOSThemeVariant lerp(IOSThemeVariant other, double t) {
     return IOSThemeVariant(
       useSFSymbols: t < 0.5 ? useSFSymbols : other.useSFSymbols,
-      enableHapticFeedback: t < 0.5 ? enableHapticFeedback : other.enableHapticFeedback,
+      enableHapticFeedback:
+          t < 0.5 ? enableHapticFeedback : other.enableHapticFeedback,
       scrollPhysics: t < 0.5 ? scrollPhysics : other.scrollPhysics,
-      blurEffectStrength: lerpDouble(blurEffectStrength, other.blurEffectStrength, t) ?? blurEffectStrength,
-      cornerRadiusScale: lerpDouble(cornerRadiusScale, other.cornerRadiusScale, t) ?? cornerRadiusScale,
-      shadowOpacity: lerpDouble(shadowOpacity, other.shadowOpacity, t) ?? shadowOpacity,
-      colorSaturation: lerpDouble(colorSaturation, other.colorSaturation, t) ?? colorSaturation,
+      blurEffectStrength:
+          lerpDouble(blurEffectStrength, other.blurEffectStrength, t) ??
+              blurEffectStrength,
+      cornerRadiusScale:
+          lerpDouble(cornerRadiusScale, other.cornerRadiusScale, t) ??
+              cornerRadiusScale,
+      shadowOpacity:
+          lerpDouble(shadowOpacity, other.shadowOpacity, t) ?? shadowOpacity,
+      colorSaturation: lerpDouble(colorSaturation, other.colorSaturation, t) ??
+          colorSaturation,
     );
   }
 
@@ -161,22 +168,22 @@ class IOSThemeVariant {
 class AndroidThemeVariant {
   /// Use Material Design 3 components
   final bool useMaterial3;
-  
+
   /// Android ripple effects
   final bool enableRippleEffects;
-  
+
   /// Android scroll behavior
   final ScrollPhysics scrollPhysics;
-  
+
   /// Material elevation intensity
   final double elevationScale;
-  
+
   /// Material corner radius style
   final double cornerRadiusScale;
-  
+
   /// Material shadows (stronger on Android)
   final double shadowOpacity;
-  
+
   /// Material color intensity
   final double colorSaturation;
 
@@ -213,12 +220,18 @@ class AndroidThemeVariant {
   AndroidThemeVariant lerp(AndroidThemeVariant other, double t) {
     return AndroidThemeVariant(
       useMaterial3: t < 0.5 ? useMaterial3 : other.useMaterial3,
-      enableRippleEffects: t < 0.5 ? enableRippleEffects : other.enableRippleEffects,
+      enableRippleEffects:
+          t < 0.5 ? enableRippleEffects : other.enableRippleEffects,
       scrollPhysics: t < 0.5 ? scrollPhysics : other.scrollPhysics,
-      elevationScale: lerpDouble(elevationScale, other.elevationScale, t) ?? elevationScale,
-      cornerRadiusScale: lerpDouble(cornerRadiusScale, other.cornerRadiusScale, t) ?? cornerRadiusScale,
-      shadowOpacity: lerpDouble(shadowOpacity, other.shadowOpacity, t) ?? shadowOpacity,
-      colorSaturation: lerpDouble(colorSaturation, other.colorSaturation, t) ?? colorSaturation,
+      elevationScale:
+          lerpDouble(elevationScale, other.elevationScale, t) ?? elevationScale,
+      cornerRadiusScale:
+          lerpDouble(cornerRadiusScale, other.cornerRadiusScale, t) ??
+              cornerRadiusScale,
+      shadowOpacity:
+          lerpDouble(shadowOpacity, other.shadowOpacity, t) ?? shadowOpacity,
+      colorSaturation: lerpDouble(colorSaturation, other.colorSaturation, t) ??
+          colorSaturation,
     );
   }
 
@@ -252,19 +265,19 @@ class AndroidThemeVariant {
 class WebThemeVariant {
   /// Web scroll behavior
   final ScrollPhysics scrollPhysics;
-  
+
   /// Hover effects for mouse interaction
   final bool enableHoverEffects;
-  
+
   /// Web-specific cursor behavior
   final bool enableCursorEffects;
-  
+
   /// Web accessibility features
   final bool enhancedAccessibility;
-  
+
   /// Web performance optimizations
   final bool enableWebOptimizations;
-  
+
   /// Web blur effects (can be expensive)
   final double blurEffectStrength;
 
@@ -289,8 +302,10 @@ class WebThemeVariant {
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       enableHoverEffects: enableHoverEffects ?? this.enableHoverEffects,
       enableCursorEffects: enableCursorEffects ?? this.enableCursorEffects,
-      enhancedAccessibility: enhancedAccessibility ?? this.enhancedAccessibility,
-      enableWebOptimizations: enableWebOptimizations ?? this.enableWebOptimizations,
+      enhancedAccessibility:
+          enhancedAccessibility ?? this.enhancedAccessibility,
+      enableWebOptimizations:
+          enableWebOptimizations ?? this.enableWebOptimizations,
       blurEffectStrength: blurEffectStrength ?? this.blurEffectStrength,
     );
   }
@@ -298,11 +313,17 @@ class WebThemeVariant {
   WebThemeVariant lerp(WebThemeVariant other, double t) {
     return WebThemeVariant(
       scrollPhysics: t < 0.5 ? scrollPhysics : other.scrollPhysics,
-      enableHoverEffects: t < 0.5 ? enableHoverEffects : other.enableHoverEffects,
-      enableCursorEffects: t < 0.5 ? enableCursorEffects : other.enableCursorEffects,
-      enhancedAccessibility: t < 0.5 ? enhancedAccessibility : other.enhancedAccessibility,
-      enableWebOptimizations: t < 0.5 ? enableWebOptimizations : other.enableWebOptimizations,
-      blurEffectStrength: lerpDouble(blurEffectStrength, other.blurEffectStrength, t) ?? blurEffectStrength,
+      enableHoverEffects:
+          t < 0.5 ? enableHoverEffects : other.enableHoverEffects,
+      enableCursorEffects:
+          t < 0.5 ? enableCursorEffects : other.enableCursorEffects,
+      enhancedAccessibility:
+          t < 0.5 ? enhancedAccessibility : other.enhancedAccessibility,
+      enableWebOptimizations:
+          t < 0.5 ? enableWebOptimizations : other.enableWebOptimizations,
+      blurEffectStrength:
+          lerpDouble(blurEffectStrength, other.blurEffectStrength, t) ??
+              blurEffectStrength,
     );
   }
 
@@ -334,19 +355,19 @@ class WebThemeVariant {
 class DesktopThemeVariant {
   /// Desktop scroll behavior
   final ScrollPhysics scrollPhysics;
-  
+
   /// Desktop hover effects
   final bool enableHoverEffects;
-  
+
   /// Desktop keyboard shortcuts
   final bool enableKeyboardShortcuts;
-  
+
   /// Desktop context menus
   final bool enableContextMenus;
-  
+
   /// Desktop window integration
   final bool enableWindowIntegration;
-  
+
   /// Desktop spacing (more generous)
   final double spacingScale;
 
@@ -370,9 +391,11 @@ class DesktopThemeVariant {
     return DesktopThemeVariant(
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       enableHoverEffects: enableHoverEffects ?? this.enableHoverEffects,
-      enableKeyboardShortcuts: enableKeyboardShortcuts ?? this.enableKeyboardShortcuts,
+      enableKeyboardShortcuts:
+          enableKeyboardShortcuts ?? this.enableKeyboardShortcuts,
       enableContextMenus: enableContextMenus ?? this.enableContextMenus,
-      enableWindowIntegration: enableWindowIntegration ?? this.enableWindowIntegration,
+      enableWindowIntegration:
+          enableWindowIntegration ?? this.enableWindowIntegration,
       spacingScale: spacingScale ?? this.spacingScale,
     );
   }
@@ -380,11 +403,16 @@ class DesktopThemeVariant {
   DesktopThemeVariant lerp(DesktopThemeVariant other, double t) {
     return DesktopThemeVariant(
       scrollPhysics: t < 0.5 ? scrollPhysics : other.scrollPhysics,
-      enableHoverEffects: t < 0.5 ? enableHoverEffects : other.enableHoverEffects,
-      enableKeyboardShortcuts: t < 0.5 ? enableKeyboardShortcuts : other.enableKeyboardShortcuts,
-      enableContextMenus: t < 0.5 ? enableContextMenus : other.enableContextMenus,
-      enableWindowIntegration: t < 0.5 ? enableWindowIntegration : other.enableWindowIntegration,
-      spacingScale: lerpDouble(spacingScale, other.spacingScale, t) ?? spacingScale,
+      enableHoverEffects:
+          t < 0.5 ? enableHoverEffects : other.enableHoverEffects,
+      enableKeyboardShortcuts:
+          t < 0.5 ? enableKeyboardShortcuts : other.enableKeyboardShortcuts,
+      enableContextMenus:
+          t < 0.5 ? enableContextMenus : other.enableContextMenus,
+      enableWindowIntegration:
+          t < 0.5 ? enableWindowIntegration : other.enableWindowIntegration,
+      spacingScale:
+          lerpDouble(spacingScale, other.spacingScale, t) ?? spacingScale,
     );
   }
 

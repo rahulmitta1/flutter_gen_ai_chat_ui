@@ -30,7 +30,7 @@ class AdaptiveMessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-    
+
     // Adaptive sizing based on screen width
     final adaptiveMaxWidth = maxWidth ?? _getAdaptiveMaxWidth(screenWidth);
     final adaptivePadding = padding ?? _getAdaptivePadding(screenWidth);
@@ -145,7 +145,7 @@ class ResponsiveChatLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
-        
+
         if (screenWidth < 600) {
           // Mobile layout - single column
           return _buildMobileLayout();
@@ -208,7 +208,8 @@ class ResponsiveChatLayout extends StatelessWidget {
                 if (header != null) header!,
                 Expanded(
                   child: Padding(
-                    padding: padding ?? const EdgeInsets.symmetric(horizontal: 24),
+                    padding:
+                        padding ?? const EdgeInsets.symmetric(horizontal: 24),
                     child: messageList,
                   ),
                 ),
@@ -269,19 +270,19 @@ class PlatformAwareComponents {
   }
 
   /// Get platform-specific button style
-  static ButtonStyle getButtonStyle(BuildContext context, {
+  static ButtonStyle getButtonStyle(
+    BuildContext context, {
     bool isPrimary = true,
   }) {
     final theme = Theme.of(context);
-    
+
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return ElevatedButton.styleFrom(
         elevation: 0,
-        backgroundColor: isPrimary 
-            ? theme.colorScheme.primary 
-            : theme.colorScheme.secondary,
-        foregroundColor: isPrimary 
-            ? theme.colorScheme.onPrimary 
+        backgroundColor:
+            isPrimary ? theme.colorScheme.primary : theme.colorScheme.secondary,
+        foregroundColor: isPrimary
+            ? theme.colorScheme.onPrimary
             : theme.colorScheme.onSecondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -290,11 +291,10 @@ class PlatformAwareComponents {
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       return ElevatedButton.styleFrom(
         elevation: isPrimary ? 2 : 1,
-        backgroundColor: isPrimary 
-            ? theme.colorScheme.primary 
-            : theme.colorScheme.secondary,
-        foregroundColor: isPrimary 
-            ? theme.colorScheme.onPrimary 
+        backgroundColor:
+            isPrimary ? theme.colorScheme.primary : theme.colorScheme.secondary,
+        foregroundColor: isPrimary
+            ? theme.colorScheme.onPrimary
             : theme.colorScheme.onSecondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -304,11 +304,10 @@ class PlatformAwareComponents {
       // Desktop
       return ElevatedButton.styleFrom(
         elevation: 1,
-        backgroundColor: isPrimary 
-            ? theme.colorScheme.primary 
-            : theme.colorScheme.secondary,
-        foregroundColor: isPrimary 
-            ? theme.colorScheme.onPrimary 
+        backgroundColor:
+            isPrimary ? theme.colorScheme.primary : theme.colorScheme.secondary,
+        foregroundColor: isPrimary
+            ? theme.colorScheme.onPrimary
             : theme.colorScheme.onSecondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -318,13 +317,14 @@ class PlatformAwareComponents {
   }
 
   /// Get platform-specific input decoration
-  static InputDecoration getInputDecoration(BuildContext context, {
+  static InputDecoration getInputDecoration(
+    BuildContext context, {
     String? hintText,
     IconData? prefixIcon,
     Widget? suffixIcon,
   }) {
     final theme = Theme.of(context);
-    
+
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return InputDecoration(
         hintText: hintText,
@@ -444,7 +444,8 @@ class AdaptiveGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final deviceType = LayoutBreakpoints.getDeviceType(constraints.maxWidth);
+        final deviceType =
+            LayoutBreakpoints.getDeviceType(constraints.maxWidth);
         final crossAxisCount = _getCrossAxisCount(deviceType);
 
         return Padding(
