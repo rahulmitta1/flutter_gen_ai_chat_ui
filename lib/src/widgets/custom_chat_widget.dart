@@ -831,13 +831,27 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                 },
         );
       } else {
-        // Default: stream markdown using StreamingText
-        textWidget = StreamingText(
-          text: message.text,
-          style: textStyle,
-          typingSpeed: const Duration(milliseconds: 30),
-          markdownEnabled: true,
-        );
+        if (shouldAnimate) {
+          // Stream plain text only for active streaming messages
+          textWidget = StreamingText(
+            text: message.text,
+            style: textStyle,
+            typingSpeed: widget.streamingTypingSpeed,
+            markdownEnabled: true,
+            fadeInEnabled: widget.streamingFadeInEnabled,
+            fadeInDuration: widget.streamingFadeInDuration,
+            fadeInCurve: widget.streamingFadeInCurve,
+            wordByWord: widget.streamingWordByWord,
+          );
+        } else {
+          // Static plain text for completed messages
+          textWidget = Markdown(
+            data: message.text,
+            selectable: false,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+          );
+        }
       }
     } else {
       // Non-markdown: allow custom text builder override

@@ -26,6 +26,7 @@ class AiChatWidget extends StatefulWidget {
     // Optional parameters, similar to Dila's approach
     this.messages,
     this.inputOptions,
+    this.inputFocusNode,
     this.messageOptions,
     this.messageListOptions,
     this.typingUsers,
@@ -80,6 +81,7 @@ class AiChatWidget extends StatefulWidget {
 
   /// Customization options for the input field
   final InputOptions? inputOptions;
+  final FocusNode? inputFocusNode;
 
   /// Customization options for messages
   final MessageOptions? messageOptions;
@@ -178,7 +180,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
 
     _textController =
         widget.inputOptions?.textController ?? TextEditingController();
-    _inputFocusNode = FocusNode();
+    _inputFocusNode = widget.inputFocusNode ?? FocusNode();
 
     // Create and store the listener to prevent memory leaks
     _textControllerListener = () {
