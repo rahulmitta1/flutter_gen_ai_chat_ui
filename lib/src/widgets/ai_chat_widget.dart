@@ -24,7 +24,7 @@ class AiChatWidget extends StatefulWidget {
     required this.onSendMessage,
 
     // Optional parameters, similar to Dila's approach
-    this.messages,
+  this.messages,
     this.inputOptions,
     this.inputFocusNode,
     this.messageOptions,

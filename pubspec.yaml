@@ -29,6 +29,8 @@ dependencies:
   shimmer: ^3.0.0
   flutter_streaming_text_markdown: ^1.2.1
   url_launcher: ^6.3.1
+  flutter_markdown_latex: ^0.3.4
+  gpt_markdown: ^1.1.4
 
 dev_dependencies:
   flutter_test:
