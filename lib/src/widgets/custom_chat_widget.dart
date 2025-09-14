@@ -851,6 +851,8 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           textWidget = GptMarkdown(
             message.text,
             useDollarSignsForLatex: true,
+            style: TextStyle(
+                fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
           );
 
           // Markdown(
