@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_latex/flutter_markdown_latex.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_streaming_text_markdown/flutter_streaming_text_markdown.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:markdown/markdown.dart' as md;
