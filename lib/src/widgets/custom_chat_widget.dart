@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_latex/flutter_markdown_latex.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_streaming_text_markdown/flutter_streaming_text_markdown.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -38,6 +39,7 @@ class CustomChatWidget extends StatefulWidget {
   final Curve streamingFadeInCurve;
   final bool streamingFadeInEnabled;
   final bool streamingWordByWord;
+  final Widget Function(ChatMessage)? aiMessageButtonsBuilder;
 
   /// Custom widget to display instead of the default typing indicator
   final Widget? typingIndicator;
@@ -61,6 +63,7 @@ class CustomChatWidget extends StatefulWidget {
     required this.quickReplyOptions,
     required this.scrollToBottomOptions,
     this.typingIndicator,
+    this.aiMessageButtonsBuilder,
     this.controller,
     this.welcomeMessageConfig,
     this.exampleQuestions = const [],
@@ -629,67 +632,15 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                             // Show premium copy button for AI messages
                             if (!isUser &&
                                 (widget.messageOptions.showCopyButton ?? false))
-                              Material(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(16),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () {
-                                    Clipboard.setData(
-                                        ClipboardData(text: message.text));
-                                    // Show premium feedback if provided
-                                    if (widget.messageOptions.onCopy != null) {
-                                      widget
-                                          .messageOptions.onCopy!(message.text);
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: const Text(
-                                              'Message copied to clipboard'),
-                                          duration: const Duration(seconds: 2),
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor: isDark
-                                              ? Colors.grey[800]
-                                              : Colors.grey[900],
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.copy_outlined,
-                                          size: 14,
-                                          color: bubbleStyle.copyIconColor ??
-                                              primaryColor,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Copy',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            letterSpacing: 0.1,
-                                            color: bubbleStyle.copyIconColor ??
-                                                primaryColor,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  _buildCopyButton(message, isDark, bubbleStyle,
+                                      primaryColor),
+                                  if(widget.aiMessageButtonsBuilder != null)
+                                   widget.aiMessageButtonsBuilder!(message)
+                                ],
+                              )
                           ],
                         ),
                       ),
@@ -700,6 +651,62 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCopyButton(ChatMessage message, bool isDark,
+      BubbleStyle bubbleStyle, Color primaryColor) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: message.text));
+          // Show premium feedback if provided
+          if (widget.messageOptions.onCopy != null) {
+            widget.messageOptions.onCopy!(message.text);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Message copied to clipboard'),
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: isDark ? Colors.grey[800] : Colors.grey[900],
+              ),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 4,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.copy_outlined,
+                size: 14,
+                color: bubbleStyle.copyIconColor ?? primaryColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Copy',
+                style: TextStyle(
+                  fontSize: 12,
+                  letterSpacing: 0.1,
+                  color: bubbleStyle.copyIconColor ?? primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -848,11 +855,14 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
           );
         } else {
           // Static plain text for completed messages
-          textWidget = GptMarkdown(
-            message.text,
-            useDollarSignsForLatex: true,
-            style: TextStyle(
-                fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
+          textWidget = Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GptMarkdown(
+              message.text,
+              useDollarSignsForLatex: true,
+              style: TextStyle(
+                  fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
+            ),
           );
 
           // Markdown(

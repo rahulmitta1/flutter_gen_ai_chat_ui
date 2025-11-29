@@ -24,7 +24,7 @@ class AiChatWidget extends StatefulWidget {
     required this.onSendMessage,
 
     // Optional parameters, similar to Dila's approach
-  this.messages,
+    this.messages,
     this.inputOptions,
     this.inputFocusNode,
     this.messageOptions,
@@ -43,6 +43,7 @@ class AiChatWidget extends StatefulWidget {
     this.maxWidth,
     this.loadingConfig,
     this.paginationConfig,
+    this.aiMessageButtonsBuilder,
     this.padding,
     this.enableMarkdownStreaming = true,
     this.streamingDuration = const Duration(milliseconds: 30),
@@ -69,6 +70,8 @@ class AiChatWidget extends StatefulWidget {
 
   /// Name of the AI assistant (for display)
   final String aiName;
+
+  final Widget Function(ChatMessage)? aiMessageButtonsBuilder;
 
   /// The controller for managing chat messages
   final ChatMessagesController controller;
@@ -331,6 +334,7 @@ class _AiChatWidgetState extends State<AiChatWidget>
                     scrollController: _effectiveScrollController,
                   ),
                   readOnly: widget.readOnly,
+                  aiMessageButtonsBuilder: widget.aiMessageButtonsBuilder,
                   quickReplyOptions:
                       widget.quickReplyOptions ?? const QuickReplyOptions(),
                   scrollToBottomOptions: widget.scrollToBottomOptions ??
