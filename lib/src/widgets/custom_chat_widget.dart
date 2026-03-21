@@ -629,12 +629,12 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
                               ),
 
                             // Show premium copy button for AI messages
-                            if (!isUser &&
-                                (widget.messageOptions.showCopyButton ?? false))
+                            if (!isUser)
                               Row(
                                 spacing: 10,
                                 children: [
-                                  _buildCopyButton(message, isDark, bubbleStyle,
+                                 if(widget.messageOptions.showCopyButton ?? false) 
+                                    _buildCopyButton(message, isDark, bubbleStyle,
                                       primaryColor),
                                   if(widget.aiMessageButtonsBuilder != null)
                                    widget.aiMessageButtonsBuilder!(message)
