@@ -255,7 +255,7 @@ class MessageOptions {
   /// the default bubble layout intact.
   final Widget Function(
     BuildContext context,
-    String text,
+    ChatMessage message,
     MarkdownStyleSheet effectiveStyleSheet,
     bool isUser,
   )? markdownBuilder;
@@ -341,7 +341,7 @@ class MessageOptions {
     bool? enableImageTaps,
     void Function(String url, String? title, String? alt)? onImageTap,
     Widget Function(BuildContext, String, TextStyle, bool)? textBuilder,
-    Widget Function(BuildContext, String, MarkdownStyleSheet, bool)?
+    Widget Function(BuildContext, ChatMessage, MarkdownStyleSheet, bool)?
         markdownBuilder,
     Widget Function(BuildContext, ChatMessage, bool)? customBubbleBuilder,
   }) =>

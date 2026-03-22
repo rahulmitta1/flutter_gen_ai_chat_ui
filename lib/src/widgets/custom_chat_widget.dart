@@ -738,7 +738,7 @@ class _CustomChatWidgetState extends State<CustomChatWidget> {
 
       final customMarkdown = widget.messageOptions.markdownBuilder?.call(
         context,
-        message.text,
+        message,
         effectiveStyleSheet,
         isCurrentUser,
       );
