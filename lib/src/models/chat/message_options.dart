@@ -253,7 +253,7 @@ class MessageOptions {
   ///
   /// Allows overriding how markdown message content is rendered while keeping
   /// the default bubble layout intact.
-  final Widget Function(
+  final Widget? Function(
     BuildContext context,
     ChatMessage message,
     MarkdownStyleSheet effectiveStyleSheet,
